@@ -36,7 +36,7 @@ const Map = () => {
         defaultZoom={14}
       >
         { repBoundaries.map((rb:RepBoundary)=>{
-          return /*<RepCard repBoundary={rb} key={rb.rep.id}/>*/
+          return /*<RepCard repBoundary={rb} key={rb.rep.id}/>*//* */
         })
         }
       </GoogleMapReact>
