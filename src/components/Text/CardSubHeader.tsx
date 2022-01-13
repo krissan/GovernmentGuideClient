@@ -1,11 +1,11 @@
-import { Typography } from "@material-ui/core";
+import { Typography, TypographyProps } from "@material-ui/core";
 import React from "react";
 
 import { StdProps } from "../../CustomIntefaces/StdProps";
 import useStyles from './styles';
 
 
-const CardSubHeader:React.FC<StdProps> = ({children, style}) => {
+const CardSubHeader:React.FC<TypographyProps> = ({children, style}) => {
   const classes = useStyles();
 
   return (

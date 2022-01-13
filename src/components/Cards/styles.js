@@ -12,10 +12,5 @@ export default makeStyles((theme) => ({
         '&:hover':{
             backgroundColor:theme.palette.warning.dark
         }
-    },
-    miniHeader:{
-        color:theme.palette.primary.dark, 
-        fontWeight:"bold", 
-        paddingRight:5
     }
 }));

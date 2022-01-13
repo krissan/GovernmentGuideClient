@@ -1,8 +1,8 @@
 import * as React from 'react';
 import { Button, ButtonProps, Theme, useTheme } from '@material-ui/core';
 import { styled } from '@material-ui/styles';
+import useStyles from './styles';
 
-//styled component
 interface IconButtonProps {
   theme: Theme,
 }
@@ -28,14 +28,13 @@ const IconButton =styled(
 });
 
 
-//pass theme in
-const CustomIconButton:React.FC<ButtonProps> = ({children, style}) => {
+//button with child icon
+const CustomIconButton:React.FC<ButtonProps> = ({children, ...props}) => {
   const theme = useTheme();
+  const classes = useStyles();
 
   return (
-    <div style={style}>
-    <IconButton theme={theme}>{children}</IconButton>
-    </div>
+    <IconButton className={classes.CustomIconButton} theme={theme} {...props} >{children}</IconButton>
   );
 }
 

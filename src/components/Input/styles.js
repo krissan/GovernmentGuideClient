@@ -33,5 +33,18 @@ export default makeStyles((theme) => ({
     padding:"5px 10px", 
     fontSize:25,
     color: theme.palette.secondary.light,
-  }
+  },
+  textField: {
+    minWidth:400,
+    "&:hover .MuiOutlinedInput-root .MuiOutlinedInput-notchedOutline": {
+      borderColor: theme.palette.primary.dark
+    },
+    "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline": {
+      borderColor: theme.palette.primary.dark
+    },
+  },
+  searchInput: {
+    height:40,
+    borderRadius:0,
+  },
 }));

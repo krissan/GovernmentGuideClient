@@ -1,4 +1,5 @@
 import { makeStyles } from '@material-ui/core/styles';
+import { palette } from '@mui/system';
 
 export default makeStyles((theme) => ({
   AuthButton: {
@@ -19,7 +20,15 @@ export default makeStyles((theme) => ({
     color:theme.palette.primary.contrastText,
     padding:8,
     borderRadius:0,
-    fontSize:16
+    fontSize:16,
+    
+  },
+  StdButtonNS: {
+    color:theme.palette.primary.contrastText,
+    backgroundColor:theme.palette.primary.main,
+    "&:hover":{
+      backgroundColor: theme.palette.primary.dark
+    },
   },
   ButtonIcon:{
     color:theme.palette.primary.contrastText
@@ -36,9 +45,35 @@ export default makeStyles((theme) => ({
           backgroundColor: theme.palette.primary.main,
       }
   },
-  StdSwitchAndLabel:{
+  StdSwitchAndLabel: {
     color:theme.palette.secondary.main,
     fontWeight:"bold",
     paddingTop:1
+  },
+  CustomIconButton: {
+    '&.Mui-disabled':{
+      backgroundColor: theme.palette.primary.dark,
+    },
+  },
+  header:{
+      fontSize:20
+  },
+  searchItem:{
+    border:"2px solid "+theme.palette.primary.main,
+    borderRadius:"0",
+    margin:5,
+    color:theme.palette.primary.main,
+    '&:hover':{
+      backgroundColor:theme.palette.primary.main,
+      color:theme.palette.primary.contrastText
+    }
+  },
+  searchItemSelected:{
+    border:"0",
+    backgroundColor:theme.palette.primary.dark,
+    color:theme.palette.primary.contrastText
+  },
+  dropHighLighted:{
+    backgroundColor: theme.palette.primary.dark
   }
 }));

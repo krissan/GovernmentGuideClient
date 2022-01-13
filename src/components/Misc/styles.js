@@ -41,6 +41,9 @@ export default makeStyles((theme) => ({
   gradeIcon:{
     color:theme.palette.primary.dark
   },
+  symbol:{
+    color:theme.palette.primary.primary
+  },
   StdToggleContainer:{
     alignItems:"flex-end",
     paddingBottom:20,
@@ -49,7 +52,7 @@ export default makeStyles((theme) => ({
       backgroundColor:theme.palette.primary.main,
       padding:"5px auto",
       fontSize:12,
-      height:40,
+      height:70,
       color:theme.palette.primary.contrastText
     },
     "& button:hover":{
@@ -60,7 +63,7 @@ export default makeStyles((theme) => ({
       borderRadius:0,
       backgroundColor:theme.palette.primary.dark,
       color:theme.palette.primary.contrastText,
-      height:50
+      height:80
     },
     "& button.Mui-selected:hover":{
       backgroundColor:theme.palette.primary.dark,

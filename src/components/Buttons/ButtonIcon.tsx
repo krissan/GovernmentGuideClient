@@ -3,7 +3,7 @@ import { FontAwesomeIcon, FontAwesomeIconProps } from "@fortawesome/react-fontaw
 
 import useStyles from './styles';
 
-
+//Icon used in button
 const ButtonIcon:React.FC<FontAwesomeIconProps> = ({icon, fontSize=20, ...props}) => {
   const classes = useStyles();
 

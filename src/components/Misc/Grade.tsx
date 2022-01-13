@@ -8,7 +8,7 @@ interface GradeProps extends FontAwesomeIconProps {
   grade:String
 }
 
-
+//Category Grade and Letter
 const Grade:React.FC<GradeProps> = ({icon, grade, fontSize=14, ...props}) => {
   const classes = useStyles();
 

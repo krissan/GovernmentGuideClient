@@ -12,5 +12,16 @@ export default makeStyles((theme) => ({
         '&:hover':{
             backgroundColor:theme.palette.warning.dark
         }
+    },
+    dashBoardButton:{
+        backgroundColor:theme.palette.primary.main,
+        width:"50%",
+        height:"200px",
+        margin: "0px 20px",
+        color: theme.palette.primary.contrastText,
+        fontSize:25,
+        '&:hover':{
+            backgroundColor:theme.palette.primary.dark
+        } 
     }
 }));

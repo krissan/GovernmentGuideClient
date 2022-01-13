@@ -7,15 +7,20 @@ import StandardInput from "../Input/StandardInput";
 import StdInputIcon from "../Input/StdInputIcon";
 import PageHeader from "../Text/PageHeader";
 
+import { useNavigate } from "react-router-dom";
+
 
 const SignUpPage = () => {
+  let navigate = useNavigate();
 
   return (
     <div style={{display:"flex"}}>
       <div style={{flex:1}}>
+        {/*Title*/}
         <PageHeader additionalInfo="*Accurate Information Required for use in Autocompleting Petitions etc">
           SIGN UP
         </PageHeader>
+        {/*Form*/}
         <Box
           component="form"
           style={{display:"flex",flexDirection:"column"}}
@@ -36,7 +41,8 @@ const SignUpPage = () => {
           }} />
           <AuthButton style={{backgroundColor:"#59AF73"}}>Sign Up</AuthButton>
         </Box>
-        <AuthButton style={{backgroundColor:"#59ACAF",marginBottom:0}}>Login</AuthButton>
+        {/*Submit Button*/}
+        <AuthButton style={{backgroundColor:"#59ACAF",marginBottom:0}} onClick={()=>{navigate("/login")}}>Login</AuthButton>
       </div>
       <div style={{backgroundColor:"blue",flex:1}}>
 

@@ -3,6 +3,7 @@ import { FontAwesomeIcon, FontAwesomeIconProps } from "@fortawesome/react-fontaw
 
 import useStyles from './styles';
 
+//Icon For Standard Input
 const StdInputIcon:React.FC<FontAwesomeIconProps> = ({icon, ...props}) => {
   const classes = useStyles();
 

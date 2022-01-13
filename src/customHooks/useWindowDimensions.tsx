@@ -8,6 +8,7 @@ function getWindowDimensions() {
   };
 }
 
+//Hook for width and height of current window
 export default function useWindowDimensions() {
   const [windowDimensions, setWindowDimensions] = useState(getWindowDimensions());
 

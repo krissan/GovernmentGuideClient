@@ -7,11 +7,10 @@ interface StdSwitchProps extends SwitchProps {
     label: string;
 }
 
-//pass theme in
+//Standard Toggle Switch
 const StdSwitch:React.FC<StdSwitchProps> = ({label,...props}) => {
   const classes = useStyles();
-
-
+  
   return (
     <div style={{display:"flex", alignItems:"center"}}>
         <Switch   classes={{
