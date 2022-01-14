@@ -1,7 +1,8 @@
 import axios from 'axios';
 import { Boundary, GovBody, Rep, RepBiography, RepBoundary, RepEndorsement, RepPlatform, RepReportCard } from '../AppContext';
 import { ExportToCsv } from 'export-to-csv';
-import { Message, messageType } from '../CustomIntefaces/AppTypes';
+import { Message } from '../CustomIntefaces/AppTypes';
+import { infoEnum, messageType } from '../CustomIntefaces/Enumerators';
 
 const convertTitle = (s:string) => {
   return s.charAt(0).toUpperCase() + s.slice(1).toLowerCase();
@@ -104,13 +105,13 @@ export async function searchGovBody(searchTerm:string) {
 
 
 //Get Biography Data of representatives of Government Body
-export async function getBiographyData(govBodyId:Number):Promise<Message> { 
+export async function getBiographyData(govBodyId:Number, type:infoEnum):Promise<Message> { 
   let message:Message;
 
   var repBios:Array<RepBiography> = [];
 
   try {
-    let responseData:any = await axios.get('http://localhost:8080//api/v1/biography/govBody?govBodyId='+govBodyId)
+    let responseData:any = await axios.get('http://localhost:8080//api/v1/biography/govBody/'+type+'?govBodyId='+govBodyId)
       .then(response => {
         console.log("------!_-");
         console.log(response);
@@ -154,17 +155,17 @@ export async function getBiographyData(govBodyId:Number):Promise<Message> {
 }
 
 //process biographies
-export async function uploadBiographies(repBios:Array<RepBiography>, govBodyId:Number):Promise<Message> { 
+export async function uploadBiographies(repBios:Array<RepBiography>, govBodyId:Number, type:infoEnum):Promise<Message> { 
   let message:Message;
 
   try{
-    const requestParam = {govBodyId: govBodyId, repBios:repBios.filter((x)=>{if(x.repId == null){return false} return true})};
+    const requestParam = {govBodyId: govBodyId, repBios:repBios.filter((x)=>{if(x.id == null){return false} return true})};
 
     console.log(requestParam);
 
     let x = await axios.request({
         method: 'post',
-        url: 'http://localhost:8080/api/v1/biography/govBody',
+        url: 'http://localhost:8080/api/v1/biography/govBody/'+type,
         data: requestParam,
         headers: {
           'Content-Type':'application/json'
@@ -183,14 +184,14 @@ export async function uploadBiographies(repBios:Array<RepBiography>, govBodyId:N
 }
 
 //Get platform data of representatives of Government Body
-export async function getPlatformData(govBodyId:Number):Promise<Message> { 
+export async function getPlatformData(govBodyId:Number, type:infoEnum):Promise<Message> { 
   let message:Message;
 
 
   try {
     var repPlats:Array<RepPlatform> = [];
 
-    let responseData:any = await axios.get('http://localhost:8080/api/v1/platform/govbody?govBodyId='+govBodyId)
+    let responseData:any = await axios.get('http://localhost:8080/api/v1/platform/govbody/'+type+'?govBodyId='+govBodyId)
       .then(response => {
         return response
       }).catch(error => console.log(error));
@@ -233,15 +234,15 @@ export async function getPlatformData(govBodyId:Number):Promise<Message> {
 }
 
 //process platforms
-export async function uploadPlatforms(repPlats:Array<RepPlatform>, govBodyId:Number):Promise<Message> { 
+export async function uploadPlatforms(repPlats:Array<RepPlatform>, govBodyId:Number, type:infoEnum):Promise<Message> { 
   let message:Message;
 
   try{
-    const requestParam = {govBodyId: govBodyId, repBios:repPlats.filter((x)=>{if(x.repId == null){return false} return true})};
+    const requestParam = {govBodyId: govBodyId, repBios:repPlats.filter((x)=>{if(x.id == null){return false} return true})};
 
     let x = await axios.request({
         method: 'post',
-        url: 'http://localhost:8080/api/v1/biography/govBody',
+        url: 'http://localhost:8080/api/v1/biography/govBody/'+type,
         data: requestParam,
         headers: {
           'Content-Type':'application/json'
@@ -261,13 +262,13 @@ export async function uploadPlatforms(repPlats:Array<RepPlatform>, govBodyId:Num
 }
 
 //get report card Data of representatives of Government Body
-export async function getReportCardData(govBodyId:Number):Promise<Message> { 
+export async function getReportCardData(govBodyId:Number, type:infoEnum):Promise<Message> { 
   let message:Message;
 
   try {
     var repReportCards:Array<RepPlatform> = [];
 
-    let responseData:any = await axios.get('http://localhost:8080/api/v1/reportcard/govbody?govBodyId='+govBodyId)
+    let responseData:any = await axios.get('http://localhost:8080/api/v1/reportcard/govbody/'+type+'?govBodyId='+govBodyId)
       .then(response => {
         return response
       }).catch(error => console.log(error));
@@ -310,17 +311,17 @@ export async function getReportCardData(govBodyId:Number):Promise<Message> {
 }
 
 //process report cards
-export async function uploadReportCards(repReportCards:Array<RepReportCard>, govBodyId:Number):Promise<Message> { 
+export async function uploadReportCards(repReportCards:Array<RepReportCard>, govBodyId:Number, type:infoEnum):Promise<Message> { 
   let message:Message;
 
   try{
-    const requestParam = {govBodyId: govBodyId, repReportCards:repReportCards.filter((x)=>{if(x.repId == null){return false} return true})};
+    const requestParam = {govBodyId: govBodyId, repReportCards:repReportCards.filter((x)=>{if(x.id == null){return false} return true})};
 
     console.log(requestParam);
 
     let x = await axios.request({
         method: 'post',
-        url: 'http://localhost:8080/api/v1/reportcard/govBody',
+        url: 'http://localhost:8080/api/v1/reportcard/govBody/'+type,
         data: requestParam,
         headers: {
           'Content-Type':'application/json'
@@ -340,13 +341,13 @@ export async function uploadReportCards(repReportCards:Array<RepReportCard>, gov
 }
 
 //get report card Data of representatives of Government Body
-export async function getEndorsementData(govBodyId:Number):Promise<Message> { 
+export async function getEndorsementData(govBodyId:Number, type:infoEnum):Promise<Message> { 
   let message:Message;
 
   var repReportCards:Array<RepPlatform> = [];
 
   try {
-    let responseData:any = await axios.get('http://localhost:8080/api/v1/endorsement/govbody?govBodyId='+govBodyId)
+    let responseData:any = await axios.get('http://localhost:8080/api/v1/endorsement/govbody/'+type+'?govBodyId='+govBodyId)
       .then(response => {
         return response
       }).catch(error => console.log(error));
@@ -389,17 +390,17 @@ export async function getEndorsementData(govBodyId:Number):Promise<Message> {
 }
 
 //process report cards
-export async function uploadEndorsements(repEndorsements:Array<RepEndorsement>, govBodyId:Number):Promise<Message> { 
+export async function uploadEndorsements(repEndorsements:Array<RepEndorsement>, govBodyId:Number, type:infoEnum):Promise<Message> { 
   let message:Message;
   
   try{
-    const requestParam = {govBodyId: govBodyId, repEndorsements:repEndorsements.filter((x)=>{if(x.repId == null){return false} return true})};
+    const requestParam = {govBodyId: govBodyId, repEndorsements:repEndorsements.filter((x)=>{if(x.id == null){return false} return true})};
 
     console.log(requestParam);
 
     await axios.request({
         method: 'post',
-        url: 'http://localhost:8080/api/v1/endorsement/govBody',
+        url: 'http://localhost:8080/api/v1/endorsement/govBody/'+type,
         data: requestParam,
         headers: {
           'Content-Type':'application/json'

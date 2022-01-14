@@ -16,9 +16,15 @@ import { Endorsement, GovBody, RepBiography, RepEndorsement, RepPlatform, RepRep
 import { getBiographyData, getEndorsementData, getPlatformData, getReportCardData, searchGovBody, uploadBiographies, uploadEndorsements, uploadPlatforms, uploadReportCards } from "../../api/representative";
 import { processCsv } from "../../functions/fileFunctions";
 import { Message } from "../../CustomIntefaces/AppTypes";
+import { infoEnum } from "../../CustomIntefaces/Enumerators";
 
-interface EditOption{
+interface EditOption {
   name:string,
+}
+
+interface TypeOption {
+  name:string,
+  type:infoEnum
 }
 
 const GovBodyDataPage = () => {
@@ -27,6 +33,7 @@ const GovBodyDataPage = () => {
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [selectedGB, setSelectedGB] = useState<Number|null>(null);
   const [selectedEditOption, setSelectedEditOption] = useState<EditOption | null>(null);
+  const [selectedType, setSelectedType] = useState<infoEnum>(infoEnum.representative);
   const [govBodyList, setGovBodyList] = useState<Array<GovBody>>([]);
   const [getLoading, setGetLoading] = useState<boolean>(false);
   const [getMessage, setGetMessage] = useState<Message|null>();
@@ -63,25 +70,25 @@ const GovBodyDataPage = () => {
         {
           let bios:Array<RepBiography> = results as Array<RepBiography>;
 
-          message = await uploadBiographies(bios, selectedGB);
+          message = await uploadBiographies(bios, selectedGB, selectedType);
         }
         else if (selectedEditOption?.name === "Platform")
         {
           let plats:Array<RepPlatform> = results as Array<RepPlatform>;
 
-          message = await uploadPlatforms(plats, selectedGB);
+          message = await uploadPlatforms(plats, selectedGB, selectedType);
         }
         else if (selectedEditOption?.name === "Report Card")
         {
           let repCards:Array<RepReportCard> = results as Array<RepReportCard>;
 
-          message = await uploadReportCards(repCards, selectedGB);
+          message = await uploadReportCards(repCards, selectedGB, selectedType);
         }
         else if (selectedEditOption?.name === "Endorsement")
         {
           let endorsements:Array<RepEndorsement> = results as Array<RepEndorsement>;
 
-          message = await uploadEndorsements(endorsements, selectedGB);
+          message = await uploadEndorsements(endorsements, selectedGB, selectedType);
         }
       }
 
@@ -102,19 +109,19 @@ const GovBodyDataPage = () => {
       {
         if(selectedEditOption?.name === "Biography")
         {
-          message = await getBiographyData(selectedGB);
+          message = await getBiographyData(selectedGB, selectedType);
         }
         else if (selectedEditOption?.name === "Platform")
         {
-          message = await getPlatformData(selectedGB)
+          message = await getPlatformData(selectedGB, selectedType)
         }
         else if (selectedEditOption?.name === "Report Card")
         {
-          message = await getReportCardData(selectedGB)
+          message = await getReportCardData(selectedGB, selectedType)
         }
         else if (selectedEditOption?.name === "Endorsement")
         {
-          message = await getEndorsementData(selectedGB)
+          message = await getEndorsementData(selectedGB, selectedType)
         }
         setGetMessage(message);
       }
@@ -127,6 +134,11 @@ const GovBodyDataPage = () => {
     {name:"Platform"},
     {name:"Report Card"}, 
     {name:"Endorsement"}
+  ];
+
+  const typeOptions:Array<TypeOption> = [
+    {name:"Representative", type:infoEnum.representative}, 
+    {name:"Party", type:infoEnum.party}
   ];
 
   useEffect(()=>{console.log(selectedEditOption)},[selectedEditOption]);
@@ -159,7 +171,7 @@ const GovBodyDataPage = () => {
               </div>
             </div>
 
-            {/* Select Criteria */}
+            {/* Select Criteria and Data type to edit*/}
             <div style={{width:"33.3%"}}>
             { selectedGB &&
              <>
@@ -169,6 +181,13 @@ const GovBodyDataPage = () => {
                       return <SearchItem key={o.name} mainText={o.name}  selected={selectedEditOption ? o.name===selectedEditOption.name : false} onClick={()=>{setSelectedEditOption(o)}}/>
                     })}
                 </div>
+
+                <StepHeader>3. Select Data To Edit</StepHeader>
+                <div style={{flexDirection:"column", display:"flex"}}>
+                    {typeOptions.map((i:TypeOption)=>{
+                      return <SearchItem key={i.name} mainText={i.name}  selected={selectedType === i.type} onClick={()=>{setSelectedType(i.type)}}/>
+                    })}
+                </div>
               </>
             }
             </div>
@@ -176,7 +195,7 @@ const GovBodyDataPage = () => {
             {/* Make Changes */}
             {selectedEditOption &&
               <div style={{width:"33.3%"}}>
-                <StepHeader>3. Make Changes</StepHeader>
+                <StepHeader>4. Make Changes</StepHeader>
                 <div style={{flexDirection:"column", display:"flex"}}>
                   {/*i*/}
                   <div style={{flexDirection:"row",display:"flex", paddingBottom:"10px"}}>

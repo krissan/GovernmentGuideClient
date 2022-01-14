@@ -3,7 +3,8 @@ import { Button, ButtonProps, useTheme } from "@material-ui/core";
 import ScaleLoader from "react-spinners/ClipLoader";
 
 import useStyles from './styles';
-import { Message, messageType } from "../../CustomIntefaces/AppTypes";
+import { Message } from "../../CustomIntefaces/AppTypes";
+import { messageType } from "../../CustomIntefaces/Enumerators";
 
 export interface StdButtonProps extends ButtonProps {
   onHoverColor?:string,

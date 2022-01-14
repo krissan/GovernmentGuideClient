@@ -49,14 +49,14 @@ export interface RepBoundary{
 }
 
 export interface RepBiography {
-    repId:number,
-    representativeName:string,
+    id:number,
+    name:string,
     bio:string
 }
 
 export interface RepPlatform {
-    repId:number,
-    representativeName:string,
+    id:number,
+    name:string,
     platformName:string,
     description:string,
     status:string,
@@ -64,8 +64,8 @@ export interface RepPlatform {
 }
 
 export interface RepReportCard {
-    repId:number,
-    representativeName:string,
+    id:number,
+    name:string,
     reportCardName:string,
     grade:string,
     description:string,
@@ -73,8 +73,8 @@ export interface RepReportCard {
 }
 
 export interface RepEndorsement {
-    repId:number,
-    representativeName:string,
+    id:number,
+    name:string,
     description:string,
     category:string
 }
@@ -92,7 +92,8 @@ export interface GovBody {
 
 export interface Biography {
     id:number,
-    repId:number,
+    repId:number|null,
+    partyId:number|null,
     bio:string,
     createDate:Date | null,
     updateDate:Date | null,
@@ -100,7 +101,8 @@ export interface Biography {
 
 export interface Platform {
     id:number,
-    repId:number,
+    repId:number|null,
+    partyId:number|null,
     orgId:number,
     name:string,
     status:string,
@@ -111,7 +113,8 @@ export interface Platform {
 
 export interface Endorsement {
     id:number,
-    repId:number,
+    repId:number|null,
+    partyId:number|null,
     orgId:number,
     description:string,
     createDate:Date | null,
@@ -121,22 +124,13 @@ export interface Endorsement {
 
 export interface ReportCard {
     id:number,
-    repId:number,
+    repId:number|null,
+    partyId:number|null,
     orgId:number,
     name:string,
     description:string,
     grade:string,
     createDate:Date | null,
-    category:string
-}
-
-export interface Endorsement {
-    id:number,
-    repId:number,
-    orgId:number,
-    description:string,
-    createDate:Date | null,
-    updateDate:Date | null,
     category:string
 }
 

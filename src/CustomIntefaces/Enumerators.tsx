@@ -14,3 +14,14 @@ export const SymbolEnum:SymbolEnumType = {
     "industry":{color:"gray",icon:faLeaf},
     "monetary":{color:"DarkGreen",icon:faLeaf}
 }
+
+export enum messageType {
+    error,
+    success,
+    warning
+}
+
+export enum infoEnum {
+    representative = "representative",
+    party = "party"
+}

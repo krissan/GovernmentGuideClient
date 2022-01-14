@@ -1,8 +1,4 @@
-export enum messageType {
-    error,
-    success,
-    warning
-}
+import { messageType } from "./Enumerators";
 
 export interface Message {
     type: messageType,

@@ -9,6 +9,7 @@ import {  RepBoundary, useAppContext } from "../../AppContext";
 import MapAlt from "../Map/MapAlt";
 import { sideListWidth } from "../../AppValues";
 import useWindowDimensions from "../../customHooks/useWindowDimensions";
+import { infoEnum } from "../../CustomIntefaces/Enumerators";
 
 //Interfaces and settings for google-maps
 type Libraries = ("drawing" | "geometry" | "localContext" | "places" | "visualization")[];
@@ -28,7 +29,7 @@ const MapPage = () => {
   const offsetY:number = ref.current?.offsetTop ? ref.current?.offsetTop : 0;
 
   //UseEffect
-  useEffect(()=>{console.log(repBoundaries)},[repBoundaries]);
+  useEffect(()=>{console.log(repBoundaries);console.log(infoEnum.representative)},[repBoundaries]);
 
   //Address AutoComplete Text Change, Input Selected Functions
   const onTextChange = (addr: google.maps.places.Autocomplete) => setAddress(addr);
