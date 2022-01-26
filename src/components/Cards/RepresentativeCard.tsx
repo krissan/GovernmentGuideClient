@@ -14,7 +14,8 @@ import useStyles from './styles';
 import StdSwitch from "../Buttons/StdSwitch";
 import ToggleContainer from "../Misc/ToggleContainer";
 import { Boundary, Rep, RepBoundary, useAppContext } from "../../AppContext";
-import { subCardWidth } from "../../AppValues";
+import appValues from "../../resources/AppValues";
+import { MailTo } from "../../functions/stdAppFunctions";
 
 
 interface RepCardProps {
@@ -40,12 +41,8 @@ const RepresentativeCard:React.FC<RepCardProps> = ({repBoundary, hovered, select
 
     //call number passed
     const call = (number:number) =>{
-        console.log(number);
-    }
-
-    //create email based on address passed
-    const email = (email:string) => {
-        console.log(email);
+        navigator.clipboard.writeText(number.toString());
+        alert("Copied "+number+" to clip board");
     }
 
     //Toggle Boundary if already selected
@@ -90,7 +87,7 @@ const RepresentativeCard:React.FC<RepCardProps> = ({repBoundary, hovered, select
             {/*Row 1 Representative Basic Data*/}
             <div style={{display:"flex"}}>
                 {/*Col 1*/}
-                <img src={rep.photo} alt="Representative" width={subCardWidth} height={subCardWidth} style={{margin:"0px 10px 10px 0px", /*borderRadius:"50%", objectFit:"cover"*/ objectFit:"contain"}}/>
+                <img src={rep.photo} alt="Representative" width={appValues.subCardWidth} height={appValues.subCardWidth} style={{margin:"0px 10px 10px 0px", /*borderRadius:"50%", objectFit:"cover"*/ objectFit:"contain"}}/>
                 {/*Col 2*/}
                 <div style={{flex:1, justifyContent:"space-between", flexDirection:"column"}}>
                 <CardSubHeader>{boundary.repTitle+" "+rep.firstName+" "+rep.lastName}</CardSubHeader>
@@ -104,20 +101,21 @@ const RepresentativeCard:React.FC<RepCardProps> = ({repBoundary, hovered, select
             {/*Row 2 Representative Grades, Email, Call, Toggle Boundary,*/}
             <div style={{display:"flex", paddingBottom:"10px"}}>
                 {/*Col 1*/}
-                <div style={{width:subCardWidth, paddingRight:"30px", display:"flex",alignItems:"center"}}>
+                <div style={{width:appValues.subCardWidth, paddingRight:"30px", display:"flex",alignItems:"center"}}>
                     <StdSwitch label="BOUNDARY" checked={repBoundary.boundary.id===boundaryToggled?.boundary.id} onClick={()=>{toggleBoundary()}} />
                 </div>
                 {/*Col 2*/}
                 <div style={{display:"flex", justifyContent:"space-between", flex:1,alignItems:"center"}}>
                     <div style={{display:"flex"}}>
-                        <Grade grade="A" icon={faLeaf} />
-                        <Grade grade="A" icon={faLeaf} />
-                        <Grade grade="A" icon={faLeaf} />
+                        <Grade grade="A" />
+                        <Grade grade="A" />
+                        <Grade grade="A" />
                     </div>
                     <div style={{display:"flex"}}>
-                        <CustomIconButtonAlt style={{paddingRight:10}} onClick={()=>{email(rep.email)}}>
+                        <CustomIconButtonAlt style={{paddingRight:10}} onClick={()=>{MailTo(rep.email)}}>
                             <ButtonIcon icon={faEnvelope}/>
                         </CustomIconButtonAlt>
+                        
                         <CustomIconButtonAlt onClick={()=>{call(rep.call)}}>
                             <ButtonIcon icon={faPhoneAlt}/>
                         </CustomIconButtonAlt>
@@ -127,7 +125,7 @@ const RepresentativeCard:React.FC<RepCardProps> = ({repBoundary, hovered, select
             {/*Row 3 Election Button, Tags*/}
             <div style={{display:"flex", paddingBottom:"10px"}}>
                 {/*Col 1*/}
-                <div style={{width:subCardWidth, paddingRight:"30px"}}>
+                <div style={{width:appValues.subCardWidth, paddingRight:"30px"}}>
                     <StdButton classes={{root: classes.electionButton}} style={{width:"100%"}}>Election</StdButton>
                 </div>
                 {/*Col 2*/}
@@ -150,7 +148,7 @@ const RepresentativeCard:React.FC<RepCardProps> = ({repBoundary, hovered, select
             }
 
             {/*Expand/Collapse arrow button*/}
-            <Button variant="text" style={{padding:10, backgroundColor:"transparent"}} onClick={()=>{setExpanded(!expanded)}}>
+            <Button variant="text" style={{padding:"0px 10px", backgroundColor:"transparent"}} onClick={()=>{setExpanded(!expanded)}}>
                 <ButtonIcon style={{color:theme.palette.primary.main, fontSize:45, transform: expanded ? "rotate(180deg)" : ""}} icon={faChevronDown}/>
             </Button>
         </CardContent>

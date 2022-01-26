@@ -10,9 +10,13 @@ const StandardInput:React.FC<StandardTextFieldProps> =  (props) => {
   return (
     <TextField
         className={classes.stdInput}
-        InputLabelProps={{ shrink: true, className:classes.stdInputLabel }} 
         {...props}
         variant="standard"
+        InputLabelProps={{
+          classes: {
+            focused: classes.stdInputLabelFocused
+          }
+        }}
     />
   );
 }

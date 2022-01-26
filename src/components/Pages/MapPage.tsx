@@ -7,7 +7,7 @@ import RepresentativeCard from "../Cards/RepresentativeCard";
 import { searchRepresentatives } from "../../api/representative";
 import {  RepBoundary, useAppContext } from "../../AppContext";
 import MapAlt from "../Map/MapAlt";
-import { sideListWidth } from "../../AppValues";
+import appValues from "../../resources/AppValues";
 import useWindowDimensions from "../../customHooks/useWindowDimensions";
 import { infoEnum } from "../../CustomIntefaces/Enumerators";
 
@@ -69,7 +69,7 @@ const MapPage = () => {
             <AddressBar onPlaceChanged={onPlaceChanged} onTextChange={onTextChange} />
           </div>
           {/*Col 2*/}
-          <div style={{width:sideListWidth}}>
+          <div style={{width:appValues.sideListWidth}}>
 
           </div>
         </div>
@@ -81,7 +81,7 @@ const MapPage = () => {
           </div>
           {/*Row 2*/}        
           {repBoundaries.length > 0 &&
-            <div style={{width:sideListWidth, paddingLeft:20, scrollBehavior: "smooth", height:height-offsetY, overflowY:"auto"}} ref={ref}>
+            <div style={{width:appValues.sideListWidth, paddingLeft:20, scrollBehavior: "smooth", height:height-offsetY, overflowY:"auto"}} ref={ref}>
                 <div style={{display:"flex",justifyContent:"center"}}>
                   <SubHeader>REPRESENTATIVES</SubHeader>
                 </div>

@@ -6,6 +6,11 @@ import { ReactComponent as LogoSvg } from '../../resources/img/logo.svg';
 import useStyles from './styles';
 import useMediaQuery from "@material-ui/core/useMediaQuery";
 import { useNavigate, useLocation } from 'react-router-dom';
+import { useAppContext } from '../../AppContext';
+import appValues from '../../resources/AppValues';
+import CustomIconButton from '../Buttons/CustomIconButton';
+import ButtonIcon from '../Buttons/ButtonIcon';
+import { faTimes } from '@fortawesome/free-solid-svg-icons';
 
 //Main Menu Items
 const menuItems = [
@@ -23,6 +28,11 @@ const menuItems = [
         menuTitle: "Manage Data",
         pageURL: "/manageData",
         id:"manageData"
+    },
+    {
+        menuTitle: "Contact Us",
+        pageURL: "/contactUs",
+        id:"contactUs"
     }
 ];
 
@@ -42,13 +52,13 @@ const authItems = [
 
 const allItems = menuItems.concat(authItems);
 
-
-export default function NavBar() {
+const NavBar = () => {
     let navigate = useNavigate();
     let location = useLocation();
     const classes = useStyles();
     const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
+    const { alert } = useAppContext();
 
     //menu button
     const [anchorEl, setAnchorEl] = useState<Element|null>(null);
@@ -166,6 +176,18 @@ export default function NavBar() {
                 )}
                 </Toolbar> 
             </AppBar>
+            {alert.open ? 
+                <div style={{backgroundColor:theme.palette.primary.dark, color:theme.palette.primary.contrastText, display:"flex", justifyContent:"space-between", paddingLeft:"30%", paddingRight:appValues.pageMargin}}>
+                    <div>{alert.msg}</div>
+                    <CustomIconButton>
+                        <ButtonIcon icon={faTimes}/>
+                    </CustomIconButton> 
+                </div>
+                :
+                <></>
+            }
         </div>
     );
 }
+
+export default NavBar;

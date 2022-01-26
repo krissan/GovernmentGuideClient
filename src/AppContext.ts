@@ -1,4 +1,6 @@
 import React, { useContext } from "react";
+import { AlertType, Nullable } from "./CustomIntefaces/AppTypes";
+import { platformStatus } from "./CustomIntefaces/Enumerators";
 
 export interface Rep {
     id:number,
@@ -45,7 +47,7 @@ export interface RepBoundary{
     platforms?:Array<Platform>,
     reportCards?:Array<ReportCard>,
     endorsements?:Array<Endorsement>,
-    biography?:Biography
+    biography?:Nullable<Biography>
 }
 
 export interface RepBiography {
@@ -59,7 +61,7 @@ export interface RepPlatform {
     name:string,
     platformName:string,
     description:string,
-    status:string,
+    status:platformStatus,
     category:string
 }
 
@@ -105,7 +107,7 @@ export interface Platform {
     partyId:number|null,
     orgId:number,
     name:string,
-    status:string,
+    status:platformStatus,
     description:string,
     createDate:Date | null,
     category:string
@@ -155,17 +157,21 @@ export interface AppContextInterface {
     setSelectedListKey: (n: Number | null) => void,
     hoveredListKey: Number | null,
     setHoveredListKey: (n: Number | null) => void,
+    alert: AlertType,
+    setAlert: (a:AlertType) => void
 }
 
 export const AppContext = React.createContext<AppContextInterface>({
-    repBoundaries: [], // set a default value
-    setRepBoundaries: () => {},
-    userAddr: {lat:43.74002711761832, lng:-79.23987572757004},
-    setUserAddr: () => {},
-    selectedListKey: null,
-    setSelectedListKey: () => {},
-    hoveredListKey:null,
-    setHoveredListKey:()=>{}
+        repBoundaries: [], // set a default value
+        setRepBoundaries: () => {},
+        userAddr: {lat:43.74002711761832, lng:-79.23987572757004},
+        setUserAddr: () => {},
+        selectedListKey: null,
+        setSelectedListKey: () => {},
+        hoveredListKey:null,
+        setHoveredListKey:()=>{},
+        alert: {msg:"",open:false},
+        setAlert: ()=>{}
     });
 
 export const useAppContext = () => useContext(AppContext);

@@ -34,9 +34,10 @@ export default makeStyles((theme) => ({
     justifyContent:"center"
   },
   gradeLetter:{
-    color:theme.palette.secondary.main,
+    color:theme.palette.primary.dark,
     padding:"0px 10px 0px 5px",
-    fontWeight:"bolder"
+    fontWeight:"bold",
+    fontSize:18
   },
   gradeIcon:{
     color:theme.palette.primary.dark

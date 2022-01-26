@@ -7,7 +7,9 @@ import RepBoundaryPoly from "./RepBoundaryPoly";
 import { Dimension } from "../../CustomIntefaces/MapProps";
 import useWindowDimensions from "../../customHooks/useWindowDimensions";
 import { RepBoundary, useAppContext } from "../../AppContext";
-import { pageMargin, sideListWidth } from "../../AppValues";
+import appValues from "../../resources/AppValues";
+import CustomMarker from "./CustomMarker";
+import { mapStyle } from "../../resources/mapStyle";
 
 interface MapProps {
 
@@ -17,7 +19,7 @@ interface MapProps {
 
 const MapAlt:React.FC<MapProps> = ({boundaryToggled, setBoundaryToggled}) => {
   //App Context
-  const { repBoundaries, userAddr, selectedListKey, setSelectedListKey, setHoveredListKey } = useAppContext();
+  const { repBoundaries, userAddr} = useAppContext();
 
   //height and width of map
   const [mapDimension, setMapDimension] = useState<Dimension>({width:300, height:300});
@@ -33,7 +35,7 @@ const MapAlt:React.FC<MapProps> = ({boundaryToggled, setBoundaryToggled}) => {
 
   //if window dimension changes of representative changes, update map
   useEffect(() => {
-    setMapDimension({width:repBoundaries.length > 0 ? width-offsetX-sideListWidth:width-offsetX-pageMargin, height:(height-offsetY)});
+    setMapDimension({width:repBoundaries.length > 0 ? width-offsetX-appValues.sideListWidth:width-offsetX-appValues.pageMargin, height:(height-offsetY)});
   }, [height,width, repBoundaries, offsetX, offsetY]);
 
   //set shape when boundaryToggle changed
@@ -60,37 +62,26 @@ const MapAlt:React.FC<MapProps> = ({boundaryToggled, setBoundaryToggled}) => {
           center={userAddr}
           mapContainerStyle={{width: mapDimension.width, height:mapDimension.height}}
           mapContainerClassName="App-map"
+          options={{styles:mapStyle}}
           zoom={12}
         >
           {boundaryToggled &&
           <RepBoundaryPoly
-                  key={boundaryToggled.rep.id}
-                  polyKey={boundaryToggled.rep.id}
-                 /* onMouseOver={()=>{setHoveredListKey(boundaryToggled.rep.id);console.log("hovered"+boundaryToggled.boundary.boundaryName+boundaryToggled.rep.id);}}
-                  onMouseOut={()=>{setHoveredListKey(null);}}
-                  onMouseDown={()=>{setSelectedListKey(boundaryToggled.rep.id === selectedListKey ? null : boundaryToggled.rep.id);console.log("selected"+boundaryToggled.boundary.boundaryName);}}*/
-                  path={shape}
-                />
+            polyId={boundaryToggled.rep.id}
+            /* onMouseOver={()=>{setHoveredListKey(boundaryToggled.rep.id);console.log("hovered"+boundaryToggled.boundary.boundaryName+boundaryToggled.rep.id);}}
+            onMouseOut={()=>{setHoveredListKey(null);}}
+            onMouseDown={()=>{setSelectedListKey(boundaryToggled.rep.id === selectedListKey ? null : boundaryToggled.rep.id);console.log("selected"+boundaryToggled.boundary.boundaryName);}}*/
+            path={shape}
+          />
           }
           {
             //All boundary markers 
             repBoundaries.filter((r)=>{return r.boundary}).map((b:RepBoundary)=>{ 
-              return <Marker key={b.boundary.id} onLoad={marker => {
-                const customIcon = (opts: { fillColor: string; strokeColor: string; }) => Object.assign({
-                  path: 'M12.75 0l-2.25 2.25 2.25 2.25-5.25 6h-5.25l4.125 4.125-6.375 8.452v0.923h0.923l8.452-6.375 4.125 4.125v-5.25l6-5.25 2.25 2.25 2.25-2.25-11.25-11.25zM10.5 12.75l-1.5-1.5 5.25-5.25 1.5 1.5-5.25 5.25z',
-                  fillColor: '#34495e',
-                  fillOpacity: 1,
-                  strokeColor: '#000',
-                  strokeWeight: 1,
-                  scale: 1,
-                }, opts);
-    
-                marker.setIcon(customIcon({
-                  fillColor: 'green',
-                  strokeColor: 'white'
-                }));
-                
-              }} position={{lat: b.boundary.centerLat, lng: b.boundary.centerLng}} onClick={()=>{setBoundaryToggled(b)}}/>
+              return <CustomMarker 
+                        selected={b.boundary.id===boundaryToggled?.boundary.id}
+                        key={b.boundary.id} 
+                        position={{lat: b.boundary.centerLat, lng: b.boundary.centerLng}} 
+                        onClick={()=>{setBoundaryToggled(b)}}/>
             })
           }
           {/*Position Marker*/}

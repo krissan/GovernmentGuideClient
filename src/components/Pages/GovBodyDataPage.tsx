@@ -14,7 +14,7 @@ import StdDropButton from "../Buttons/StdDropButton";
 import useStyles from './styles';
 import { Endorsement, GovBody, RepBiography, RepEndorsement, RepPlatform, RepReportCard } from "../../AppContext";
 import { getBiographyData, getEndorsementData, getPlatformData, getReportCardData, searchGovBody, uploadBiographies, uploadEndorsements, uploadPlatforms, uploadReportCards } from "../../api/representative";
-import { processCsv } from "../../functions/fileFunctions";
+import { processCsv } from "../../functions/stdAppFunctions";
 import { Message } from "../../CustomIntefaces/AppTypes";
 import { infoEnum } from "../../CustomIntefaces/Enumerators";
 
@@ -36,6 +36,7 @@ const GovBodyDataPage = () => {
   const [selectedType, setSelectedType] = useState<infoEnum>(infoEnum.representative);
   const [govBodyList, setGovBodyList] = useState<Array<GovBody>>([]);
   const [getLoading, setGetLoading] = useState<boolean>(false);
+  const [uploadLoading, setUploadLoading] = useState<boolean>(false);
   const [getMessage, setGetMessage] = useState<Message|null>();
   const [uploadMessage, setUploadMessage] = useState<Message|null>();
 
@@ -59,6 +60,7 @@ const GovBodyDataPage = () => {
 
   const processFile = async(files:Array<File>) => { 
     try{
+      setUploadLoading(true);
       setUploadMessage(null)
       let message:Message|null = null;
 
@@ -81,7 +83,6 @@ const GovBodyDataPage = () => {
         else if (selectedEditOption?.name === "Report Card")
         {
           let repCards:Array<RepReportCard> = results as Array<RepReportCard>;
-
           message = await uploadReportCards(repCards, selectedGB, selectedType);
         }
         else if (selectedEditOption?.name === "Endorsement")
@@ -90,9 +91,9 @@ const GovBodyDataPage = () => {
 
           message = await uploadEndorsements(endorsements, selectedGB, selectedType);
         }
+        setUploadMessage(message);
       }
-
-      setUploadMessage(message);
+      setUploadLoading(false);
     }
     catch(e)
     {
@@ -102,7 +103,7 @@ const GovBodyDataPage = () => {
 
   const getData = async() => {
       setGetLoading(true);
-      setGetMessage(null)
+      setGetMessage(null);
       let message:Message|null = null;
 
       if(selectedGB)
@@ -127,6 +128,13 @@ const GovBodyDataPage = () => {
       }
 
       setGetLoading(false);
+  }
+
+  const clear = () => {
+    setGetMessage(null);
+    setUploadMessage(null);
+    setGetLoading(false);
+    setUploadLoading(false);
   }
 
   const editOptions:Array<EditOption> = [
@@ -165,7 +173,7 @@ const GovBodyDataPage = () => {
                 {
                   govBodyList.map((g)=>{
                     return <SearchItem key={g.id} mainText={g.currentName} subText1={g.address} subText2={g.type} selected={g.id===selectedGB}
-                    onClick={()=>{setSelectedGB(g.id)}}/>; 
+                    onClick={()=>{setSelectedGB(g.id);clear();}}/>; 
                   })
                 }
               </div>
@@ -178,14 +186,14 @@ const GovBodyDataPage = () => {
                 <StepHeader>2. Select Criteria</StepHeader>
                 <div style={{flexDirection:"column", display:"flex"}}>
                     {editOptions.map((o:EditOption)=>{
-                      return <SearchItem key={o.name} mainText={o.name}  selected={selectedEditOption ? o.name===selectedEditOption.name : false} onClick={()=>{setSelectedEditOption(o)}}/>
+                      return <SearchItem key={o.name} mainText={o.name}  selected={selectedEditOption ? o.name===selectedEditOption.name : false} onClick={()=>{setSelectedEditOption(o);clear();}}/>
                     })}
                 </div>
 
                 <StepHeader>3. Select Data To Edit</StepHeader>
                 <div style={{flexDirection:"column", display:"flex"}}>
                     {typeOptions.map((i:TypeOption)=>{
-                      return <SearchItem key={i.name} mainText={i.name}  selected={selectedType === i.type} onClick={()=>{setSelectedType(i.type)}}/>
+                      return <SearchItem key={i.name} mainText={i.name}  selected={selectedType === i.type} onClick={()=>{setSelectedType(i.type);clear();}}/>
                     })}
                 </div>
               </>
@@ -202,7 +210,7 @@ const GovBodyDataPage = () => {
                     <div style={{width:25, display:"flex", justifyContent:"flex-end", marginRight:"5px"}}>
                       <StepSubHeader>i.</StepSubHeader>
                     </div> 
-                    <StdButton loading={getLoading} style={{padding:"10px 20px", width:400}}><span style={{paddingRight:10}} onClick={getData}>Download Existing Data</span><ButtonIcon icon={faDownload}/></StdButton> 
+                    <StdButton message={getMessage} loading={getLoading} style={{padding:"10px 20px", width:400}}><span style={{paddingRight:10}} onClick={getData}>Download Existing Data</span><ButtonIcon icon={faDownload}/></StdButton> 
                   </div>
                   {/*ii*/}
                   <div style={{flexDirection:"row",display:"flex", paddingBottom:"10px"}}>
@@ -216,7 +224,7 @@ const GovBodyDataPage = () => {
                     <div style={{width:25, display:"flex", justifyContent:"flex-end", marginRight:"5px"}}>
                       <StepSubHeader>iii.</StepSubHeader>
                     </div>
-                    <StdDropButton style={{padding:"30px 20px", width:400}} dropFn={processFile}><span style={{paddingRight:10}}>Upload Existing Data</span><ButtonIcon icon={faUpload}/></StdDropButton> 
+                    <StdDropButton message={uploadMessage} loading={uploadLoading} style={{padding:"30px 20px", width:400}} dropFn={processFile}><span style={{paddingRight:10}}>Upload Existing Data</span><ButtonIcon icon={faUpload}/></StdDropButton> 
                   </div>
                 </div>
               </div>

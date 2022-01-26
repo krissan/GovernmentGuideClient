@@ -1,7 +1,7 @@
 import axios from 'axios';
-import { Boundary, GovBody, Rep, RepBiography, RepBoundary, RepEndorsement, RepPlatform, RepReportCard } from '../AppContext';
+import { Biography, Boundary, Endorsement, GovBody, Platform, Rep, RepBiography, RepBoundary, RepEndorsement, ReportCard, RepPlatform, RepReportCard } from '../AppContext';
 import { ExportToCsv } from 'export-to-csv';
-import { Message } from '../CustomIntefaces/AppTypes';
+import { Message, Nullable } from '../CustomIntefaces/AppTypes';
 import { infoEnum, messageType } from '../CustomIntefaces/Enumerators';
 
 const convertTitle = (s:string) => {
@@ -106,15 +106,13 @@ export async function searchGovBody(searchTerm:string) {
 
 //Get Biography Data of representatives of Government Body
 export async function getBiographyData(govBodyId:Number, type:infoEnum):Promise<Message> { 
-  let message:Message;
+  let message:Message = {type:messageType.success, msg: "" };
 
   var repBios:Array<RepBiography> = [];
 
   try {
     let responseData:any = await axios.get('http://localhost:8080//api/v1/biography/govBody/'+type+'?govBodyId='+govBodyId)
       .then(response => {
-        console.log("------!_-");
-        console.log(response);
         return response
       }).catch(error => console.log(error));
 
@@ -146,20 +144,17 @@ export async function getBiographyData(govBodyId:Number, type:infoEnum):Promise<
   catch(e)
   {
     message = {type:messageType.error, msg: "Error Grabbing Biographies For Government Body"}
-    return message
   }
-
-  message = {type:messageType.success, msg: "" }
 
   return message;
 }
 
 //process biographies
 export async function uploadBiographies(repBios:Array<RepBiography>, govBodyId:Number, type:infoEnum):Promise<Message> { 
-  let message:Message;
+  let message:Message = {type:messageType.success, msg: "" };
 
   try{
-    const requestParam = {govBodyId: govBodyId, repBios:repBios.filter((x)=>{if(x.id == null){return false} return true})};
+    const requestParam = {govBodyId: govBodyId, bios:repBios.filter((x)=>{if(x.id == null){return false} return true})};
 
     console.log(requestParam);
 
@@ -175,17 +170,14 @@ export async function uploadBiographies(repBios:Array<RepBiography>, govBodyId:N
   catch(e)
   {
     message = {type:messageType.error, msg: "Error Uploading Biographies"}
-    return message
   }
-
-  message = {type:messageType.success, msg: "" }
 
   return message;
 }
 
 //Get platform data of representatives of Government Body
 export async function getPlatformData(govBodyId:Number, type:infoEnum):Promise<Message> { 
-  let message:Message;
+  let message:Message = {type:messageType.success, msg: "" };
 
 
   try {
@@ -201,7 +193,6 @@ export async function getPlatformData(govBodyId:Number, type:infoEnum):Promise<M
       repPlats = responseData?.data;
     }
 
-
     const options = { 
       fieldSeparator: ',',
       quoteStrings: '"',
@@ -213,6 +204,7 @@ export async function getPlatformData(govBodyId:Number, type:infoEnum):Promise<M
       // headers: ['Column 1', 'Column 2', etc...] <-- Won't work with useKeysAsHeaders present!
     };
     const csvExporter = new ExportToCsv(options);
+
     if(repPlats && repPlats.length > 0)
     {
       csvExporter.generateCsv(repPlats);
@@ -225,45 +217,38 @@ export async function getPlatformData(govBodyId:Number, type:infoEnum):Promise<M
   catch(e)
   {
     message = {type:messageType.error, msg: "Error Grabbing Platforms For Government Body"}
-    return message
   }
-
-  message = {type:messageType.success, msg: "" }
 
   return message;
 }
 
 //process platforms
 export async function uploadPlatforms(repPlats:Array<RepPlatform>, govBodyId:Number, type:infoEnum):Promise<Message> { 
-  let message:Message;
+  let message:Message = {type:messageType.success, msg: "" };
 
   try{
-    const requestParam = {govBodyId: govBodyId, repBios:repPlats.filter((x)=>{if(x.id == null){return false} return true})};
-
+    const requestParam = {govBodyId: govBodyId, orgId:null, platforms:repPlats.filter((x)=>{if(x.id == null){return false} return true})};
+    console.log(requestParam);
     let x = await axios.request({
         method: 'post',
-        url: 'http://localhost:8080/api/v1/biography/govBody/'+type,
+        url: 'http://localhost:8080/api/v1/platform/govbody/'+type,
         data: requestParam,
         headers: {
           'Content-Type':'application/json'
         },
     });
-    console.log(x);
   }
   catch(e)
   {
     message = {type:messageType.error, msg: "Error Uploading Platforms"}
-    return message
   }
-
-  message = {type:messageType.success, msg: "" }
 
   return message;
 }
 
 //get report card Data of representatives of Government Body
 export async function getReportCardData(govBodyId:Number, type:infoEnum):Promise<Message> { 
-  let message:Message;
+  let message:Message = {type:messageType.success, msg: "" };
 
   try {
     var repReportCards:Array<RepPlatform> = [];
@@ -302,49 +287,40 @@ export async function getReportCardData(govBodyId:Number, type:infoEnum):Promise
   catch(e)
   {
     message = {type:messageType.error, msg: "Error Grabbing Report Cards For Government Body"}
-    return message
   }
-
-  message = {type:messageType.success, msg: "" }
 
   return message;
 }
 
 //process report cards
 export async function uploadReportCards(repReportCards:Array<RepReportCard>, govBodyId:Number, type:infoEnum):Promise<Message> { 
-  let message:Message;
+  let message:Message = {type:messageType.success, msg: "" };
 
   try{
-    const requestParam = {govBodyId: govBodyId, repReportCards:repReportCards.filter((x)=>{if(x.id == null){return false} return true})};
-
-    console.log(requestParam);
+    const requestParam = {govBodyId: govBodyId, orgId: null, reportCards:repReportCards.filter((x)=>{if(x.id == null){return false} return true})};
 
     let x = await axios.request({
         method: 'post',
-        url: 'http://localhost:8080/api/v1/reportcard/govBody/'+type,
+        url: 'http://localhost:8080/api/v1/reportcard/govbody/'+type,
         data: requestParam,
         headers: {
           'Content-Type':'application/json'
         },
     });
-    console.log(x);
   }
   catch(e)
   {
     message = {type:messageType.error, msg: "Error Uploading Report Cards"}
-    return message
   }
-
-  message = {type:messageType.success, msg: "" }
 
   return message;
 }
 
 //get report card Data of representatives of Government Body
 export async function getEndorsementData(govBodyId:Number, type:infoEnum):Promise<Message> { 
-  let message:Message;
+  let message:Message = {type:messageType.success, msg: "" };
 
-  var repReportCards:Array<RepPlatform> = [];
+  var repReportCards:Array<RepEndorsement> = [];
 
   try {
     let responseData:any = await axios.get('http://localhost:8080/api/v1/endorsement/govbody/'+type+'?govBodyId='+govBodyId)
@@ -381,26 +357,23 @@ export async function getEndorsementData(govBodyId:Number, type:infoEnum):Promis
   catch(e)
   {
     message = {type:messageType.error, msg: "Error Grabbing Endorsements For Government Body"}
-    return message
   }
-
-  message = {type:messageType.success, msg: "" }
 
   return message;
 }
 
 //process report cards
 export async function uploadEndorsements(repEndorsements:Array<RepEndorsement>, govBodyId:Number, type:infoEnum):Promise<Message> { 
-  let message:Message;
+  let message:Message= {type:messageType.success, msg: "" };
   
   try{
-    const requestParam = {govBodyId: govBodyId, repEndorsements:repEndorsements.filter((x)=>{if(x.id == null){return false} return true})};
+    const requestParam = {govBodyId: govBodyId, orgId:null, endorsements:repEndorsements.filter((x)=>{if(x.id == null){return false} return true})};
 
     console.log(requestParam);
 
     await axios.request({
         method: 'post',
-        url: 'http://localhost:8080/api/v1/endorsement/govBody/'+type,
+        url: 'http://localhost:8080/api/v1/endorsement/govbody/'+type,
         data: requestParam,
         headers: {
           'Content-Type':'application/json'
@@ -410,10 +383,103 @@ export async function uploadEndorsements(repEndorsements:Array<RepEndorsement>, 
   catch(e)
   {
     message = {type:messageType.error, msg: "Error Uploading Endorsements"}
-    return message
   }
 
-  message = {type:messageType.success, msg: "" }
-
   return message;
+}
+
+//Get Biography Data of representative
+export async function getRepBiography(repId:Number):Promise<Nullable<Biography>> { 
+  var bio:Nullable<Biography> = null;
+
+  try {
+    let responseData:any = await axios.get('http://localhost:8080/api/v1/biography?repId='+repId)
+      .then(response => {
+        console.log(response);
+        return response
+      }).catch(error => console.log(error));
+
+    if(responseData?.data !== null)
+    {
+      bio = responseData?.data;
+    }
+  }
+  catch(e)
+  {
+    alert({type:messageType.error, msg: "Error Grabbing Biography For Representative"});
+  }
+
+  return bio;
+}
+
+//Get Biography Data of representative
+export async function getRepPlatforms(repId:Number):Promise<Array<Platform>> { 
+  var plats:Array<Platform> = [];
+
+  try {
+    let responseData:any = await axios.get('http://localhost:8080/api/v1/platform?repId='+repId)
+      .then(response => {
+        return response
+      }).catch(error => console.log(error));
+
+    if(responseData?.data !== null && responseData?.data.length > 0)
+    {
+      plats = responseData?.data;
+      console.log(plats);
+    }
+  }
+  catch(e)
+  {
+    alert({type:messageType.error, msg: "Error Grabbing Platforms for Representative"});
+  }
+
+  return plats;
+}
+
+//Get Biography Data of representative
+export async function getRepReportCards(repId:Number):Promise<Array<ReportCard>> { 
+  var repCards:Array<ReportCard> = [];
+
+  try {
+    let responseData:any = await axios.get('http://localhost:8080/api/v1/reportcard?repId='+repId)
+      .then(response => {
+        console.log(response);
+        return response
+      }).catch(error => console.log(error));
+
+    if(responseData?.data !== null && responseData?.data.length > 0)
+    {
+      repCards = responseData?.data;
+    }
+  }
+  catch(e)
+  {
+    alert({type:messageType.error, msg: "Error Grabbing Report Card for Representative"});
+  }
+
+  return repCards;
+}
+
+//Get Biography Data of representative
+export async function getRepEndorsements(repId:Number):Promise<Array<Endorsement>> { 
+  var endos:Array<Endorsement> = [];
+
+  try {
+    let responseData:any = await axios.get('http://localhost:8080/api/v1/endorsement?repId='+repId)
+      .then(response => {
+        console.log(response);
+        return response
+      }).catch(error => console.log(error));
+
+    if(responseData?.data !== null && responseData?.data.length > 0)
+    {
+      endos = responseData?.data;
+    }
+  }
+  catch(e)
+  {
+    alert({type:messageType.error, msg: "Error Grabbing Endorsements for Representative"});
+  }
+
+  return endos;
 }

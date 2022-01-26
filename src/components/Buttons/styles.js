@@ -75,5 +75,16 @@ export default makeStyles((theme) => ({
   },
   dropHighLighted:{
     backgroundColor: theme.palette.primary.dark
+  },
+  alert:{
+    borderRadius:0,
+    marginTop:10,
+    backgroundColor:theme.palette.error.main,
+    fontSize:12,
+    fontWeight:"bold",
+    padding:"3px 10px",
+    '&:hover':{
+        backgroundColor:theme.palette.error.dark
+    }
   }
 }));

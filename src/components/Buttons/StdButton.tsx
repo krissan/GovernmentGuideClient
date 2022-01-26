@@ -5,6 +5,7 @@ import ScaleLoader from "react-spinners/ClipLoader";
 import useStyles from './styles';
 import { Message } from "../../CustomIntefaces/AppTypes";
 import { messageType } from "../../CustomIntefaces/Enumerators";
+import { Color } from "@mui/material";
 
 export interface StdButtonProps extends ButtonProps {
   onHoverColor?:string,
@@ -17,27 +18,28 @@ const StdButton:React.FC<StdButtonProps> = ({onHoverColor, classes, loading=fals
   const singleClass = useStyles();
   const theme = useTheme();
 
-  const displayMessage = () => {
-    console.log(message);
+  const getColor = ():string => {
     if(message)
     {
       if(message.type === messageType.success)
       {
-        return <div style={{color:"lightGreen"}}>{message.msg}</div>
+        return theme.palette.warning.main;
       }
       else if(message.type === messageType.error)
       {
-        return <div style={{color:"darkRed"}}>{message.msg}</div>
+        return theme.palette.error.main;
       }
       else
       {
-        return <div style={{color:"darkYellow"}}>{message.msg}</div>
+        return theme.palette.warning.dark;
       }
     }
+
+    return theme.palette.warning.dark;
   }
 
   return (
-    <>
+    <div style={{display:"flex", flexDirection:"column"}}>
       <Button className={singleClass.StdButton} classes={classes ? classes : {root:singleClass.StdButtonNS}} {...props}>
         {loading ?
           <ScaleLoader color={theme.palette.primary.contrastText} />
@@ -47,8 +49,10 @@ const StdButton:React.FC<StdButtonProps> = ({onHoverColor, classes, loading=fals
           </>
         }
       </Button>
-      {displayMessage()}
-    </>
+      {(message && message.msg !== '') &&
+        <div style={{padding:"2px 5px", color:theme.palette.primary.contrastText, fontWeight:"500", backgroundColor:getColor()}}>{message.msg}</div>
+      }
+    </div>
   );
 }
 

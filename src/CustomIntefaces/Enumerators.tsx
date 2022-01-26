@@ -1,4 +1,5 @@
 import { faLeaf, IconDefinition } from "@fortawesome/free-solid-svg-icons";
+import { palette } from './Palette';
 
 export interface SymbolType {
     color:string,
@@ -24,4 +25,28 @@ export enum messageType {
 export enum infoEnum {
     representative = "representative",
     party = "party"
+}
+
+export const whoEnum = [
+    "Individual",
+    "Non-Profit",
+    "Union",
+    "Media",
+    "Government",
+    "Other"
+]
+
+export const reasonEnum = [
+    "Question",
+    "Concern",
+    "Dispute Data",
+    "Collaboration",
+    "Other"
+]
+
+export enum platformStatus {
+    COMPLETED,
+    IN_PROGRESS,
+    DROPPED,
+    NOT_STARTED
 }
