@@ -27,10 +27,12 @@ export default makeStyles((theme) => ({
         paddingRight:5
     },
     miniSubHeader:{
-        color:theme.palette.secondary.main, 
         fontWeight:"bold", 
         fontSize:15,
         paddingRight:5
+    },
+    stdGray:{
+        color:theme.palette.secondary.main
     },
     stdText:{
         fontSize:15,

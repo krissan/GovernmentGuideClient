@@ -1,19 +1,20 @@
 import { useTheme } from "@material-ui/core";
 import React, { useEffect, useState } from "react";
 import { ScaleLoader } from "react-spinners";
-import { getRepBiography } from "../../api/representative";
+import { getRepBiography } from "../../../api/representative";
 
-import { Biography, RepBoundary, useAppContext,  } from "../../AppContext";
-import { Nullable } from "../../CustomIntefaces/AppTypes";
-import MiniSubHeader from "../Text/MiniSubHeader";
-import StdText from "../Text/StdText";
+import MiniSubHeader from "../../Text/MiniSubHeader";
+import StdText from "../../Text/StdText";
+
+import { Biography, RepBoundary, useAppContext,  } from "../../../AppContext";
+import { Nullable } from "../../../CustomIntefaces/AppTypes";
 
 interface BiographyProps {
     repBoundary:RepBoundary,
 }
 
 //Representative Biography
-const BiographyView:React.FC<BiographyProps> = ({repBoundary}) => {
+const BiographyListView:React.FC<BiographyProps> = ({repBoundary}) => {
     const { repBoundaries, setRepBoundaries } = useAppContext();
     const theme = useTheme();
     const [tabLoading, setTabLoading] = useState<boolean>(false);
@@ -28,11 +29,8 @@ const BiographyView:React.FC<BiographyProps> = ({repBoundary}) => {
                 const index = repBoundaries.indexOf(repBoundary);
                 let newRepBoundary = repBoundary;
                 const bio:Nullable<Biography> =  await getRepBiography(repBoundary.rep.id);
-
                 newRepBoundary.biography =  bio;
 
-                if(index)
-                {}
                 const newRepBoundaries = Object.assign([...repBoundaries], {
                     [index]: newRepBoundary
                 });
@@ -68,4 +66,4 @@ const BiographyView:React.FC<BiographyProps> = ({repBoundary}) => {
   );
 }
 
-export default BiographyView;
+export default BiographyListView;

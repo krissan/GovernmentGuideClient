@@ -1,22 +1,22 @@
 import React, { useEffect, useState } from "react";
-
-import Symbol from "../Misc/Symbol";
-import MiniHeader from "../Text/MiniHeader";
-import MiniSubHeader from "../Text/MiniSubHeader";
-
-import { Endorsement, RepBoundary, useAppContext,  } from "../../AppContext";
-import { SymbolEnum } from "../../CustomIntefaces/Enumerators";
-import StdText from "../Text/StdText";
-import { useTheme } from "@material-ui/core";
-import { getRepEndorsements } from "../../api/representative";
 import { ScaleLoader } from "react-spinners";
+import { useTheme } from "@material-ui/core";
+
+import Symbol from "../../Misc/Symbol";
+import MiniHeader from "../../Text/MiniHeader";
+import EndorsementItem from "./EndorsementItem";
+
+import { RepBoundary, Endorsement, useAppContext,  } from "../../../AppContext";
+import { getRepEndorsements } from "../../../api/representative";
+import { structCategoryList } from "../../../functions/stdAppFunctions";
+import { SymbolEnum } from "../../../CustomIntefaces/Enumerators";
 
 interface EndorsementsProps {
     repBoundary:RepBoundary,
 }
 
 //Representative Card
-const EndorsementsView:React.FC<EndorsementsProps> = ({repBoundary}) => {
+const EndorsementsListView:React.FC<EndorsementsProps> = ({repBoundary}) => {
     const [endorsements, setEndorsements] = useState<Array<Array<Endorsement>>>([]);
     const { repBoundaries, setRepBoundaries } = useAppContext();
     const theme = useTheme();
@@ -32,7 +32,7 @@ const EndorsementsView:React.FC<EndorsementsProps> = ({repBoundary}) => {
                 let newRepBoundary = repBoundary;
                 const endos:Array<Endorsement> =  await getRepEndorsements(repBoundary.rep.id);
                 newRepBoundary.endorsements = endos;
-                console.log(endos);
+
                 const newRepBoundaries = Object.assign([...repBoundaries], {
                     [index]: newRepBoundary
                 });
@@ -47,34 +47,16 @@ const EndorsementsView:React.FC<EndorsementsProps> = ({repBoundary}) => {
 
     //Create list of a list of report cards grouped by category
     useEffect(() => {
-        var endorsements = repBoundary.endorsements;
+        if(repBoundary.endorsements){
+            var endorsements = repBoundary.endorsements;
+            var structRepCardList:Array<Array<Endorsement>> = structCategoryList(endorsements) as Array<Array<Endorsement>>;
 
-        var structEndoList:Array<Array<Endorsement>> = [];
-        //loop through endorsements and if current item has title already in structEndoList add it to specific group
-        if(endorsements && endorsements.length>0)
+            setEndorsements(structRepCardList);
+        }
+        else
         {
-            endorsements?.forEach((endo)=>{
-                    let exists:Boolean = false;
-                    //check if endo title already exists in struct list and break out of loop if it does
-                    for(let i = 0; i < structEndoList.length; i++)
-                    {
-                        console.log(structEndoList[i]);
-                        if(structEndoList[i][0] && endo.category === structEndoList[i][0]?.category){
-                            
-                            structEndoList[i].push(endo);
-                            exists = true;
-                            break;
-                        }
-                    }
-
-                    if(exists === false)
-                    {
-                        structEndoList.push([endo]);
-                    }
-                });
-
-                setEndorsements(structEndoList);
-            }
+            setEndorsements([]);
+        }
        }, [repBoundary.endorsements])
 
 
@@ -95,10 +77,7 @@ const EndorsementsView:React.FC<EndorsementsProps> = ({repBoundary}) => {
                             <MiniHeader>{pl[0].category.toUpperCase()}</MiniHeader>
                         </div>
                         {pl?.map((p)=>{
-                            return <div key={p.orgId}>
-                                <MiniSubHeader>{p.orgId}</MiniSubHeader>
-                                <StdText>{p.description}</StdText>
-                            </div>
+                            return <EndorsementItem endo={p} />
                         })}
                     </div>);
                 }
@@ -112,4 +91,4 @@ const EndorsementsView:React.FC<EndorsementsProps> = ({repBoundary}) => {
   );
 }
 
-export default EndorsementsView;
+export default EndorsementsListView;

@@ -1,24 +1,26 @@
 import React, { useEffect, useState } from "react";
-
-import Symbol from "../Misc/Symbol";
-import MiniHeader from "../Text/MiniHeader";
-import MiniSubHeader from "../Text/MiniSubHeader";
-
-import { Platform, RepBoundary, useAppContext,  } from "../../AppContext";
-import { SymbolEnum } from "../../CustomIntefaces/Enumerators";
-import StdText from "../Text/StdText";
 import { useTheme } from "@material-ui/core";
-import { getRepPlatforms } from "../../api/representative";
+
+import Symbol from "../../Misc/Symbol";
+import MiniHeader from "../../Text/MiniHeader";
+import MiniSubHeader from "../../Text/MiniSubHeader";
+import Status from "../../Misc/Status";
+import StdText from "../../Text/StdText";
+
+import { Platform, RepBoundary, useAppContext,  } from "../../../AppContext";
+import { SymbolEnum } from "../../../CustomIntefaces/Enumerators";
+import { getRepPlatforms } from "../../../api/representative";
 import { ScaleLoader } from "react-spinners";
-import Status from "../Misc/Status";
+import { structCategoryList } from "../../../functions/stdAppFunctions";
+import PlatformItem from "./PlatformItem";
 
 interface PlatformsProps {
     repBoundary:RepBoundary,
 }
 
 //Representative Platforms
-const PlatformsView:React.FC<PlatformsProps> = ({repBoundary}) => {
-    const [platforms, setPlatforms] = useState<Array<Array<Platform|undefined>>>([]);
+const PlatformsListView:React.FC<PlatformsProps> = ({repBoundary}) => {
+    const [platforms, setPlatforms] = useState<Array<Array<Platform>>>([]);
     const { repBoundaries, setRepBoundaries } = useAppContext();
     const theme = useTheme();
     const [tabLoading, setTabLoading] = useState<boolean>(false);
@@ -48,33 +50,17 @@ const PlatformsView:React.FC<PlatformsProps> = ({repBoundary}) => {
 
     //Create list of a list of platforms grouped by category
     useEffect(() => {
-        var platforms = repBoundary.platforms;
+        if(repBoundary.platforms){
+            var platforms = repBoundary.platforms;
+            var structRepCardList:Array<Array<Platform>> = structCategoryList(platforms) as Array<Array<Platform>>;
 
-        var structPlatList:Array<Array<Platform|undefined>> = [];
-        //loop through platforms and if current item has category already in structPlatList add it to specific group
-        if(platforms && platforms.length>0)
+            setPlatforms(structRepCardList);
+        }
+        else
         {
-            platforms?.forEach((plat)=>{
-                let exists:Boolean = false;
-                //check if plat category already exists in struct list and break out of loop if it does
-                for(let i = 0; i < structPlatList.length; i++)
-                {
-                    if(structPlatList[i][0] && plat.category === structPlatList[i][0]?.category){
-                        
-                        structPlatList[i].push(plat);
-                        exists = true;
-                        break;
-                    }
-                }
-
-                if(exists === false)
-                {
-                    structPlatList.push([plat]);
-                }
-            });
-
-            setPlatforms(structPlatList);
-        }    }, [repBoundary.platforms])
+            setPlatforms([]);
+        }
+    }, [repBoundary.platforms])
 
   return (
     <>
@@ -93,14 +79,7 @@ const PlatformsView:React.FC<PlatformsProps> = ({repBoundary}) => {
                             <MiniHeader>{pl[0].category.toUpperCase()}</MiniHeader>
                         </div>
                         {pl?.map((p)=>{
-                            return <div key={p?.name}>
-                                <div style={{display:"flex", justifyContent:"space-between", alignItems:"center"}}>
-                                    <MiniSubHeader>{p?.name}</MiniSubHeader>
-                                    {/*if status exists for platform display it*/
-                                    p?.status && <Status status={p.status}/>}
-                                </div>
-                                <StdText>{p?.description}</StdText>
-                            </div>
+                            return <PlatformItem plat={p} />
                         })}
                     </div>);
                     }
@@ -114,4 +93,4 @@ const PlatformsView:React.FC<PlatformsProps> = ({repBoundary}) => {
   );
 }
 
-export default PlatformsView;
+export default PlatformsListView;

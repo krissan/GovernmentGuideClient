@@ -2,22 +2,21 @@ import React, { useEffect, useState } from "react";
 import { ScaleLoader } from "react-spinners";
 import { useTheme } from "@material-ui/core";
 
-import Symbol from "../Misc/Symbol";
-import MiniHeader from "../Text/MiniHeader";
-import MiniSubHeader from "../Text/MiniSubHeader";
-import StdText from "../Text/StdText";
+import Symbol from "../../Misc/Symbol";
+import MiniHeader from "../../Text/MiniHeader";
+import ReportCardItem from "./ReportCardItem";
 
-import { Endorsement, RepBoundary, ReportCard, useAppContext,  } from "../../AppContext";
-import { SymbolEnum } from "../../CustomIntefaces/Enumerators";
-import { getRepReportCards } from "../../api/representative";
-import Grade from "../Misc/Grade";
+import { RepBoundary, ReportCard, useAppContext,  } from "../../../AppContext";
+import { SymbolEnum } from "../../../CustomIntefaces/Enumerators";
+import { getRepReportCards } from "../../../api/representative";
+import { structCategoryList } from "../../../functions/stdAppFunctions";
 
 interface ReportCardProps {
     repBoundary:RepBoundary,
 }
 
 //Representative Card
-const ReportCardsView:React.FC<ReportCardProps> = ({repBoundary}) => {
+const ReportCardsListView:React.FC<ReportCardProps> = ({repBoundary}) => {
     const [reportCards, setReportCards] = useState<Array<Array<ReportCard>>>([]);
     const { repBoundaries, setRepBoundaries } = useAppContext();
     const theme = useTheme();
@@ -33,12 +32,11 @@ const ReportCardsView:React.FC<ReportCardProps> = ({repBoundary}) => {
                 let newRepBoundary = repBoundary;
                 const repCards:Array<ReportCard> =  await getRepReportCards(repBoundary.rep.id);
                 newRepBoundary.reportCards = repCards;
-                console.log(repCards);
+                
                 const newRepBoundaries = Object.assign([...repBoundaries], {
                     [index]: newRepBoundary
                 });
                 setRepBoundaries(newRepBoundaries);
-
             }
 
             setTabLoading(false);
@@ -49,35 +47,17 @@ const ReportCardsView:React.FC<ReportCardProps> = ({repBoundary}) => {
 
     //Create list of a list of report cards grouped by category
     useEffect(() => {
-        var reportCards = repBoundary.reportCards;
+        if(repBoundary.reportCards){
+            var reportCards = repBoundary.reportCards;
+            var structRepCardList:Array<Array<ReportCard>> = structCategoryList(reportCards) as Array<Array<ReportCard>>;
 
-        var structRepCardList:Array<Array<ReportCard>> = [];
-        //loop through report cards and if current item has title already in structEndoList add it to specific group
-        if(reportCards && reportCards.length>0)
+            setReportCards(structRepCardList);
+        }
+        else
         {
-            reportCards?.forEach((repCard)=>{
-                    let exists:Boolean = false;
-                    //check if report cards title already exists in struct list and break out of loop if it does
-                    for(let i = 0; i < structRepCardList.length; i++)
-                    {
-                        console.log(structRepCardList[i]);
-                        if(structRepCardList[i][0] && repCard.category === structRepCardList[i][0]?.category){
-                            
-                            structRepCardList[i].push(repCard);
-                            exists = true;
-                            break;
-                        }
-                    }
-
-                    if(exists === false)
-                    {
-                        structRepCardList.push([repCard]);
-                    }
-                });
-
-                setReportCards(structRepCardList);
-            }
-       }, [repBoundary.reportCards])
+            setReportCards([]);
+        }
+    }, [repBoundary.reportCards])
 
 
   return (
@@ -97,13 +77,7 @@ const ReportCardsView:React.FC<ReportCardProps> = ({repBoundary}) => {
                             <MiniHeader>{pl[0].category.toUpperCase()}</MiniHeader>
                         </div>
                         {pl?.map((p)=>{
-                            return <div key={p.id}>
-                                <div style={{display:"flex"}}>
-                                    <MiniSubHeader>{p.name}</MiniSubHeader>
-                                    <Grade grade={p.grade} />
-                                </div>
-                                <StdText>{p.description}</StdText>
-                            </div>
+                            return <ReportCardItem rptCard={p} />
                         })}
                     </div>);
                 }
@@ -117,4 +91,4 @@ const ReportCardsView:React.FC<ReportCardProps> = ({repBoundary}) => {
   );
 }
 
-export default ReportCardsView;
+export default ReportCardsListView;

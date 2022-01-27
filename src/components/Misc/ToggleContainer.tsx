@@ -3,14 +3,15 @@ import { useState } from "react";
 import { ToggleButton, ToggleButtonGroup } from "@mui/material";
 import { RepBoundary } from "../../AppContext";
 import DisputeButton from "../Buttons/DisputeButton";
-import BiographyView from "../Cards/BiographyView";
-import PlatformsView from "../Cards/PlatformsView";
+import BiographyView from "../Representative/ListView/BiographyListView";
+import PlatformsView from "../Representative/ListView/PlatformsListView";
+import ReportCardsView from "../Representative/ListView/ReportCardsListView";
+import EndorsementsView from "../Representative/ListView/EndorsementsListView";
 
 import useStyles from './styles';
 import { MailTo } from "../../functions/stdAppFunctions";
 import { repTabEnum, repTabs, repTabType } from "../../CustomIntefaces/TabType";
-import ReportCardsView from "../Cards/ReportCardsView";
-import EndorsementsView from "../Cards/EndorsementsView";
+
 
 interface TCProps {
   repBoundary:RepBoundary,
@@ -74,7 +75,7 @@ const ToggleContainer:React.FC<TCProps> = ({repBoundary}) => {
             >
             {/*ToggleButton  value="time line">Time Line</ToggleButton>*/}
             {repTabs.map((tab)=>{
-              return <ToggleButton  value={tab}>{tab.name}</ToggleButton>
+              return <ToggleButton key={tab.id} value={tab}>{tab.name}</ToggleButton>
             })}
         </ToggleButtonGroup>
         <div style={{paddingLeft:20, height:200, display:"flex", flexDirection:"column", justifyContent:"space-between"}}>

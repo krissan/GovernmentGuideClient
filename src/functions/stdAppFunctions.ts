@@ -1,4 +1,5 @@
 import { parse } from "papaparse";
+import { Endorsement, Platform, ReportCard } from "../AppContext";
 
 //Process CSV file
 export const processCsv = async(files:Array<File>) => { 
@@ -29,6 +30,30 @@ export function MailTo(email:string, subject?:string, body?:string){
   window.location.href = `mailto:${email}${params}`;
 }
 
-export const structCategoryList = () =>  {
-  
+export const structCategoryList = (list:Array<ReportCard|Endorsement|Platform>) =>  {
+  var structList:Array<Array<ReportCard|Endorsement|Platform>> = [];
+  //loop through report cards and if current item has title already in structEndoList add it to specific group
+  if(list && list.length>0)
+  {
+    list?.forEach((item)=>{
+        let exists:Boolean = false;
+        //check if report cards title already exists in struct list and break out of loop if it does
+        for(let i = 0; i < structList.length; i++)
+        {
+            console.log(structList[i]);
+            if(structList[i][0] && item.category === structList[i][0]?.category){               
+              structList[i].push(item);
+              exists = true;
+              break;
+            }
+        }
+
+        if(exists === false)
+        {
+          structList.push([item]);
+        }
+    });
+
+    return structList;
+  }
 }

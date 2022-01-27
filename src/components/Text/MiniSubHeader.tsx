@@ -1,14 +1,14 @@
-import { Typography, TypographyProps } from "@material-ui/core";
+import { Typography, TypographyProps, useTheme } from "@material-ui/core";
 import React from "react";
 
 import useStyles from './styles';
 
 
 const MiniSubHeader:React.FC<TypographyProps> = ({children, style}) => {
-  const classes = useStyles();
+  const styles = useStyles();
 
   return (
-    <Typography style={style} className={classes.miniSubHeader}>
+    <Typography style={style} classes={{root: styles.stdGray}} className={styles.miniSubHeader}>
     {children}
     </Typography>
   );
