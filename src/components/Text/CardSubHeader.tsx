@@ -1,7 +1,7 @@
 import { Typography, TypographyProps } from "@material-ui/core";
 import React from "react";
 
-import { StdProps } from "../../CustomIntefaces/StdProps";
+import { StdProps } from "../../customIntefaces/StdProps";
 import useStyles from './styles';
 
 

@@ -1,6 +1,6 @@
 import React, { useState, useEffect, Dispatch, SetStateAction } from "react";
 import { Button, Card, CardContent, Typography, useTheme } from "@material-ui/core";
-import { faLeaf, faPhoneAlt, faChevronDown } from '@fortawesome/free-solid-svg-icons'
+import { faPhoneAlt, faChevronDown } from '@fortawesome/free-solid-svg-icons'
 import { faEnvelope } from "@fortawesome/free-regular-svg-icons"
 
 import StdButton from "../Buttons/StdButton";
@@ -20,21 +20,17 @@ import { MailTo } from "../../functions/stdAppFunctions";
 
 interface RepCardProps {
     repBoundary:RepBoundary,
-    hovered:Boolean,
-    selected:Boolean,
     boundaryToggled:RepBoundary|null, 
-    setBoundaryToggled:Dispatch<SetStateAction<RepBoundary | null>>
+    setBoundaryToggled:Dispatch<SetStateAction<RepBoundary | null>>,
 }
 
 //Representative Card
-const RepresentativeCard:React.FC<RepCardProps> = ({repBoundary, hovered, selected, boundaryToggled, setBoundaryToggled}) => {
+const RepresentativeCard:React.FC<RepCardProps> = ({repBoundary, boundaryToggled, setBoundaryToggled}) => {
     const classes = useStyles();
     const theme = useTheme();
-    const [expanded, setExpanded] = useState<Boolean>(false);
+    const [expanded, setExpanded] = useState<boolean>(false);
     const [brightness, setBrightness] = useState<number>(1);
     const [elevation, setElevation] = useState<number>(1);
-    //App Context
-    const { repBoundaries } = useAppContext();
 
     const rep:Rep = repBoundary.rep;
     const boundary:Boundary = repBoundary.boundary;
@@ -59,14 +55,9 @@ const RepresentativeCard:React.FC<RepCardProps> = ({repBoundary, hovered, select
 
 
     useEffect(()=>{
-        if(selected){
+        if(repBoundary.boundary.id===boundaryToggled?.boundary.id){
             setBrightness(0.95);
             setElevation(5);
-        }
-        else if(hovered)
-        {
-            setBrightness(0.98);
-            setElevation(3);
         }
         else
         {
@@ -74,12 +65,7 @@ const RepresentativeCard:React.FC<RepCardProps> = ({repBoundary, hovered, select
             setElevation(1);
         }
 
-    }, [hovered, selected]);
-
-
-    useEffect(()=>{
-        console.log(repBoundaries);
-    },[repBoundaries]);
+    }, [repBoundary.boundary.id, boundaryToggled?.boundary.id]);
 
   return (
     <Card style={{backgroundColor: theme.palette.primary.light, filter: "brightness("+brightness+")", marginBottom:"10px"}} elevation={elevation}>
@@ -93,7 +79,7 @@ const RepresentativeCard:React.FC<RepCardProps> = ({repBoundary, hovered, select
                 <CardSubHeader>{boundary.repTitle+" "+rep.firstName+" "+rep.lastName}</CardSubHeader>
                 <div style={{paddingLeft:10}}>
                     <div style={{paddingBottom:3}}>{boundary.boundaryName}</div>
-                    <div style={{paddingBottom:3}}>{rep.gender ? rep.gender : "Unknown"}</div>
+                    <div style={{paddingBottom:3}}>{rep.gender ? rep.gender : "Gender Not Found"}</div>
                     <div style={{paddingBottom:3}}>{rep.constituencyOffice}</div>
                 </div>
                 </div>

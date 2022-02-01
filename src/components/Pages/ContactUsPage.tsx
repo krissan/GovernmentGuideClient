@@ -8,7 +8,7 @@ import PageHeader from "../Text/PageHeader";
 import StdButton from "../Buttons/StdButton";
 
 import { useNavigate } from "react-router-dom";
-import { reasonEnum, whoEnum } from "../../CustomIntefaces/Enumerators";
+import { reasonEnum, whoEnum } from "../../customIntefaces/Enumerators";
 import StandardSelect from "../Input/StandardSelect";
 import StandardInputBox from "../Input/StandardInputBox";
 import { MailTo } from "../../functions/stdAppFunctions";

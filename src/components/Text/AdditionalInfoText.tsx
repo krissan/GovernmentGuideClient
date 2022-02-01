@@ -1,7 +1,7 @@
 import React from "react";
 import { Typography } from "@material-ui/core";
 
-import { StdProps } from "../../CustomIntefaces/StdProps";
+import { StdProps } from "../../customIntefaces/StdProps";
 import useStyles from './styles';
 
 const AdditionalInfoText:React.FC<StdProps> = ({children, style}) => {

@@ -25,8 +25,6 @@ export function MailTo(email:string, subject?:string, body?:string){
   if (subject) params += `subject=${encodeURIComponent(subject)}`;
   if (body) params += `${subject ? '&' : ''}body=${encodeURIComponent(body)}`;
   
-  console.log(params);
-
   window.location.href = `mailto:${email}${params}`;
 }
 

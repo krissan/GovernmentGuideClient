@@ -4,7 +4,7 @@ import { GoogleMap, Marker } from "@react-google-maps/api";
 import RepBoundaryPoly from "./RepBoundaryPoly";
 
 
-import { Dimension } from "../../CustomIntefaces/MapProps";
+import { Dimension } from "../../customIntefaces/MapProps";
 import useWindowDimensions from "../../customHooks/useWindowDimensions";
 import { RepBoundary, useAppContext } from "../../AppContext";
 import appValues from "../../resources/AppValues";
@@ -68,9 +68,6 @@ const MapAlt:React.FC<MapProps> = ({boundaryToggled, setBoundaryToggled}) => {
           {boundaryToggled &&
           <RepBoundaryPoly
             polyId={boundaryToggled.rep.id}
-            /* onMouseOver={()=>{setHoveredListKey(boundaryToggled.rep.id);console.log("hovered"+boundaryToggled.boundary.boundaryName+boundaryToggled.rep.id);}}
-            onMouseOut={()=>{setHoveredListKey(null);}}
-            onMouseDown={()=>{setSelectedListKey(boundaryToggled.rep.id === selectedListKey ? null : boundaryToggled.rep.id);console.log("selected"+boundaryToggled.boundary.boundaryName);}}*/
             path={shape}
           />
           }
@@ -81,7 +78,7 @@ const MapAlt:React.FC<MapProps> = ({boundaryToggled, setBoundaryToggled}) => {
                         selected={b.boundary.id===boundaryToggled?.boundary.id}
                         key={b.boundary.id} 
                         position={{lat: b.boundary.centerLat, lng: b.boundary.centerLng}} 
-                        onClick={()=>{setBoundaryToggled(b)}}/>
+                        onClick={()=>{boundaryToggled?.boundary.id === b.boundary.id ? setBoundaryToggled(null) : setBoundaryToggled(b)}}/>
             })
           }
           {/*Position Marker*/}

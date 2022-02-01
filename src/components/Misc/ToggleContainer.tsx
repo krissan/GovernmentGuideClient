@@ -10,7 +10,7 @@ import EndorsementsView from "../Representative/ListView/EndorsementsListView";
 
 import useStyles from './styles';
 import { MailTo } from "../../functions/stdAppFunctions";
-import { repTabEnum, repTabs, repTabType } from "../../CustomIntefaces/TabType";
+import { repTabEnum, repTabs, repTabType } from "../../customIntefaces/TabType";
 
 
 interface TCProps {

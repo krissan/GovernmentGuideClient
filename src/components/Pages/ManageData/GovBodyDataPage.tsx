@@ -1,25 +1,28 @@
 import { useEffect, useState } from "react";
 import { faDownload, faUpload } from "@fortawesome/free-solid-svg-icons"
 
-import PageHeader from "../Text/PageHeader";
+import PageHeader from "../../Text/PageHeader";
 import { useNavigate } from "react-router-dom";
-import ButtonIcon from "../Buttons/ButtonIcon";
-import StandardSearchField from "../Input/StandardSearchField";
-import SearchItem from "../Buttons/SearchItem";
-import StepHeader from "../Text/StepHeader";
-import StepSubHeader from "../Text/StepSubHeader";
-import StdButton from "../Buttons/StdButton";
-import StdDropButton from "../Buttons/StdDropButton";
+import ButtonIcon from "../../Buttons/ButtonIcon";
+import StandardSearchField from "../../Input/StandardSearchField";
+import SearchItem from "../../Buttons/SearchItem";
+import StepHeader from "../../Text/StepHeader";
+import StepSubHeader from "../../Text/StepSubHeader";
+import StdButton from "../../Buttons/StdButton";
+import StdDropButton from "../../Buttons/StdDropButton";
 
-import useStyles from './styles';
-import { Endorsement, GovBody, RepBiography, RepEndorsement, RepPlatform, RepReportCard } from "../../AppContext";
-import { getBiographyData, getEndorsementData, getPlatformData, getReportCardData, searchGovBody, uploadBiographies, uploadEndorsements, uploadPlatforms, uploadReportCards } from "../../api/representative";
-import { processCsv } from "../../functions/stdAppFunctions";
-import { Message } from "../../CustomIntefaces/AppTypes";
-import { infoEnum } from "../../CustomIntefaces/Enumerators";
+import useStyles from '../styles';
+import { GovBody, RepBiography, RepEndorsement, RepPlatform, RepReportCard } from "../../../AppContext";
+import { getBiographyData, getEndorsementData, getPlatformData, getReportCardData, searchGovBody, uploadBiographies, uploadEndorsements, uploadPlatforms, uploadReportCards } from "../../../api/representative";
+import { processCsv } from "../../../functions/stdAppFunctions";
+import { Message } from "../../../customIntefaces/AppTypes";
+import { infoEnum } from "../../../customIntefaces/Enumerators";
+import MiniHeader from "../../Text/MiniHeader";
+import StdText from "../../Text/StdText";
 
 interface EditOption {
   name:string,
+  instruction:string
 }
 
 interface TypeOption {
@@ -28,10 +31,8 @@ interface TypeOption {
 }
 
 const GovBodyDataPage = () => {
-  let navigate = useNavigate();
-  const classes = useStyles();
   const [searchTerm, setSearchTerm] = useState<string>("");
-  const [selectedGB, setSelectedGB] = useState<Number|null>(null);
+  const [selectedGB, setSelectedGB] = useState<number|null>(null);
   const [selectedEditOption, setSelectedEditOption] = useState<EditOption | null>(null);
   const [selectedType, setSelectedType] = useState<infoEnum>(infoEnum.representative);
   const [govBodyList, setGovBodyList] = useState<Array<GovBody>>([]);
@@ -46,7 +47,7 @@ const GovBodyDataPage = () => {
     let res:Array<GovBody> = await searchGovBody(searchTerm); 
     setSelectedGB(null);
     setSelectedEditOption(null);
-
+    console.log(res);
     if(res)
     {
       setGovBodyList(res)
@@ -138,10 +139,10 @@ const GovBodyDataPage = () => {
   }
 
   const editOptions:Array<EditOption> = [
-    {name:"Biography"}, 
-    {name:"Platform"},
-    {name:"Report Card"}, 
-    {name:"Endorsement"}
+    {name:"Biography", instruction:"Do not alter repId or representative field."}, 
+    {name:"Platform", instruction:"Do not alter repId or representative field. Category can only be from approved list (environment, monetary, industry) and Status must be (COMPLETED, IN_PROGRESS, DROPPED, NOT_STARTED). For multiple platform points duplicate rows and alter as needed."},
+    {name:"Report Card", instruction:"Do not alter repId or representative field. Category can only be from approved list (environment, monetary, industry) and Grade must be a single character. For multiple report cards duplicate rows and alter as needed."}, 
+    {name:"Endorsement", instruction:"Do not alter repId or representative field. Category can only be from approved list (environment, monetary, industry)."}
   ];
 
   const typeOptions:Array<TypeOption> = [
@@ -217,7 +218,12 @@ const GovBodyDataPage = () => {
                     <div style={{width:25, display:"flex", justifyContent:"flex-end", marginRight:"5px"}}>
                       <StepSubHeader>ii.</StepSubHeader>
                     </div> 
-                    <StepSubHeader>Make Your Changes to csv file</StepSubHeader>
+                    <div >
+                      <StepSubHeader>Make Your Changes to csv file</StepSubHeader>
+                      {selectedEditOption.instruction &&
+                        <StdText><span style={{fontWeight:"bold"}}>NOTE: </span>{selectedEditOption.instruction}</StdText>
+                      }
+                    </div>
                   </div>
                   {/*iii*/}
                   <div style={{flexDirection:"row",display:"flex"}}>

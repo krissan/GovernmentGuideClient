@@ -2,7 +2,7 @@ import React from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 import useStyles from './styles';
-import { SymbolType } from "../../CustomIntefaces/Enumerators";
+import { SymbolType } from "../../customIntefaces/Enumerators";
 
 interface SymbolProps {
   displaySymbol:SymbolType,

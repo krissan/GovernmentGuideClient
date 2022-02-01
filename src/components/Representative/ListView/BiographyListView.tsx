@@ -7,7 +7,7 @@ import MiniSubHeader from "../../Text/MiniSubHeader";
 import StdText from "../../Text/StdText";
 
 import { Biography, RepBoundary, useAppContext,  } from "../../../AppContext";
-import { Nullable } from "../../../CustomIntefaces/AppTypes";
+import { Nullable } from "../../../customIntefaces/AppTypes";
 
 interface BiographyProps {
     repBoundary:RepBoundary,

@@ -1,6 +1,6 @@
 import React, { useContext } from "react";
-import { AlertType, Nullable } from "./CustomIntefaces/AppTypes";
-import { platformStatus } from "./CustomIntefaces/Enumerators";
+import { AlertType, Nullable } from "./customIntefaces/AppTypes";
+import { platformStatus } from "./customIntefaces/Enumerators";
 
 export interface Rep {
     id:number,
@@ -17,6 +17,21 @@ export interface Rep {
     title:string
 }
  
+export interface Party {
+    id:number,
+    parentId:number,
+    govBodyId:number,
+    name:string,
+    description:string,
+    createDate:Date | null
+}
+
+export interface PartyData {
+    parentId:number,
+    name:string,
+    description:string
+}
+
 export interface GeoPoint {
     x: number,
     y: number,
@@ -92,6 +107,33 @@ export interface GovBody {
     address?:string
 }
 
+export interface Representative {
+    id:number,
+    firstName:string,
+    lastName:string,
+    title:RepTitle,
+    party:string,
+    gender:string,
+    email:string,
+    call:number,
+    constituencyOffice:string,
+    photo:string,
+    birthDate:Date | null,
+    deathDate:Date | null,
+    createDate:Date | null,
+    updateDate:Date | null
+}
+
+enum RepTitle {
+    COUNCILLOR,
+    MP,
+    MPP,
+    MAYOR,
+    PREMIER,
+    PRIME_MINISTER,
+    TRUSTEE
+}
+
 export interface Biography {
     id:number,
     repId:number|null,
@@ -152,11 +194,6 @@ export interface AppContextInterface {
     //Users Address
     userAddr: google.maps.LatLngLiteral,
     setUserAddr: (c: google.maps.LatLngLiteral) => void,
-    //Selected Representative Boundary
-    selectedListKey: Number | null,
-    setSelectedListKey: (n: Number | null) => void,
-    hoveredListKey: Number | null,
-    setHoveredListKey: (n: Number | null) => void,
     alert: AlertType,
     setAlert: (a:AlertType) => void
 }
@@ -166,10 +203,6 @@ export const AppContext = React.createContext<AppContextInterface>({
         setRepBoundaries: () => {},
         userAddr: {lat:43.74002711761832, lng:-79.23987572757004},
         setUserAddr: () => {},
-        selectedListKey: null,
-        setSelectedListKey: () => {},
-        hoveredListKey:null,
-        setHoveredListKey:()=>{},
         alert: {msg:"",open:false},
         setAlert: ()=>{}
     });

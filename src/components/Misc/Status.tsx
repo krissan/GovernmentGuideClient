@@ -1,8 +1,8 @@
 import React, {useEffect, useState} from "react";
 
-import useStyles from './styles';
-import { platformStatus } from "../../CustomIntefaces/Enumerators";
-import { palette } from "../../CustomIntefaces/Palette";
+import { platformStatus } from "../../customIntefaces/Enumerators";
+import { palette } from "../../customIntefaces/Palette";
+
 
 interface StatusProps {
   status:platformStatus
@@ -34,12 +34,8 @@ const Status:React.FC<StatusProps> = ({status}) => {
     }
   }, [status])
 
-
-
-
-
   return (
-    <div style={{backgroundColor:statusInfo.color, fontWeight:"bold", color:palette.primary.contrastText, fontSize:12, padding:5}}>{statusInfo.text}</div>
+    <div style={{ border:"2px solid", borderColor:statusInfo.color, fontWeight:"bold", color:statusInfo.color, fontSize:13, padding:"2px 5px"}}>{statusInfo.text}</div>
   );
 }
 

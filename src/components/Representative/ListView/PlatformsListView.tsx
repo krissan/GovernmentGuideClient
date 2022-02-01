@@ -3,16 +3,13 @@ import { useTheme } from "@material-ui/core";
 
 import Symbol from "../../Misc/Symbol";
 import MiniHeader from "../../Text/MiniHeader";
-import MiniSubHeader from "../../Text/MiniSubHeader";
-import Status from "../../Misc/Status";
-import StdText from "../../Text/StdText";
+import PlatformItem from "./PlatformItem";
 
 import { Platform, RepBoundary, useAppContext,  } from "../../../AppContext";
-import { SymbolEnum } from "../../../CustomIntefaces/Enumerators";
 import { getRepPlatforms } from "../../../api/representative";
 import { ScaleLoader } from "react-spinners";
 import { structCategoryList } from "../../../functions/stdAppFunctions";
-import PlatformItem from "./PlatformItem";
+import { SymbolEnum } from "../../../customIntefaces/Enumerators";
 
 interface PlatformsProps {
     repBoundary:RepBoundary,

@@ -9,7 +9,7 @@ import EndorsementItem from "./EndorsementItem";
 import { RepBoundary, Endorsement, useAppContext,  } from "../../../AppContext";
 import { getRepEndorsements } from "../../../api/representative";
 import { structCategoryList } from "../../../functions/stdAppFunctions";
-import { SymbolEnum } from "../../../CustomIntefaces/Enumerators";
+import { SymbolEnum } from "../../../customIntefaces/Enumerators";
 
 interface EndorsementsProps {
     repBoundary:RepBoundary,

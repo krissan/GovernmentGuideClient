@@ -1,11 +1,12 @@
 import axios from 'axios';
-import { Biography, Boundary, Endorsement, GovBody, Platform, Rep, RepBiography, RepBoundary, RepEndorsement, ReportCard, RepPlatform, RepReportCard } from '../AppContext';
+import { Biography, Boundary, Endorsement, GovBody, Party, PartyData, Platform, Rep, RepBiography, RepBoundary, RepEndorsement, ReportCard, RepPlatform, RepReportCard, Representative } from '../AppContext';
 import { ExportToCsv } from 'export-to-csv';
-import { Message, Nullable } from '../CustomIntefaces/AppTypes';
-import { infoEnum, messageType } from '../CustomIntefaces/Enumerators';
+import { Message, Nullable } from '../customIntefaces/AppTypes';
+import { infoEnum, messageType } from '../customIntefaces/Enumerators';
 
 const convertTitle = (s:string) => {
-  return s.charAt(0).toUpperCase() + s.slice(1).toLowerCase();
+  console.log(s);
+  return s.replaceAll("_", " ")/*charAt(0).toUpperCase() + s.slice(1).toLowerCase()*/;
 }
 
 //Grab List of Representatives by geopoint
@@ -81,8 +82,7 @@ export async function searchGovBody(searchTerm:string) {
       let data:Array<GovBody> = responseData?.data;
 
       for (let i = 0; i < data.length; i++) {
-        if(data[i].boundaryId)
-        {
+        console.log(data[i]);
           let address:string = await axios.get('http://localhost:8080/api/v1/boundary/address?boundaryId='+data[i].boundaryId)
           .then(response => {
             return response.data
@@ -90,7 +90,6 @@ export async function searchGovBody(searchTerm:string) {
 
           data[i].address = address;
           govBodies.push(data[i]);
-        }
       }
     }
   }
@@ -105,7 +104,7 @@ export async function searchGovBody(searchTerm:string) {
 
 
 //Get Biography Data of representatives of Government Body
-export async function getBiographyData(govBodyId:Number, type:infoEnum):Promise<Message> { 
+export async function getBiographyData(govBodyId:number, type:infoEnum):Promise<Message> { 
   let message:Message = {type:messageType.success, msg: "" };
 
   var repBios:Array<RepBiography> = [];
@@ -149,8 +148,8 @@ export async function getBiographyData(govBodyId:Number, type:infoEnum):Promise<
   return message;
 }
 
-//process biographies
-export async function uploadBiographies(repBios:Array<RepBiography>, govBodyId:Number, type:infoEnum):Promise<Message> { 
+//Process Biographies
+export async function uploadBiographies(repBios:Array<RepBiography>, govBodyId:number, type:infoEnum):Promise<Message> { 
   let message:Message = {type:messageType.success, msg: "" };
 
   try{
@@ -176,7 +175,7 @@ export async function uploadBiographies(repBios:Array<RepBiography>, govBodyId:N
 }
 
 //Get platform data of representatives of Government Body
-export async function getPlatformData(govBodyId:Number, type:infoEnum):Promise<Message> { 
+export async function getPlatformData(govBodyId:number, type:infoEnum):Promise<Message> { 
   let message:Message = {type:messageType.success, msg: "" };
 
 
@@ -223,7 +222,7 @@ export async function getPlatformData(govBodyId:Number, type:infoEnum):Promise<M
 }
 
 //process platforms
-export async function uploadPlatforms(repPlats:Array<RepPlatform>, govBodyId:Number, type:infoEnum):Promise<Message> { 
+export async function uploadPlatforms(repPlats:Array<RepPlatform>, govBodyId:number, type:infoEnum):Promise<Message> { 
   let message:Message = {type:messageType.success, msg: "" };
 
   try{
@@ -247,7 +246,7 @@ export async function uploadPlatforms(repPlats:Array<RepPlatform>, govBodyId:Num
 }
 
 //get report card Data of representatives of Government Body
-export async function getReportCardData(govBodyId:Number, type:infoEnum):Promise<Message> { 
+export async function getReportCardData(govBodyId:number, type:infoEnum):Promise<Message> { 
   let message:Message = {type:messageType.success, msg: "" };
 
   try {
@@ -293,7 +292,7 @@ export async function getReportCardData(govBodyId:Number, type:infoEnum):Promise
 }
 
 //process report cards
-export async function uploadReportCards(repReportCards:Array<RepReportCard>, govBodyId:Number, type:infoEnum):Promise<Message> { 
+export async function uploadReportCards(repReportCards:Array<RepReportCard>, govBodyId:number, type:infoEnum):Promise<Message> { 
   let message:Message = {type:messageType.success, msg: "" };
 
   try{
@@ -316,8 +315,8 @@ export async function uploadReportCards(repReportCards:Array<RepReportCard>, gov
   return message;
 }
 
-//get report card Data of representatives of Government Body
-export async function getEndorsementData(govBodyId:Number, type:infoEnum):Promise<Message> { 
+//get endorsement Data of representatives of Government Body
+export async function getEndorsementData(govBodyId:number, type:infoEnum):Promise<Message> { 
   let message:Message = {type:messageType.success, msg: "" };
 
   var repReportCards:Array<RepEndorsement> = [];
@@ -362,8 +361,8 @@ export async function getEndorsementData(govBodyId:Number, type:infoEnum):Promis
   return message;
 }
 
-//process report cards
-export async function uploadEndorsements(repEndorsements:Array<RepEndorsement>, govBodyId:Number, type:infoEnum):Promise<Message> { 
+//process endorsements
+export async function uploadEndorsements(repEndorsements:Array<RepEndorsement>, govBodyId:number, type:infoEnum):Promise<Message> { 
   let message:Message= {type:messageType.success, msg: "" };
   
   try{
@@ -389,7 +388,7 @@ export async function uploadEndorsements(repEndorsements:Array<RepEndorsement>, 
 }
 
 //Get Biography Data of representative
-export async function getRepBiography(repId:Number):Promise<Nullable<Biography>> { 
+export async function getRepBiography(repId:number):Promise<Nullable<Biography>> { 
   var bio:Nullable<Biography> = null;
 
   try {
@@ -412,8 +411,8 @@ export async function getRepBiography(repId:Number):Promise<Nullable<Biography>>
   return bio;
 }
 
-//Get Biography Data of representative
-export async function getRepPlatforms(repId:Number):Promise<Array<Platform>> { 
+//Get Platform Data of representative
+export async function getRepPlatforms(repId:number):Promise<Array<Platform>> { 
   var plats:Array<Platform> = [];
 
   try {
@@ -436,8 +435,8 @@ export async function getRepPlatforms(repId:Number):Promise<Array<Platform>> {
   return plats;
 }
 
-//Get Biography Data of representative
-export async function getRepReportCards(repId:Number):Promise<Array<ReportCard>> { 
+//Get Report Card Data of representative
+export async function getRepReportCards(repId:number):Promise<Array<ReportCard>> { 
   var repCards:Array<ReportCard> = [];
 
   try {
@@ -461,7 +460,7 @@ export async function getRepReportCards(repId:Number):Promise<Array<ReportCard>>
 }
 
 //Get Biography Data of representative
-export async function getRepEndorsements(repId:Number):Promise<Array<Endorsement>> { 
+export async function getRepEndorsements(repId:number):Promise<Array<Endorsement>> { 
   var endos:Array<Endorsement> = [];
 
   try {
@@ -482,4 +481,147 @@ export async function getRepEndorsements(repId:Number):Promise<Array<Endorsement
   }
 
   return endos;
+}
+
+//Get Party Data of representatives of Government Body
+export async function getPartyData(govBodyId:number):Promise<Message> { 
+  let message:Message = {type:messageType.success, msg: "" };
+
+  var parties:Array<PartyData> = [];
+
+  try {
+    let responseData:any = await axios.get('http://localhost:8080/api/v1/party/govbody?govBodyId='+govBodyId)
+      .then(response => {
+        return response
+      }).catch(error => console.log(error));
+
+    if(responseData?.data !== null && responseData?.data.length > 0)
+    {
+      parties = responseData?.data;
+    }
+
+    const options = { 
+      fieldSeparator: ',',
+      quoteStrings: '"',
+      decimalSeparator: '.',
+      showLabels: true, 
+      useTextFile: false,
+      useBom: true,
+      useKeysAsHeaders: true,
+      // headers: ['Column 1', 'Column 2', etc...] <-- Won't work with useKeysAsHeaders present!
+    };
+    const csvExporter = new ExportToCsv(options);
+    if(parties && parties.length > 0)
+    {
+      csvExporter.generateCsv(parties);
+    }
+    else
+    {
+      message = {type:messageType.warning, msg: "No Parties found for Government Body"}
+    }
+  }
+  catch(e)
+  {
+    message = {type:messageType.error, msg: "Error Grabbing Parties For Government Body"}
+  }
+
+  return message;
+}
+
+//process parties
+export async function uploadParties(parties:Array<PartyData>, govBodyId:number):Promise<Message> { 
+  let message:Message= {type:messageType.success, msg: "" };
+
+  try{
+    const requestParam = {govBodyId: govBodyId, parties:parties.filter((x)=>{if(x.name == null){return false} return true})};
+    console.log(requestParam);
+
+    await axios.request({
+        method: 'post',
+        url: 'http://localhost:8080/api/v1/party/govbody',
+        data: requestParam,
+        headers: {
+          'Content-Type':'application/json'
+        },
+    });
+  }
+  catch(e)
+  {
+    message = {type:messageType.error, msg: "Error Uploading Party"}
+  }
+
+  return message;
+}
+
+
+//Get Representative Data of representatives of Government Body
+export async function getRepresentativeData(govBodyId:number):Promise<Message> { 
+  let message:Message = {type:messageType.success, msg: "" };
+
+  var reps:Array<Representative> = [];
+
+  try {
+    let responseData:any = await axios.get('http://localhost:8080/api/v1/representative/govbody?govBodyId='+govBodyId)
+      .then(response => {
+        return response
+      }).catch(error => console.log(error));
+
+    if(responseData?.data !== null && responseData?.data.length > 0)
+    {
+      reps = responseData?.data;
+    }
+
+    console.log(reps)
+
+    const options = { 
+      fieldSeparator: ',',
+      quoteStrings: '"',
+      decimalSeparator: '.',
+      showLabels: true, 
+      useTextFile: false,
+      useBom: true,
+      useKeysAsHeaders: true,
+      // headers: ['Column 1', 'Column 2', etc...] <-- Won't work with useKeysAsHeaders present!
+    };
+    const csvExporter = new ExportToCsv(options);
+    if(reps && reps.length > 0)
+    {
+      csvExporter.generateCsv(reps);
+    }
+    else
+    {
+      message = {type:messageType.warning, msg: "No Parties found for Government Body"}
+    }
+  }
+  catch(e)
+  {
+    message = {type:messageType.error, msg: "Error Grabbing Parties For Government Body"}
+  }
+
+  return message;
+}
+
+//process parties
+export async function uploadRepresentatives(reps:Array<Representative>, govBodyId:number):Promise<Message> { 
+  let message:Message= {type:messageType.success, msg: "" };
+
+  try{
+    const requestParam = {govBodyId: govBodyId, representatives:reps.filter((x)=>{if(x.id == null){return false} return true})};
+    console.log(requestParam);
+
+    await axios.request({
+        method: 'post',
+        url: 'http://localhost:8080/api/v1/representative/govbody',
+        data: requestParam,
+        headers: {
+          'Content-Type':'application/json'
+        },
+    });
+  }
+  catch(e)
+  {
+    message = {type:messageType.error, msg: "Error Uploading Representatives"}
+  }
+
+  return message;
 }

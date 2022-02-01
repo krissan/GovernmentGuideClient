@@ -3,8 +3,8 @@ import { Button, ButtonProps, useTheme } from "@material-ui/core";
 import ScaleLoader from "react-spinners/ClipLoader";
 
 import useStyles from './styles';
-import { Message } from "../../CustomIntefaces/AppTypes";
-import { messageType } from "../../CustomIntefaces/Enumerators";
+import { Message } from "../../customIntefaces/AppTypes";
+import { messageType } from "../../customIntefaces/Enumerators";
 import { Color } from "@mui/material";
 
 export interface StdButtonProps extends ButtonProps {

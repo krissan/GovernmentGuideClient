@@ -3,7 +3,7 @@ import { Typography } from "@material-ui/core";
 
 import AdditionalInfoText from "./AdditionalInfoText";
 
-import { StdProps } from "../../CustomIntefaces/StdProps";
+import { StdProps } from "../../customIntefaces/StdProps";
 import useStyles from './styles';
 import { __String } from "typescript";
 

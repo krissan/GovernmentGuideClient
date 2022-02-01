@@ -7,7 +7,7 @@ import MiniHeader from "../../Text/MiniHeader";
 import ReportCardItem from "./ReportCardItem";
 
 import { RepBoundary, ReportCard, useAppContext,  } from "../../../AppContext";
-import { SymbolEnum } from "../../../CustomIntefaces/Enumerators";
+import { SymbolEnum } from "../../../customIntefaces/Enumerators";
 import { getRepReportCards } from "../../../api/representative";
 import { structCategoryList } from "../../../functions/stdAppFunctions";
 

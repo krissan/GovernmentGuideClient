@@ -29,12 +29,12 @@ const IconButton =styled(
 
 
 //Alternative to button with child icon
-const CustomIconButtonAlt:React.FC<ButtonProps> = ({children, style}) => {
+const CustomIconButtonAlt:React.FC<ButtonProps> = ({children, style, ...props}) => {
   const theme = useTheme();
 
   return (
     <div style={style}>
-      <IconButton theme={theme}>{children}</IconButton>
+      <IconButton {...props} theme={theme}>{children}</IconButton>
     </div>
   );
 }

@@ -1,5 +1,7 @@
 import { useEffect, useRef, useState } from "react";
-import { LoadScript, useLoadScript } from "@react-google-maps/api";
+import { LoadScript } from "@react-google-maps/api";
+import { useTheme } from "@material-ui/core";
+import { ScaleLoader } from "react-spinners";
 
 import AddressBar from "../Map/AddressBar";
 import SubHeader from "../Text/SubHeader";
@@ -9,7 +11,7 @@ import {  RepBoundary, useAppContext } from "../../AppContext";
 import MapAlt from "../Map/MapAlt";
 import appValues from "../../resources/AppValues";
 import useWindowDimensions from "../../customHooks/useWindowDimensions";
-import { infoEnum } from "../../CustomIntefaces/Enumerators";
+import { infoEnum } from "../../customIntefaces/Enumerators";
 
 //Interfaces and settings for google-maps
 type Libraries = ("drawing" | "geometry" | "localContext" | "places" | "visualization")[];
@@ -17,8 +19,9 @@ const libraries:Libraries = ["places", "geometry"]
 
 const MapPage = () => {
   //App Context
-  const { repBoundaries, setRepBoundaries, userAddr, setUserAddr, selectedListKey, hoveredListKey } = useAppContext();
-
+  const { repBoundaries, setRepBoundaries, userAddr, setUserAddr } = useAppContext();
+  const [loadingData, setLoadingData] = useState<boolean>(false);
+  const theme = useTheme();
   const [address, setAddress] = useState<google.maps.places.Autocomplete>();
   const [boundaryToggled, setBoundaryToggled] = useState<RepBoundary|null>(repBoundaries[0]);
   const ref = useRef<HTMLDivElement>(null);
@@ -26,15 +29,17 @@ const MapPage = () => {
   //Height and Width of window
   const { height } = useWindowDimensions();
   //Distance from right and bottom of screen
-  const offsetY:number = ref.current?.offsetTop ? ref.current?.offsetTop : 0;
+  const offsetY:number = ref.current?.offsetTop ? ref.current?.offsetTop : 200;
 
-  //UseEffect
+  //update lsit height
   useEffect(()=>{console.log(repBoundaries);console.log(infoEnum.representative)},[repBoundaries]);
 
   //Address AutoComplete Text Change, Input Selected Functions
   const onTextChange = (addr: google.maps.places.Autocomplete) => setAddress(addr);
 
   const onPlaceChanged = async () => {
+    setLoadingData(true);
+
     const lat = address?.getPlace()?.geometry?.location?.lat();
     const lng = address?.getPlace()?.geometry?.location?.lng();
     let newAddr:google.maps.LatLngLiteral = userAddr;
@@ -47,9 +52,10 @@ const MapPage = () => {
 
     //get representative data
     let searchedRepBoundaries:Array<RepBoundary> = await searchRepresentatives(newAddr);
-    console.log(searchedRepBoundaries);
-
+    
+    setRepBoundaries([]);
     setRepBoundaries(searchedRepBoundaries);
+    setLoadingData(false);
   }
 
   return (
@@ -68,9 +74,8 @@ const MapPage = () => {
           <div style={{display:"flex", flex:1, alignItems: "center", flexDirection:"column"}}>
             <AddressBar onPlaceChanged={onPlaceChanged} onTextChange={onTextChange} />
           </div>
-          {/*Col 2*/}
+          {/*Col 2 dummy space*/}
           <div style={{width:appValues.sideListWidth}}>
-
           </div>
         </div>
         {/*Row 2*/}
@@ -80,14 +85,23 @@ const MapPage = () => {
             <MapAlt boundaryToggled={boundaryToggled} setBoundaryToggled={setBoundaryToggled} />
           </div>
           {/*Row 2*/}        
-          {repBoundaries.length > 0 &&
-            <div style={{width:appValues.sideListWidth, paddingLeft:20, scrollBehavior: "smooth", height:height-offsetY, overflowY:"auto"}} ref={ref}>
+          {(loadingData || repBoundaries.length > 0) &&
+            <div style={{width:appValues.sideListWidth, paddingLeft:20}}>
                 <div style={{display:"flex",justifyContent:"center"}}>
                   <SubHeader>REPRESENTATIVES</SubHeader>
                 </div>
-                { repBoundaries.map((rb:RepBoundary)=>{
-                  return <RepresentativeCard repBoundary={rb} key={rb.rep.id} hovered={hoveredListKey === rb.rep.id} selected={selectedListKey === rb.rep.id} boundaryToggled={boundaryToggled} setBoundaryToggled={setBoundaryToggled}/>
-                })}
+                {/* If data is loading display side */}
+                {loadingData ?
+                  <div style={{display:"flex", height:"100%", justifyContent:"center", alignItems:"center"}}>
+                    <ScaleLoader color={theme.palette.primary.dark} />
+                  </div>
+                  : 
+                  <div style={{scrollBehavior: "smooth", height:height - offsetY, overflowY:"scroll"}} ref={ref}>
+                    {repBoundaries.map((rb:RepBoundary)=>{
+                      return <RepresentativeCard repBoundary={rb} key={rb.rep.id} boundaryToggled={boundaryToggled} setBoundaryToggled={setBoundaryToggled}/>
+                    })}
+                  </div>
+                }
             </div>
           }
         </div>
