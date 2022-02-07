@@ -9,12 +9,12 @@ import StdText from "../../Text/StdText";
 import { Biography, RepBoundary, useAppContext,  } from "../../../AppContext";
 import { Nullable } from "../../../customIntefaces/AppTypes";
 
-interface BiographyProps {
+interface HistoryProps {
     repBoundary:RepBoundary,
 }
 
-//Representative Biography
-const BiographyListView:React.FC<BiographyProps> = ({repBoundary}) => {
+//Representative History
+const HistoryView:React.FC<HistoryProps> = ({repBoundary}) => {
     const { repBoundaries, setRepBoundaries } = useAppContext();
     const theme = useTheme();
     const [tabLoading, setTabLoading] = useState<boolean>(false);
@@ -66,4 +66,4 @@ const BiographyListView:React.FC<BiographyProps> = ({repBoundary}) => {
   );
 }
 
-export default BiographyListView;
+export default HistoryView;

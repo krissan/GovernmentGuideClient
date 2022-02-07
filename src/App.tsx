@@ -17,6 +17,7 @@ import { AlertType } from './customIntefaces/AppTypes';
 import { AppContext, RepBoundary } from './AppContext';
 import appValues from './resources/AppValues';
 import RepresentativeDataPage from './components/Pages/ManageData/RepresentativeDataPage';
+import BillDataPage from './components/Pages/ManageData/BillDataPage';
 
 function App() {
   const theme = createTheme({
@@ -41,6 +42,7 @@ function App() {
                   <Route path="/manageData/govBodyData" element={<GovBodyDataPage/>}/>
                   <Route path="/manageData/partyData" element={<PartyDataPage/>}/>
                   <Route path="/manageData/representativeData" element={<RepresentativeDataPage/>}/>
+                  <Route path="/manageData/billData" element={<BillDataPage/>}/>
                   <Route path="/contactUs" element={<ContactUsPage/>}/>
                   <Route path="/" element={<MapPage/>} />
                 </Routes>

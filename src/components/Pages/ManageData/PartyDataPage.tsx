@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { faDownload, faUpload } from "@fortawesome/free-solid-svg-icons"
 
 import PageHeader from "../../Text/PageHeader";
@@ -10,7 +10,7 @@ import StepSubHeader from "../../Text/StepSubHeader";
 import StdButton from "../../Buttons/StdButton";
 import StdDropButton from "../../Buttons/StdDropButton";
 
-import { GovBody, Party } from "../../../AppContext";
+import { GovBody,  PartyData } from "../../../AppContext";
 import { getPartyData, searchGovBody, uploadParties } from "../../../api/representative";
 import { processCsv } from "../../../functions/stdAppFunctions";
 import { Message } from "../../../customIntefaces/AppTypes";
@@ -50,7 +50,7 @@ const GovBodyDataPage = () => {
 
       if(selectedGB)
       {
-        let parties:Array<Party> = results as Array<Party>;
+        let parties:Array<PartyData> = results as Array<PartyData>;
 
         message = await uploadParties(parties, selectedGB);
       

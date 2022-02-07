@@ -23,13 +23,16 @@ export interface Party {
     govBodyId:number,
     name:string,
     description:string,
-    createDate:Date | null
+    createDate:Date | null,
+    partyColor:string
 }
 
 export interface PartyData {
     parentId:number,
     name:string,
-    description:string
+    shortName:string,
+    description:string,
+    partyColor:string
 }
 
 export interface GeoPoint {
@@ -121,7 +124,7 @@ export interface Representative {
     birthDate:Date | null,
     deathDate:Date | null,
     createDate:Date | null,
-    updateDate:Date | null
+    updateDate:Date | null,
 }
 
 enum RepTitle {
@@ -178,6 +181,28 @@ export interface ReportCard {
     category:string
 }
 
+export interface Bill {
+    id:number,
+    govBodyId:number,
+    billNum:number,
+    name:string,
+    description:string,
+    status:string,
+    createDate:Date | null,
+    updateDate:Date | null,
+    date:Date | null
+}
+
+export interface BillVote {
+    id:number,
+    billId:number,
+    repId:number,
+    status:string,
+    createDate:Date | null,
+    updateDate:Date | null,
+    date:Date | null,
+}
+
 export interface Organization {
     id:number,
     orgId:number,
@@ -185,6 +210,22 @@ export interface Organization {
     subtitle:string,
     content:string,
     status:string
+}
+
+export interface RepBillVote {
+    id:number,
+    billNum:string,
+    name:string,
+    description:string,
+    billStatusType:string,
+    date:Date | null,
+}
+
+export interface BillData {
+    repId:number,
+    repName:string,
+    status:string,
+    date:Date | null
 }
 
 export interface AppContextInterface {

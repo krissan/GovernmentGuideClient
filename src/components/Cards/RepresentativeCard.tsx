@@ -78,6 +78,7 @@ const RepresentativeCard:React.FC<RepCardProps> = ({repBoundary, boundaryToggled
                 <div style={{flex:1, justifyContent:"space-between", flexDirection:"column"}}>
                 <CardSubHeader>{boundary.repTitle+" "+rep.firstName+" "+rep.lastName}</CardSubHeader>
                 <div style={{paddingLeft:10}}>
+                    {rep.party && <div style={{paddingBottom:3}}>{rep.party}</div>}
                     <div style={{paddingBottom:3}}>{boundary.boundaryName}</div>
                     <div style={{paddingBottom:3}}>{rep.gender ? rep.gender : "Gender Not Found"}</div>
                     <div style={{paddingBottom:3}}>{rep.constituencyOffice}</div>

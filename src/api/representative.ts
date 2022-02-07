@@ -34,6 +34,17 @@ export async function searchRepresentatives(location:google.maps.LatLngLiteral) 
         boundary.repTitle = convertTitle(boundary.repTitle);
         boundary.outline = data[i].outline;
 
+        //check and set party if it exists
+        let partyData:any = await axios.get('http://localhost:8080/api/v1/party/rep?repId='+rep.id)
+        .then(response => {
+          return response
+        }).catch(error => console.log(error));
+
+        if(partyData?.shortName)
+        {
+          rep.party = partyData.shortName;
+        }
+        
         let repBoundary:RepBoundary={rep:rep, boundary:boundary};
         repBoundary.rep.photo = repBoundary.rep.photo.replace("https://contrib.wp.intra.prod-","https://www.");
         repBoundaries.push(repBoundary);
@@ -226,7 +237,7 @@ export async function uploadPlatforms(repPlats:Array<RepPlatform>, govBodyId:num
   let message:Message = {type:messageType.success, msg: "" };
 
   try{
-    const requestParam = {govBodyId: govBodyId, orgId:null, platforms:repPlats.filter((x)=>{if(x.id == null){return false} return true})};
+    const requestParam = {govBodyId: govBodyId, orgId:null, platforms:repPlats.filter((x)=>{if(x.id.toString() === '' || x.id == null){return false} return true})};
     console.log(requestParam);
     let x = await axios.request({
         method: 'post',
@@ -296,8 +307,8 @@ export async function uploadReportCards(repReportCards:Array<RepReportCard>, gov
   let message:Message = {type:messageType.success, msg: "" };
 
   try{
-    const requestParam = {govBodyId: govBodyId, orgId: null, reportCards:repReportCards.filter((x)=>{if(x.id == null){return false} return true})};
-
+    const requestParam = {govBodyId: govBodyId, orgId: null, reportCards:repReportCards.filter((x)=>{if(x.id.toString() === '' || x.id == null){return false} return true})};
+console.log(requestParam);
     let x = await axios.request({
         method: 'post',
         url: 'http://localhost:8080/api/v1/reportcard/govbody/'+type,
@@ -366,7 +377,7 @@ export async function uploadEndorsements(repEndorsements:Array<RepEndorsement>, 
   let message:Message= {type:messageType.success, msg: "" };
   
   try{
-    const requestParam = {govBodyId: govBodyId, orgId:null, endorsements:repEndorsements.filter((x)=>{if(x.id == null){return false} return true})};
+    const requestParam = {govBodyId: govBodyId, orgId:null, endorsements:repEndorsements.filter((x)=>{if(x.id.toString() === '' || x.id == null){return false} return true})};
 
     console.log(requestParam);
 

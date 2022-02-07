@@ -3,7 +3,6 @@ import { useState } from "react";
 import { ToggleButton, ToggleButtonGroup } from "@mui/material";
 import { RepBoundary } from "../../AppContext";
 import DisputeButton from "../Buttons/DisputeButton";
-import BiographyView from "../Representative/ListView/BiographyListView";
 import PlatformsView from "../Representative/ListView/PlatformsListView";
 import ReportCardsView from "../Representative/ListView/ReportCardsListView";
 import EndorsementsView from "../Representative/ListView/EndorsementsListView";
@@ -11,6 +10,7 @@ import EndorsementsView from "../Representative/ListView/EndorsementsListView";
 import useStyles from './styles';
 import { MailTo } from "../../functions/stdAppFunctions";
 import { repTabEnum, repTabs, repTabType } from "../../customIntefaces/TabType";
+import HistoryView from "../Representative/ListView/HistoryView";
 
 
 interface TCProps {
@@ -36,9 +36,9 @@ const ToggleContainer:React.FC<TCProps> = ({repBoundary}) => {
     //decide which tab to display
     const showTab = () =>{
       //platform
-      if(tab.id === repTabEnum.Biography)
+      if(tab.id === repTabEnum.History)
       {
-        return <BiographyView repBoundary={repBoundary}/>
+        return <HistoryView repBoundary={repBoundary}/>
       }
       //report card
       else if(tab.id === repTabEnum.Platform)

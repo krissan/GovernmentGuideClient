@@ -1,7 +1,7 @@
 export enum repTabEnum {
     Platform,
     ReportCard,
-    Biography,
+    History,
     Endorsement
   }
   
@@ -14,7 +14,7 @@ export interface repTabType {
 export const repTabs:Array<repTabType> = [
     {type:"platforms", name:"Platform", id: repTabEnum.Platform},
     {type:"reportCards", name:"Report Card", id: repTabEnum.ReportCard},
-    {type:"biography", name:"Biography", id: repTabEnum.Biography},
+    {type:"history", name:"History", id: repTabEnum.History},
     {type:"endorsements", name:"Endorsements", id: repTabEnum.Endorsement}
 ]
   
