@@ -8,7 +8,7 @@ import useStyles from './styles';
 import { __String } from "typescript";
 
 interface Props extends StdProps {
-  additionalInfo?:string,
+  additionalInfo?:string | null,
   subHeader?:String
 }
 
@@ -23,9 +23,9 @@ const PageHeader:React.FC<Props> = ({children, style, subHeader, additionalInfo=
       {subHeader && <Typography className={classes.subHeader} style={{...style}} variant="h5" gutterBottom component="div">
         {subHeader}
       </Typography>}
-      <AdditionalInfoText>
+      {additionalInfo && <AdditionalInfoText>
         {additionalInfo}
-      </AdditionalInfoText>
+      </AdditionalInfoText>}
     </div>
   );
 }

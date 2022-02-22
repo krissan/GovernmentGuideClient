@@ -1,6 +1,6 @@
 import { Box } from "@material-ui/core";
 import { faEnvelope } from "@fortawesome/free-regular-svg-icons"
-import { ChangeEvent, ReactNode, useState } from "react";
+import { ChangeEvent, useState } from "react";
 
 import StandardInput from "../Input/StandardInput";
 import StdInputIcon from "../Input/StdInputIcon";

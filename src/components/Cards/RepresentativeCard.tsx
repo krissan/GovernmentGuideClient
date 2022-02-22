@@ -13,9 +13,10 @@ import MiniHeader from "../Text/MiniHeader";
 import useStyles from './styles';
 import StdSwitch from "../Buttons/StdSwitch";
 import ToggleContainer from "../Misc/ToggleContainer";
-import { Boundary, Rep, RepBoundary, useAppContext } from "../../AppContext";
+import { Boundary, Representative, RepBoundary } from "../../AppContext";
 import appValues from "../../resources/AppValues";
 import { MailTo } from "../../functions/stdAppFunctions";
+import { useNavigate } from "react-router-dom";
 
 
 interface RepCardProps {
@@ -31,9 +32,12 @@ const RepresentativeCard:React.FC<RepCardProps> = ({repBoundary, boundaryToggled
     const [expanded, setExpanded] = useState<boolean>(false);
     const [brightness, setBrightness] = useState<number>(1);
     const [elevation, setElevation] = useState<number>(1);
+    const [partyColor, setPartyColor] = useState<string>(repBoundary.rep.partyColor ? "#"+repBoundary.rep.partyColor : "black")
 
-    const rep:Rep = repBoundary.rep;
+    const rep:Representative = repBoundary.rep;
     const boundary:Boundary = repBoundary.boundary;
+
+    let navigate = useNavigate();
 
     //call number passed
     const call = (number:number) =>{
@@ -78,7 +82,12 @@ const RepresentativeCard:React.FC<RepCardProps> = ({repBoundary, boundaryToggled
                 <div style={{flex:1, justifyContent:"space-between", flexDirection:"column"}}>
                 <CardSubHeader>{boundary.repTitle+" "+rep.firstName+" "+rep.lastName}</CardSubHeader>
                 <div style={{paddingLeft:10}}>
-                    {rep.party && <div style={{paddingBottom:3}}>{rep.party}</div>}
+                    {rep.party && <div style={{paddingBottom:3, display:"flex", alignItems:"center"}}>
+                        <span style={{fontWeight:"bold", color:partyColor}}>{rep.party}</span> 
+                        {rep.partyImage && 
+                            <img src={rep.partyImage} alt={rep.partyImage} height="25px" style={{marginLeft:"15px", objectFit:"fill"}}/>
+                        }
+                    </div>}
                     <div style={{paddingBottom:3}}>{boundary.boundaryName}</div>
                     <div style={{paddingBottom:3}}>{rep.gender ? rep.gender : "Gender Not Found"}</div>
                     <div style={{paddingBottom:3}}>{rep.constituencyOffice}</div>
@@ -92,11 +101,13 @@ const RepresentativeCard:React.FC<RepCardProps> = ({repBoundary, boundaryToggled
                     <StdSwitch label="BOUNDARY" checked={repBoundary.boundary.id===boundaryToggled?.boundary.id} onClick={()=>{toggleBoundary()}} />
                 </div>
                 {/*Col 2*/}
-                <div style={{display:"flex", justifyContent:"space-between", flex:1,alignItems:"center"}}>
+                <div style={{display:"flex", justifyContent:"space-between", flex:1, alignItems:"center", alignContent:"bottom"}}>
                     <div style={{display:"flex"}}>
-                        <Grade grade="A" />
-                        <Grade grade="A" />
-                        <Grade grade="A" />
+                        {/*High Light*/}
+                        {/*
+                        <MiniHeader>Environment</MiniHeader>
+                        <Grade grade="D" />
+                        */}
                     </div>
                     <div style={{display:"flex"}}>
                         <CustomIconButtonAlt style={{paddingRight:10}} onClick={()=>{MailTo(rep.email)}}>
@@ -113,7 +124,9 @@ const RepresentativeCard:React.FC<RepCardProps> = ({repBoundary, boundaryToggled
             <div style={{display:"flex", paddingBottom:"10px"}}>
                 {/*Col 1*/}
                 <div style={{width:appValues.subCardWidth, paddingRight:"30px"}}>
-                    <StdButton classes={{root: classes.electionButton}} style={{width:"100%"}}>Election</StdButton>
+                    {repBoundary.eleRiding &&
+                        <StdButton classes={{root: classes.electionButton}} style={{width:"100%"}} onClick={()=>{navigate("/election", {state: {repRiding: repBoundary.eleRiding}})}}>Election</StdButton>
+                    }
                 </div>
                 {/*Col 2*/}
                 <div style={{display:"flex", flex:1}}>

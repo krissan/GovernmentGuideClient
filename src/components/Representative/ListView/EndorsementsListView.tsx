@@ -77,7 +77,7 @@ const EndorsementsListView:React.FC<EndorsementsProps> = ({repBoundary}) => {
                             <MiniHeader>{pl[0].category.toUpperCase()}</MiniHeader>
                         </div>
                         {pl?.map((p)=>{
-                            return <EndorsementItem endo={p} />
+                            return <EndorsementItem key={p.id} endo={p} />
                         })}
                     </div>);
                 }

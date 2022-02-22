@@ -69,7 +69,7 @@ const ReportCardsListView:React.FC<ReportCardProps> = ({repBoundary}) => {
         :
         <>
         {reportCards && reportCards.length > 0 ?
-            reportCards?.map((pl)=>{
+            reportCards?.map((pl )=>{
                 if(pl[0]) {
                     return (<div key={pl[0].id} style={{paddingBottom:10}}>
                         <div style={{display:"flex"}}>
@@ -77,7 +77,7 @@ const ReportCardsListView:React.FC<ReportCardProps> = ({repBoundary}) => {
                             <MiniHeader>{pl[0].category.toUpperCase()}</MiniHeader>
                         </div>
                         {pl?.map((p)=>{
-                            return <ReportCardItem rptCard={p} />
+                            return <ReportCardItem key={p.id} rptCard={p} />
                         })}
                     </div>);
                 }

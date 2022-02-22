@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useTheme } from "@material-ui/core";
 
 import MiniSubHeader from "../../Text/MiniSubHeader";
@@ -14,6 +14,7 @@ interface ReportCardItemProps {
 //Representative Card
 const ReportCardItem:React.FC<ReportCardItemProps> = ({rptCard}) => {
   const theme = useTheme();
+
 
   return (
     <div key={rptCard.id}>

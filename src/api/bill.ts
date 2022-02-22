@@ -1,8 +1,8 @@
 import axios from 'axios';
-import { Bill, BillData, GovBody, RepBillVote, RepEndorsement } from '../AppContext';
 import { ExportToCsv } from 'export-to-csv';
-import { Message, Nullable } from '../customIntefaces/AppTypes';
-import { infoEnum, messageType } from '../customIntefaces/Enumerators';
+import { Bill, BillData, RepBillVote } from '../customIntefaces/APITypes';
+import { Message } from '../customIntefaces/AppTypes';
+import { messageType } from '../customIntefaces/Enumerators';
 
 //Grab List of Government Bodies by search query
 export async function searchBill(searchTerm:string) { 
@@ -85,7 +85,7 @@ export async function uploadBills(bills:Array<BillData>, govBodyId:number):Promi
   let message:Message= {type:messageType.success, msg: "" };
   
   try{
-    const requestParam = {govBodyId: govBodyId, bills:bills.filter((x)=>{if(x.repId == null){return false} return true})};
+    const requestParam = {govBodyId: govBodyId, bills:bills.filter((x)=>{if(x.billNum == null){return false} return true})};
 
     console.log(requestParam);
 
@@ -107,16 +107,24 @@ export async function uploadBills(bills:Array<BillData>, govBodyId:number):Promi
 }
 
 //get Bill Votes of Bill and Government Body
-export async function getBillVoteData(govBodyId:number, billId:number):Promise<Message> { 
+export async function getBillVoteData(billId:number):Promise<Message> { 
   let message:Message = {type:messageType.success, msg: "" };
 
   var billVotes:Array<RepBillVote> = [];
 
   try {
-    let responseData:any = await axios.get('http://localhost:8080/api/v1/billVote/govbody?govBodyId='+govBodyId+'&billId='+billId)
+
+    let responseData:any = await axios.get('http://localhost:8080/api/v1/billvote/bill?billId='+billId)
       .then(response => {
         return response
       }).catch(error => console.log(error));
+
+    if(responseData?.data !== null && responseData?.data.length > 0)
+    {
+      billVotes = responseData?.data;
+    }
+
+    console.log(responseData);
 
     if(responseData?.data !== null && responseData?.data.length > 0)
     {
@@ -157,7 +165,7 @@ export async function uploadBillVotes(billVotes:Array<RepBillVote>, govBodyId:nu
   let message:Message= {type:messageType.success, msg: "" };
   
   try{
-    const requestParam = {govBodyId: govBodyId, billId: billId, votes:billVotes.filter((x)=>{if(x.id == null){return false} return true})};
+    const requestParam = {govBodyId: govBodyId, billId: billId, votes:billVotes.filter((x)=>{if(x.repName == null){return false} return true})};
 
     console.log(requestParam);
 

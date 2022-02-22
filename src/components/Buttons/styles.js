@@ -61,8 +61,9 @@ export default makeStyles((theme) => ({
   searchItem:{
     border:"2px solid "+theme.palette.primary.main,
     borderRadius:"0",
-    margin:5,
+    marginBottom:10,
     color:theme.palette.primary.main,
+    width:"100%",
     '&:hover':{
       backgroundColor:theme.palette.primary.main,
       color:theme.palette.primary.contrastText

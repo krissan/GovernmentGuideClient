@@ -14,7 +14,8 @@ export default makeStyles((theme) => ({
     stepHeader: {
         color:theme.palette.secondary.main,
         fontSize:18,
-        fontWeight:"bold"
+        fontWeight:"bold",
+        overflowX:"hidden"
     },
     stepSubHeader: {
         color:theme.palette.secondary.main,

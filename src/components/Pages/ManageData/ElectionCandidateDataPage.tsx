@@ -9,13 +9,16 @@ import StepSubHeader from "../../Text/StepSubHeader";
 import StdButton from "../../Buttons/StdButton";
 import StdDropButton from "../../Buttons/StdDropButton";
 import StdText from "../../Text/StdText";
+import SearchGovBodyForm from "../../Forms/SearchGovBodyForm";
+import SearchElectionForm from "../../Forms/SearchElectionForm";
+import SearchElectionRidingForm from "../../Forms/SearchElectionRidingForm";
 
 import { processCsv } from "../../../functions/stdAppFunctions";
 import { Message } from "../../../customIntefaces/AppTypes";
-import { getBillData, getBillVoteData, uploadBills, uploadBillVotes } from "../../../api/bill";
-import SearchGovBodyForm from "../../Forms/SearchGovBodyForm";
-import SearchBillForm from "../../Forms/SearchBillForm";
-import { BillData, RepBillVote } from "../../../customIntefaces/APITypes";
+import { getElectionCandidateData, getElectionRepresentativesData, uploadElectionCandidates } from "../../../api/election";
+import { uploadRepresentatives } from "../../../api/representative";
+import { Representative } from "../../../AppContext";
+import { ElectionCandidateData } from "../../../customIntefaces/APITypes";
 import PageSection from "../../Misc/PageSection";
 
 interface EditOption {
@@ -23,12 +26,14 @@ interface EditOption {
   instruction:string
 }
 
-const BillDataPage = () => {
+const ElectionCandidateDataPage = () => {
   const [selectedGB, setSelectedGB] = useState<number|null>(null);
 
-  const [selectedEditOption, setSelectedEditOption] = useState<EditOption | null>(null);
+  const [selectedE, setSelectedE] = useState<number|null>(null);
 
-  const [selectedB, setSelectedB] = useState<number|null>(null);
+  const [selectedER, setSelectedER] = useState<number|null>(null);
+
+  const [selectedEditOption, setSelectedEditOption] = useState<EditOption | null>(null);
 
   const [getLoading, setGetLoading] = useState<boolean>(false);
   const [uploadLoading, setUploadLoading] = useState<boolean>(false);
@@ -47,18 +52,19 @@ const BillDataPage = () => {
 
       if(selectedGB)
       {
-        if(selectedEditOption?.name === "Bill")
+        if(selectedEditOption?.name === "Representatives" && selectedER)
         {
-          let bills:Array<BillData> = results as Array<BillData>;
+          let reps:Array<Representative> = results as Array<Representative>;
 
-          message = await uploadBills(bills, selectedGB)
+          message = await uploadRepresentatives(reps, selectedGB)
         }
-        else if (selectedEditOption?.name === "Bill Votes" && selectedB)
+        else if (selectedEditOption?.name === "Election Candidates" && selectedER)
         {
-          let billVotes:Array<RepBillVote> = results as Array<RepBillVote>;
+          let eleCandidates:Array<ElectionCandidateData> = results as Array<ElectionCandidateData>;
 
-          message = await uploadBillVotes(billVotes, selectedGB, selectedB);
+          message = await uploadElectionCandidates(eleCandidates, selectedER);
         }
+
         setUploadMessage(message);
       }
       setUploadLoading(false);
@@ -76,14 +82,16 @@ const BillDataPage = () => {
 
       if(selectedGB)
       {
-        if(selectedEditOption?.name === "Bill")
+        if(selectedEditOption?.name === "Election" && selectedER)
         {
-          message = await getBillData(selectedGB);
+          message = await getElectionRepresentativesData(selectedER);
         }
-        else if (selectedEditOption?.name === "Bill Votes" && selectedB)
+        else if (selectedEditOption?.name === "Election Candidates" && selectedER)
         {
-          message = await getBillVoteData(selectedB)
+          message = await getElectionCandidateData(selectedER)
         }
+
+
         setGetMessage(message);
       }
 
@@ -98,8 +106,8 @@ const BillDataPage = () => {
   }
 
   const editOptions:Array<EditOption> = [
-    {name:"Bill", instruction:"TBD"}, 
-    {name:"Bill Votes", instruction:"TBD"},
+    {name:"Election Candidates", instruction:"TBD"},
+    {name:"Representatives", instruction:"TBD"},
   ];
 
   return (
@@ -113,8 +121,8 @@ const BillDataPage = () => {
             {/* Select Gov Body */}
             <PageSection>
               <StepHeader>1. Select Government Body</StepHeader>
-              {/* Search Field */}
-              <SearchGovBodyForm setSelected={(x:number | null)=>{setSelectedGB(x);clear();}} selected={selectedGB} />
+              {/* Search Gov Body */}
+              <SearchGovBodyForm setSelected={(x:number | null)=>{setSelectedGB(x);clear();setSelectedE(null);setSelectedER(null);}} selected={selectedGB}/>
             </PageSection>
 
             {/* Select Criteria and Data type to edit*/}
@@ -128,21 +136,37 @@ const BillDataPage = () => {
                     })}
                 </div>
 
-                {/*Search for bill if bill votes edit option selected*/}
-                {selectedEditOption?.name === "Bill Votes" &&
-                  <>
-                    <StepHeader>Select Bill</StepHeader>
-                    <SearchBillForm setSelected={(x:number | null)=>{setSelectedB(x);clear();}} selected={selectedB}/>
-                  </>
+                {/*Search for Election*/}
+                {selectedGB &&
+                  <div style={{flexDirection:"column", display:"flex"}}>
+                    {/* Search Field */}
+                    <StepSubHeader>Search Election</StepSubHeader>
+                    <SearchElectionForm setSelected={(x:number | null)=>{setSelectedE(x);clear();setSelectedER(null);}} selected={selectedE} govBodyId={selectedGB} refresh={selectedEditOption?.name == "Election Candidates"}/>
+                  </div>
                 }
+
               </>
             }
             </PageSection>
 
+
+            {/*Search for Election Rididng*/}
+            {(selectedGB && selectedE) &&
+            <PageSection>
+              <StepHeader>3. Select Electoral Riding</StepHeader>
+
+              <div style={{flexDirection:"column", display:"flex"}}>
+                {/* Search Field */}
+                <StepSubHeader>Search Election Riding</StepSubHeader>
+                <SearchElectionRidingForm setSelected={(x:number | null)=>{setSelectedER(x);clear();}} selected={selectedER} electionId={selectedE}/>
+              </div>
+            </PageSection>
+            }
+
             {/* Make Changes */}
-            {(selectedEditOption?.name == "Bill" || (selectedEditOption?.name === "Bill Votes" && selectedB)) &&
+            {(selectedGB && selectedE && selectedER) &&
               <PageSection>
-                <StepHeader>3. Make Changes</StepHeader>
+                <StepHeader>4. Make Changes</StepHeader>
                 <div style={{flexDirection:"column", display:"flex"}}>
                   {/*i*/}
                   <div style={{flexDirection:"row",display:"flex", paddingBottom:"10px"}}>
@@ -179,4 +203,4 @@ const BillDataPage = () => {
   );
 }
 
-export default BillDataPage;
+export default ElectionCandidateDataPage;

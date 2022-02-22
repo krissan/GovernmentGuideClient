@@ -12,10 +12,10 @@ import StdText from "../../Text/StdText";
 
 import { processCsv } from "../../../functions/stdAppFunctions";
 import { Message } from "../../../customIntefaces/AppTypes";
-import { getBillData, getBillVoteData, uploadBills, uploadBillVotes } from "../../../api/bill";
+import SearchElectionForm from "../../Forms/SearchElectionForm";
 import SearchGovBodyForm from "../../Forms/SearchGovBodyForm";
-import SearchBillForm from "../../Forms/SearchBillForm";
-import { BillData, RepBillVote } from "../../../customIntefaces/APITypes";
+import { getElectionData, getElectionRidingData, uploadElectionRiding, uploadElections } from "../../../api/election";
+import { ElectionData, ElectionRidingData } from "../../../customIntefaces/APITypes";
 import PageSection from "../../Misc/PageSection";
 
 interface EditOption {
@@ -23,13 +23,10 @@ interface EditOption {
   instruction:string
 }
 
-const BillDataPage = () => {
+const ElectionDataPage = () => {
   const [selectedGB, setSelectedGB] = useState<number|null>(null);
-
   const [selectedEditOption, setSelectedEditOption] = useState<EditOption | null>(null);
-
-  const [selectedB, setSelectedB] = useState<number|null>(null);
-
+  const [selectedE, setSelectedE] = useState<number|null>(null);
   const [getLoading, setGetLoading] = useState<boolean>(false);
   const [uploadLoading, setUploadLoading] = useState<boolean>(false);
   const [getMessage, setGetMessage] = useState<Message|null>();
@@ -47,18 +44,19 @@ const BillDataPage = () => {
 
       if(selectedGB)
       {
-        if(selectedEditOption?.name === "Bill")
+        if(selectedEditOption?.name === "Election")
         {
-          let bills:Array<BillData> = results as Array<BillData>;
+          let eles:Array<ElectionData> = results as Array<ElectionData>;
 
-          message = await uploadBills(bills, selectedGB)
+          message = await uploadElections(eles, selectedGB)
         }
-        else if (selectedEditOption?.name === "Bill Votes" && selectedB)
+        else if (selectedEditOption?.name === "Election Riding" && selectedE)
         {
-          let billVotes:Array<RepBillVote> = results as Array<RepBillVote>;
+          let eleRidings:Array<ElectionRidingData> = results as Array<ElectionRidingData>;
 
-          message = await uploadBillVotes(billVotes, selectedGB, selectedB);
+          message = await uploadElectionRiding(eleRidings, selectedE);
         }
+
         setUploadMessage(message);
       }
       setUploadLoading(false);
@@ -76,14 +74,15 @@ const BillDataPage = () => {
 
       if(selectedGB)
       {
-        if(selectedEditOption?.name === "Bill")
+        if(selectedEditOption?.name === "Election")
         {
-          message = await getBillData(selectedGB);
+          message = await getElectionData(selectedGB);
         }
-        else if (selectedEditOption?.name === "Bill Votes" && selectedB)
+        else if (selectedEditOption?.name === "Election Riding" && selectedE)
         {
-          message = await getBillVoteData(selectedB)
+          message = await getElectionRidingData(selectedE)
         }
+
         setGetMessage(message);
       }
 
@@ -98,8 +97,8 @@ const BillDataPage = () => {
   }
 
   const editOptions:Array<EditOption> = [
-    {name:"Bill", instruction:"TBD"}, 
-    {name:"Bill Votes", instruction:"TBD"},
+    {name:"Election", instruction:"TBD"}, 
+    {name:"Election Riding", instruction:"TBD"},
   ];
 
   return (
@@ -113,8 +112,8 @@ const BillDataPage = () => {
             {/* Select Gov Body */}
             <PageSection>
               <StepHeader>1. Select Government Body</StepHeader>
-              {/* Search Field */}
-              <SearchGovBodyForm setSelected={(x:number | null)=>{setSelectedGB(x);clear();}} selected={selectedGB} />
+              {/* Search Gov Body */}
+              <SearchGovBodyForm setSelected={(x:number | null)=>{setSelectedGB(x); clear(); setSelectedE(null)}} selected={selectedGB}/>
             </PageSection>
 
             {/* Select Criteria and Data type to edit*/}
@@ -128,19 +127,20 @@ const BillDataPage = () => {
                     })}
                 </div>
 
-                {/*Search for bill if bill votes edit option selected*/}
-                {selectedEditOption?.name === "Bill Votes" &&
-                  <>
-                    <StepHeader>Select Bill</StepHeader>
-                    <SearchBillForm setSelected={(x:number | null)=>{setSelectedB(x);clear();}} selected={selectedB}/>
-                  </>
+                {/*Search for Election if Election Candidate Or Riding edit option selected*/}
+                {(selectedGB && selectedEditOption?.name === "Election Riding") &&
+                  <div style={{flexDirection:"column", display:"flex"}}>
+                    {/* Search Field */}
+                    <StepSubHeader>Search Election</StepSubHeader>
+                    <SearchElectionForm setSelected={(x:number | null)=>{setSelectedE(x);clear();}} selected={selectedE} govBodyId={selectedGB} refresh={selectedEditOption.name=="Election Riding"}/>
+                  </div>
                 }
               </>
             }
             </PageSection>
 
             {/* Make Changes */}
-            {(selectedEditOption?.name == "Bill" || (selectedEditOption?.name === "Bill Votes" && selectedB)) &&
+            {(selectedEditOption?.name === "Election" || (selectedEditOption?.name === "Election Riding" && selectedE)) &&
               <PageSection>
                 <StepHeader>3. Make Changes</StepHeader>
                 <div style={{flexDirection:"column", display:"flex"}}>
@@ -179,4 +179,4 @@ const BillDataPage = () => {
   );
 }
 
-export default BillDataPage;
+export default ElectionDataPage;

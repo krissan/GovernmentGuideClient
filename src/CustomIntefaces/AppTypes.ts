@@ -1,3 +1,4 @@
+import { ElectionRiding } from "../AppContext";
 import { messageType } from "./Enumerators";
 
 export interface Message {
@@ -11,3 +12,7 @@ export interface AlertType {
 }
 
 export type Nullable<T> = T | null;
+
+export interface LocationState {
+    repRiding:ElectionRiding
+  }

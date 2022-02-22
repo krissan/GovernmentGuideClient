@@ -11,13 +11,16 @@ import ManageDataPage from './components/Pages/ManageData/ManageDataPage';
 import GovBodyDataPage from './components/Pages/ManageData/GovBodyDataPage';
 import ContactUsPage from './components/Pages/ContactUsPage';
 import PartyDataPage from './components/Pages/ManageData/PartyDataPage';
-
-import { palette } from './customIntefaces/Palette';
-import { AlertType } from './customIntefaces/AppTypes';
-import { AppContext, RepBoundary } from './AppContext';
-import appValues from './resources/AppValues';
 import RepresentativeDataPage from './components/Pages/ManageData/RepresentativeDataPage';
 import BillDataPage from './components/Pages/ManageData/BillDataPage';
+import ElectionDataPage from './components/Pages/ManageData/ElectionDataPage';
+import ElectionCandidateDataPage from './components/Pages/ManageData/ElectionCandidateDataPage';
+import ElectionPage from './components/Pages/ElectionPage';
+
+import { palette } from './customIntefaces/Palette';
+import { AlertType, Nullable } from './customIntefaces/AppTypes';
+import { AppContext, ElectionRiding, RepBoundary } from './AppContext';
+import appValues from './resources/AppValues';
 
 function App() {
   const theme = createTheme({
@@ -27,10 +30,12 @@ function App() {
   const [repBoundaries, setRepBoundaries] = useState<Array<RepBoundary>>([]);
   const [userAddr, setUserAddr] = useState<google.maps.LatLngLiteral>({lat:43.74002711761832, lng:-79.23987572757004});
   const [alert,setAlert] = useState<AlertType>({msg:"",open:false});
+  const [selectedRB,setSelectedRB] = useState<Nullable<RepBoundary>>(null);
+
 
   return (
     <div style={{height:"100vh", width:"100vw",display:"flex", flexDirection:"column"}}>
-      <AppContext.Provider value={{repBoundaries,setRepBoundaries,userAddr,setUserAddr, alert, setAlert}}>
+      <AppContext.Provider value={{repBoundaries,setRepBoundaries,userAddr,setUserAddr, alert, setAlert, selectedRB, setSelectedRB}}>
           <ThemeProvider theme={theme}>
             <div className="App" style={{flex:1, margin:"0px " + appValues.pageMargin + "px"}}>
               <Router>
@@ -43,6 +48,9 @@ function App() {
                   <Route path="/manageData/partyData" element={<PartyDataPage/>}/>
                   <Route path="/manageData/representativeData" element={<RepresentativeDataPage/>}/>
                   <Route path="/manageData/billData" element={<BillDataPage/>}/>
+                  <Route path="/manageData/electionData" element={<ElectionDataPage/>}/>
+                  <Route path="/manageData/electionCandidateData" element={<ElectionCandidateDataPage/>}/>
+                  <Route path="/election" element={<ElectionPage/>} />
                   <Route path="/contactUs" element={<ContactUsPage/>}/>
                   <Route path="/" element={<MapPage/>} />
                 </Routes>

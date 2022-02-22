@@ -1,8 +1,9 @@
 import axios from 'axios';
-import { Biography, Boundary, Endorsement, GovBody, Party, PartyData, Platform, Rep, RepBiography, RepBoundary, RepEndorsement, ReportCard, RepPlatform, RepReportCard, Representative } from '../AppContext';
+import { Biography, Boundary, Endorsement, Platform, Representative, RepBoundary, ReportCard } from '../AppContext';
 import { ExportToCsv } from 'export-to-csv';
 import { Message, Nullable } from '../customIntefaces/AppTypes';
 import { infoEnum, messageType } from '../customIntefaces/Enumerators';
+import { GovBody, PartyData, RepBiography, RepEndorsement, RepPlatform, RepReportCard } from '../customIntefaces/APITypes';
 
 const convertTitle = (s:string) => {
   console.log(s);
@@ -19,6 +20,7 @@ export async function searchRepresentatives(location:google.maps.LatLngLiteral) 
     //Get Representatives and Boundaries by latitude longitude
     let responseData:any = await axios.get('http://localhost:8080/api/v1/representative/address?lat='+location.lat+'&lng='+location.lng)
       .then(response => {
+        console.log(response);
         return response
       }).catch(error => console.log(error));
 
@@ -27,7 +29,7 @@ export async function searchRepresentatives(location:google.maps.LatLngLiteral) 
     {
       let data = responseData?.data;
       for (let i = 0; i < data.length; i++) {
-        const rep:Rep = data[i].representative;
+        const rep:Representative = data[i].representative;
         rep.title = convertTitle(rep.title);
 
         const boundary:Boundary = data[i].boundary;
@@ -35,14 +37,18 @@ export async function searchRepresentatives(location:google.maps.LatLngLiteral) 
         boundary.outline = data[i].outline;
 
         //check and set party if it exists
+        console.log('http://localhost:8080/api/v1/party/rep?repId='+rep.id);
         let partyData:any = await axios.get('http://localhost:8080/api/v1/party/rep?repId='+rep.id)
         .then(response => {
-          return response
+          console.log(response.data);
+          return response.data
         }).catch(error => console.log(error));
 
-        if(partyData?.shortName)
+        if(partyData?.name)
         {
           rep.party = partyData.shortName;
+          rep.partyColor = partyData.partyColor;
+          rep.partyImage = partyData.partyImage;
         }
         
         let repBoundary:RepBoundary={rep:rep, boundary:boundary};
@@ -82,7 +88,7 @@ export async function searchGovBody(searchTerm:string) {
   var govBodies:Array<GovBody> = [];
   try {
     //Grab GovBodies based on search term
-    let responseData:any = await axios.get('http://localhost:8080/api/v1/govBody?searchTerm='+searchTerm.toLocaleLowerCase())
+    let responseData:any = await axios.get('http://localhost:8080/api/v1/govBody/search?searchTerm='+searchTerm.toLocaleLowerCase())
       .then(response => {
         return response
       }).catch(error => console.log(error));
@@ -97,7 +103,7 @@ export async function searchGovBody(searchTerm:string) {
           let address:string = await axios.get('http://localhost:8080/api/v1/boundary/address?boundaryId='+data[i].boundaryId)
           .then(response => {
             return response.data
-          }).catch(error => console.log(error));
+           }).catch(error => console.log(error));
 
           data[i].address = address;
           govBodies.push(data[i]);
@@ -261,7 +267,7 @@ export async function getReportCardData(govBodyId:number, type:infoEnum):Promise
   let message:Message = {type:messageType.success, msg: "" };
 
   try {
-    var repReportCards:Array<RepPlatform> = [];
+    var repReportCards:Array<RepReportCard> = [];
 
     let responseData:any = await axios.get('http://localhost:8080/api/v1/reportcard/govbody/'+type+'?govBodyId='+govBodyId)
       .then(response => {

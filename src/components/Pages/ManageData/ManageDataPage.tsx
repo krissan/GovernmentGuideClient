@@ -24,9 +24,16 @@ const ManageDataPage = () => {
         <Button variant="text" className={classes.dashBoardButton} onClick={()=>{navigate("/manageData/representativeData")}}>
           Manage GovBody Representatives
         </Button>
-
         <Button variant="text" className={classes.dashBoardButton} onClick={()=>{navigate("/manageData/billData")}}>
           Manage Bill Data
+        </Button>
+      </div>
+      <div style={{display:"flex", padding:"10px 10px"}}>
+        <Button variant="text" className={classes.dashBoardButton} onClick={()=>{navigate("/manageData/electionData")}}>
+          Manage Elections
+        </Button>
+        <Button variant="text" className={classes.dashBoardButton} onClick={()=>{navigate("/manageData/electionCandidateData")}}>
+          Manage Elections Candidates
         </Button>
       </div>
     </div>

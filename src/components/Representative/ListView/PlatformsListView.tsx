@@ -76,7 +76,7 @@ const PlatformsListView:React.FC<PlatformsProps> = ({repBoundary}) => {
                             <MiniHeader>{pl[0].category.toUpperCase()}</MiniHeader>
                         </div>
                         {pl?.map((p)=>{
-                            return <PlatformItem plat={p} />
+                            return <PlatformItem key={p.id} plat={p} />
                         })}
                     </div>);
                     }

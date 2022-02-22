@@ -4,11 +4,21 @@ import { Endorsement, Platform, ReportCard } from "../AppContext";
 //Process CSV file
 export const processCsv = async(files:Array<File>) => { 
   let results:Array<any> = [];
-  let file:File = files.filter((file:File) => { console.log(file.type === "application/vnd.ms-excel"); return file.type === "application/vnd.ms-excel" || file.type === "text/csv"})[0];
+  let file:File = files.filter((file:File) => {return file.type === "application/vnd.ms-excel" || file.type === "text/csv"})[0];
     
   const text = await file.text();
   results = parse(text, { header: true }).data as unknown as Array<any>;
+
+  results.forEach(res => {
+    Object.keys(res).forEach((key) => {
+      if(res[key] == "null")
+      {
+        res[key]=null;
+      }
+    })
+  });
   console.log(results);
+
   if(results.length > 0)
   {
     return results;

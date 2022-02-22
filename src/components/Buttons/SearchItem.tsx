@@ -17,7 +17,7 @@ const SearchItem:React.FC<SearchItemButtonProps> = ({mainText, subText1, subText
   return (
     <div>
         <Button classes={{root: selected ? `${classes.searchItem} ${classes.searchItemSelected}` : classes.searchItem}} {...props}>
-            <div style={{display:"flex", flexDirection:"column", justifyContent:"center", alignItems:"start", width:400, padding:10, textTransform: "initial", paddingBottom:"5"}}>
+            <div style={{display:"flex", flexDirection:"column", justifyContent:"center", alignItems:"start", width:"100%", padding:10, textTransform: "initial", paddingBottom:"5"}}>
                 <Typography className={classes.header}>{mainText}</Typography>
                 <Typography>{subText1}</Typography>
                 <Typography>{subText2}</Typography>

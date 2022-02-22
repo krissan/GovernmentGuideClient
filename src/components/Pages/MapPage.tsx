@@ -82,7 +82,7 @@ const MapPage = () => {
         <div style={{display:"flex"}}>        
           {/*Col 1*/}
           <div style={{flex:1}}>
-            <MapAlt boundaryToggled={boundaryToggled} setBoundaryToggled={setBoundaryToggled} />
+            <MapAlt boundaryToggled={boundaryToggled} setBoundaryToggled={setBoundaryToggled} repLoading={loadingData} />
           </div>
           {/*Row 2*/}        
           {(loadingData || repBoundaries.length > 0) &&

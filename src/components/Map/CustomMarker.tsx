@@ -1,5 +1,5 @@
 import React from "react";
-import { Marker, MarkerProps, Polygon } from "@react-google-maps/api";
+import { Marker, MarkerProps } from "@react-google-maps/api";
 import { faMapMarkerAlt } from "@fortawesome/free-solid-svg-icons";
 
 import { useTheme } from "@material-ui/core";

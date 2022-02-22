@@ -38,7 +38,6 @@ export default makeStyles((theme) => ({
     color: theme.palette.secondary.light,
   },
   textField: {
-    minWidth:400,
     "&:hover .MuiOutlinedInput-root .MuiOutlinedInput-notchedOutline": {
       borderColor: theme.palette.primary.dark
     },

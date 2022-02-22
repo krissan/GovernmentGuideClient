@@ -12,12 +12,12 @@ import CustomMarker from "./CustomMarker";
 import { mapStyle } from "../../resources/mapStyle";
 
 interface MapProps {
-
   boundaryToggled:RepBoundary|null, 
-  setBoundaryToggled:Dispatch<SetStateAction<RepBoundary | null>>
+  setBoundaryToggled:Dispatch<SetStateAction<RepBoundary | null>>,
+  repLoading: boolean
 }
 
-const MapAlt:React.FC<MapProps> = ({boundaryToggled, setBoundaryToggled}) => {
+const MapAlt:React.FC<MapProps> = ({boundaryToggled, setBoundaryToggled, repLoading}) => {
   //App Context
   const { repBoundaries, userAddr} = useAppContext();
 
@@ -35,8 +35,8 @@ const MapAlt:React.FC<MapProps> = ({boundaryToggled, setBoundaryToggled}) => {
 
   //if window dimension changes of representative changes, update map
   useEffect(() => {
-    setMapDimension({width:repBoundaries.length > 0 ? width-offsetX-appValues.sideListWidth:width-offsetX-appValues.pageMargin, height:(height-offsetY)});
-  }, [height,width, repBoundaries, offsetX, offsetY]);
+    setMapDimension({width:(repBoundaries.length > 0 || repLoading === true)  ? width-offsetX-appValues.sideListWidth:width-offsetX-appValues.pageMargin, height:(height-offsetY)});
+  }, [height,width, repBoundaries, offsetX, offsetY, repLoading]);
 
   //set shape when boundaryToggle changed
   useEffect(() => {

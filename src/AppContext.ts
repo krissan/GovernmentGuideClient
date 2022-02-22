@@ -2,44 +2,12 @@ import React, { useContext } from "react";
 import { AlertType, Nullable } from "./customIntefaces/AppTypes";
 import { platformStatus } from "./customIntefaces/Enumerators";
 
-export interface Rep {
-    id:number,
-    firstName:string,
-    lastName:string,
-    party:string,
-    gender:string,
-    email:string,
-    call:number,
-    constituencyOffice:string,
-    photo:string,
-    birthDate:Date | null,
-    deathDate:Date | null,
-    title:string
-}
- 
-export interface Party {
-    id:number,
-    parentId:number,
-    govBodyId:number,
-    name:string,
-    description:string,
-    createDate:Date | null,
-    partyColor:string
-}
-
-export interface PartyData {
-    parentId:number,
-    name:string,
-    shortName:string,
-    description:string,
-    partyColor:string
-}
-
 export interface GeoPoint {
     x: number,
     y: number,
     z: number
 }
+
 
 export interface Boundary {
     id: number,
@@ -60,81 +28,24 @@ export interface Boundary {
 }
   
 export interface RepBoundary{
-    rep:Rep,
+    rep:Representative,
     boundary:Boundary,
     platforms?:Array<Platform>,
     reportCards?:Array<ReportCard>,
     endorsements?:Array<Endorsement>,
-    biography?:Nullable<Biography>
+    biography?:Nullable<Biography>,
+    eleRiding?:Nullable<ElectionRiding>
 }
 
-export interface RepBiography {
+export interface ElectionRiding {
     id:number,
-    name:string,
-    bio:string
-}
-
-export interface RepPlatform {
-    id:number,
-    name:string,
-    platformName:string,
-    description:string,
-    status:platformStatus,
-    category:string
-}
-
-export interface RepReportCard {
-    id:number,
-    name:string,
-    reportCardName:string,
-    grade:string,
-    description:string,
-    category:string
-}
-
-export interface RepEndorsement {
-    id:number,
-    name:string,
-    description:string,
-    category:string
-}
-
-export interface GovBody {
-    id:number,
-    currentName:string,
-    startDate:Date | null,
-    endDate:Date | null,
-    updateDate:Date | null,
-    type:string,
+    electionId:number,
     boundaryId:number,
-    address?:string
-}
-
-export interface Representative {
-    id:number,
-    firstName:string,
-    lastName:string,
-    title:RepTitle,
-    party:string,
-    gender:string,
-    email:string,
-    call:number,
-    constituencyOffice:string,
-    photo:string,
-    birthDate:Date | null,
-    deathDate:Date | null,
-    createDate:Date | null,
-    updateDate:Date | null,
-}
-
-enum RepTitle {
-    COUNCILLOR,
-    MP,
-    MPP,
-    MAYOR,
-    PREMIER,
-    PRIME_MINISTER,
-    TRUSTEE
+    totalVotes:number,
+    votingPopulation: number,
+    status:string,
+    createDate: Date | null,
+    updateDate: Date |null
 }
 
 export interface Biography {
@@ -181,51 +92,23 @@ export interface ReportCard {
     category:string
 }
 
-export interface Bill {
+export interface Representative {
     id:number,
-    govBodyId:number,
-    billNum:number,
-    name:string,
-    description:string,
-    status:string,
+    firstName:string,
+    lastName:string,
+    title:string,
+    party?:string,
+    partyColor?:string,
+    partyImage?:string,
+    gender:string,
+    email:string,
+    call:number,
+    constituencyOffice:string,
+    photo:string,
+    birthDate:Date | null,
+    deathDate:Date | null,
     createDate:Date | null,
     updateDate:Date | null,
-    date:Date | null
-}
-
-export interface BillVote {
-    id:number,
-    billId:number,
-    repId:number,
-    status:string,
-    createDate:Date | null,
-    updateDate:Date | null,
-    date:Date | null,
-}
-
-export interface Organization {
-    id:number,
-    orgId:number,
-    name:string,
-    subtitle:string,
-    content:string,
-    status:string
-}
-
-export interface RepBillVote {
-    id:number,
-    billNum:string,
-    name:string,
-    description:string,
-    billStatusType:string,
-    date:Date | null,
-}
-
-export interface BillData {
-    repId:number,
-    repName:string,
-    status:string,
-    date:Date | null
 }
 
 export interface AppContextInterface {
@@ -236,7 +119,9 @@ export interface AppContextInterface {
     userAddr: google.maps.LatLngLiteral,
     setUserAddr: (c: google.maps.LatLngLiteral) => void,
     alert: AlertType,
-    setAlert: (a:AlertType) => void
+    setAlert: (a:AlertType) => void,
+    selectedRB:Nullable<RepBoundary>,
+    setSelectedRB:(rb:RepBoundary) => void
 }
 
 export const AppContext = React.createContext<AppContextInterface>({
@@ -245,7 +130,9 @@ export const AppContext = React.createContext<AppContextInterface>({
         userAddr: {lat:43.74002711761832, lng:-79.23987572757004},
         setUserAddr: () => {},
         alert: {msg:"",open:false},
-        setAlert: ()=>{}
+        setAlert: ()=>{},
+        selectedRB:null,
+        setSelectedRB:()=>{}
     });
 
 export const useAppContext = () => useContext(AppContext);

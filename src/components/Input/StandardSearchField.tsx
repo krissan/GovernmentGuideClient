@@ -16,8 +16,8 @@ const StandardSearchField:React.FC<StandardSearchFieldProps> =  ({disabledSearch
   const classes = useStyles();
 
   return (
-    <div style={{flexDirection:"row"}}>
-      <TextField placeholder="Search…" className={classes.textField} variant="outlined" InputProps={{classes:{root: classes.searchInput}} } {...props}/>
+    <div style={{display:"flex", flexDirection:"row", width:"100%"}}>
+      <TextField placeholder="Search…" style={{width:"100%"}} className={classes.textField} variant="outlined" InputProps={{classes:{root: classes.searchInput}} } {...props}/>
       {disabledSearch ? 
         <CustomIconButton disabled >
           <ButtonIcon icon={faSearch}/>
