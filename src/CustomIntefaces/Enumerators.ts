@@ -1,5 +1,4 @@
 import { faLeaf, IconDefinition } from "@fortawesome/free-solid-svg-icons";
-import { palette } from './Palette';
 
 export interface SymbolType {
     color:string,

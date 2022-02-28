@@ -19,8 +19,10 @@ import ElectionPage from './components/Pages/ElectionPage';
 
 import { palette } from './customIntefaces/Palette';
 import { AlertType, Nullable } from './customIntefaces/AppTypes';
-import { AppContext, ElectionRiding, RepBoundary } from './AppContext';
+import { AppContext, RepBoundary } from './AppContext';
 import appValues from './resources/AppValues';
+import ValidVoteCastDataPage from './components/Pages/ManageData/ValidVoteCastDataPage';
+import PartyDataCustomPage from './components/Pages/ManageData/PartyDataCustomPage';
 
 function App() {
   const theme = createTheme({
@@ -50,6 +52,10 @@ function App() {
                   <Route path="/manageData/billData" element={<BillDataPage/>}/>
                   <Route path="/manageData/electionData" element={<ElectionDataPage/>}/>
                   <Route path="/manageData/electionCandidateData" element={<ElectionCandidateDataPage/>}/>
+                  
+                  <Route path="/manageData/voteCastData" element={<ValidVoteCastDataPage/>}/>
+                  <Route path="/manageData/partyCustomData" element={<PartyDataCustomPage/>}/>
+
                   <Route path="/election" element={<ElectionPage/>} />
                   <Route path="/contactUs" element={<ContactUsPage/>}/>
                   <Route path="/" element={<MapPage/>} />

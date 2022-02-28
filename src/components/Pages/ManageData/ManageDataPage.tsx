@@ -1,14 +1,12 @@
 import { Button } from "@material-ui/core";
 import { useNavigate } from "react-router-dom";
 
-
 import useStyles from '../styles';
 
-{/*Manage Website Data*/}
+//Manage Website Data
 const ManageDataPage = () => {
   const classes = useStyles();
   let navigate = useNavigate();
-
 
   return (
     <div style={{display:"flex", flexDirection:"column"}}>
@@ -34,6 +32,14 @@ const ManageDataPage = () => {
         </Button>
         <Button variant="text" className={classes.dashBoardButton} onClick={()=>{navigate("/manageData/electionCandidateData")}}>
           Manage Elections Candidates
+        </Button>
+      </div>
+      <div style={{display:"flex", padding:"10px 10px"}}>
+        <Button variant="text" className={classes.dashBoardButton} onClick={()=>{navigate("/manageData/voteCastData")}}>
+          Custom Vote Cast Data
+        </Button>
+        <Button variant="text" className={classes.dashBoardButton} onClick={()=>{navigate("/manageData/partyCustomData")}}>
+          Party Custom Data
         </Button>
       </div>
     </div>

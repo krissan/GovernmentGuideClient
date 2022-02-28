@@ -5,7 +5,6 @@ import { faEnvelope } from "@fortawesome/free-regular-svg-icons"
 
 import StdButton from "../Buttons/StdButton";
 import CardSubHeader from "../Text/CardSubHeader";
-import Grade from "../Misc/Grade";
 import ButtonIcon from "../Buttons/ButtonIcon";
 import CustomIconButtonAlt from "../Buttons/CustomIconButtonAlt";
 import MiniHeader from "../Text/MiniHeader";
@@ -32,7 +31,7 @@ const RepresentativeCard:React.FC<RepCardProps> = ({repBoundary, boundaryToggled
     const [expanded, setExpanded] = useState<boolean>(false);
     const [brightness, setBrightness] = useState<number>(1);
     const [elevation, setElevation] = useState<number>(1);
-    const [partyColor, setPartyColor] = useState<string>(repBoundary.rep.partyColor ? "#"+repBoundary.rep.partyColor : "black")
+    const partyColor = repBoundary.rep.partyColor ? "#"+repBoundary.rep.partyColor : "black";
 
     const rep:Representative = repBoundary.rep;
     const boundary:Boundary = repBoundary.boundary;

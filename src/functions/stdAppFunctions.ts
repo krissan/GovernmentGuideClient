@@ -11,7 +11,7 @@ export const processCsv = async(files:Array<File>) => {
 
   results.forEach(res => {
     Object.keys(res).forEach((key) => {
-      if(res[key] == "null")
+      if(res[key] === "null")
       {
         res[key]=null;
       }

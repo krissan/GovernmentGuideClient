@@ -118,7 +118,7 @@ const ElectionDataPage = () => {
 
             {/* Select Criteria and Data type to edit*/}
             <PageSection>
-            { selectedGB &&
+            {selectedGB &&
              <>
                 <StepHeader>2. Select Criteria</StepHeader>
                 <div style={{flexDirection:"column", display:"flex"}}>
@@ -132,7 +132,7 @@ const ElectionDataPage = () => {
                   <div style={{flexDirection:"column", display:"flex"}}>
                     {/* Search Field */}
                     <StepSubHeader>Search Election</StepSubHeader>
-                    <SearchElectionForm setSelected={(x:number | null)=>{setSelectedE(x);clear();}} selected={selectedE} govBodyId={selectedGB} refresh={selectedEditOption.name=="Election Riding"}/>
+                    <SearchElectionForm setSelected={(x:number | null)=>{setSelectedE(x);clear();}} selected={selectedE} govBodyId={selectedGB} refresh={selectedEditOption.name==="Election Riding"}/>
                   </div>
                 }
               </>

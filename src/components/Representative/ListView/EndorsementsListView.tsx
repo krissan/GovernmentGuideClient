@@ -43,6 +43,8 @@ const EndorsementsListView:React.FC<EndorsementsProps> = ({repBoundary}) => {
         }
 
         fetchEndorsements();
+
+        //eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
     //Create list of a list of report cards grouped by category
@@ -81,6 +83,7 @@ const EndorsementsListView:React.FC<EndorsementsProps> = ({repBoundary}) => {
                         })}
                     </div>);
                 }
+                return <div></div>;
             })
         :
             <div>Endorsement not found</div>

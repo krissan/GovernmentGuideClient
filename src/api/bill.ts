@@ -85,7 +85,7 @@ export async function uploadBills(bills:Array<BillData>, govBodyId:number):Promi
   let message:Message= {type:messageType.success, msg: "" };
   
   try{
-    const requestParam = {govBodyId: govBodyId, bills:bills.filter((x)=>{if(x.billNum == null){return false} return true})};
+    const requestParam = {govBodyId: govBodyId, bills:bills.filter((x)=>{return !(x.billNum == null)})};
 
     console.log(requestParam);
 
@@ -165,7 +165,7 @@ export async function uploadBillVotes(billVotes:Array<RepBillVote>, govBodyId:nu
   let message:Message= {type:messageType.success, msg: "" };
   
   try{
-    const requestParam = {govBodyId: govBodyId, billId: billId, votes:billVotes.filter((x)=>{if(x.repName == null){return false} return true})};
+    const requestParam = {govBodyId: govBodyId, billId: billId, votes:billVotes.filter((x)=>{return !(x.repName == null)})};
 
     console.log(requestParam);
 

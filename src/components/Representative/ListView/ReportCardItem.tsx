@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { useTheme } from "@material-ui/core";
 
 import MiniSubHeader from "../../Text/MiniSubHeader";

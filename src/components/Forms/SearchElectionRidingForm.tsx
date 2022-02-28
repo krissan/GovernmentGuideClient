@@ -10,7 +10,7 @@ interface SearchFormProps {
     electionId: number
 }
 
-const SearchElectionRidingForm:React.FC<SearchFormProps> = ({ setSelected, selected, electionId }) => {
+const SearchElectionRidingForm:React.FC<SearchFormProps> = ({ setSelected, selected, electionId}) => {
     const [electionRidingList, setElectionRidingList] = useState<Array<ElectionRidingData>>([]);
     const [searchTerm, setSearchTerm] = useState<string>("");
     
@@ -23,12 +23,12 @@ const SearchElectionRidingForm:React.FC<SearchFormProps> = ({ setSelected, selec
     const onSearch = async () => {
         let res:Array<ElectionRidingData> = await searchElectionRiding(searchTerm, electionId); 
         setSelected(null);
-
+        console.log(res);
         if(res)
         {
             setElectionRidingList(res)
         }
-      }
+    }
 
     return (     
     <>   

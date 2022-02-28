@@ -5,7 +5,6 @@ import AdditionalInfoText from "./AdditionalInfoText";
 
 import { StdProps } from "../../customIntefaces/StdProps";
 import useStyles from './styles';
-import { __String } from "typescript";
 
 interface Props extends StdProps {
   additionalInfo?:string | null,

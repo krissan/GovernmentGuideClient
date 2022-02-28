@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { ExportToCsv } from 'export-to-csv';
-import { Representative } from '../AppContext';
-import { Election, ElectionCandidateData, ElectionData, ElectionRidingData } from '../customIntefaces/APITypes';
+
+import { Election, ElectionCandidateData, ElectionData, ElectionRidingData, RepresentativeData } from '../customIntefaces/APITypes';
 import { Message,  } from '../customIntefaces/AppTypes';
 import {  messageType } from '../customIntefaces/Enumerators';
 
@@ -49,6 +49,8 @@ export async function searchElectionRiding(searchTerm:string, electionId:number)
       .then(response => {
         return response
       }).catch(error => console.log(error));
+
+      console.log(responseData);
 
     //Find Government Bodies Province and add at it object
     if(responseData?.data !== null && responseData?.data.length > 0)
@@ -121,7 +123,7 @@ export async function uploadElections(elections:Array<ElectionData>, govBodyId:n
   let message:Message= {type:messageType.success, msg: "" };
   
   try{
-    const requestParam = {govBodyId: govBodyId, elections:elections.filter((x)=>{if(x.startDate == null){return false} return true})};
+    const requestParam = {govBodyId: govBodyId, elections:elections.filter((x)=>{return !(x.startDate == null)})};
 
     console.log(requestParam);
 
@@ -193,7 +195,7 @@ export async function uploadElectionRiding(electionRidings:Array<ElectionRidingD
   let message:Message= {type:messageType.success, msg: "" };
   
   try{
-    const requestParam = {electionId: electionId, electionRidings:electionRidings.filter((x)=>{if(x.boundaryId == null){return false} return true})};
+    const requestParam = {electionId: electionId, electionRidings:electionRidings.filter((x)=>{return !(x.boundaryId == null)})};
 
     console.log(requestParam);
 
@@ -215,20 +217,20 @@ export async function uploadElectionRiding(electionRidings:Array<ElectionRidingD
 }
 
 //get Election Candidates of Government Body
-export async function getElectionCandidateData(govBodyId:number):Promise<Message> { 
+export async function getElectionCandidateData(eleRidingId:number):Promise<Message> { 
   let message:Message = {type:messageType.success, msg: "" };
 
-  var govBodyElections:Array<ElectionCandidateData> = [];
+  var govBodyElectionCandidates:Array<ElectionCandidateData> = [];
 
   try {
-    let responseData:any = await axios.get('http://localhost:8080/api/v1/electioncandidate/govbody/data?govBodyId='+govBodyId)
+    let responseData:any = await axios.get('http://localhost:8080/api/v1/electioncandidate/govbody/data?eleRidingId='+eleRidingId)
       .then(response => {
         return response
       }).catch(error => console.log(error));
 
     if(responseData?.data !== null && responseData?.data.length > 0)
     {
-      govBodyElections = responseData?.data;
+      govBodyElectionCandidates = responseData?.data;
     }
 
 
@@ -243,9 +245,9 @@ export async function getElectionCandidateData(govBodyId:number):Promise<Message
       // headers: ['Column 1', 'Column 2', etc...] <-- Won't work with useKeysAsHeaders present!
     };
     const csvExporter = new ExportToCsv(options);
-    if(govBodyElections && govBodyElections.length > 0)
+    if(govBodyElectionCandidates && govBodyElectionCandidates.length > 0)
     {
-      csvExporter.generateCsv(govBodyElections);
+      csvExporter.generateCsv(govBodyElectionCandidates);
     }
     else
     {
@@ -265,7 +267,7 @@ export async function uploadElectionCandidates(electionCandidates:Array<Election
   let message:Message= {type:messageType.success, msg: "" };
   
   try{
-    const requestParam = {electionRidingId: electionRidingId, electionCandidates:electionCandidates.filter((x)=>{if(x.repId == null){return false} return true})};
+    const requestParam = {electionRidingId: electionRidingId, electionCandidates:electionCandidates.filter((x)=>{return !(x.repId == null)})};
 
     console.log(requestParam);
 
@@ -290,10 +292,10 @@ export async function uploadElectionCandidates(electionCandidates:Array<Election
 export async function getElectionRepresentativesData(electionRidingId:number):Promise<Message> { 
   let message:Message = {type:messageType.success, msg: "" };
 
-  var electionReps:Array<Representative> = [];
+  var electionReps:Array<RepresentativeData> = [];
 
   try {
-    let responseData:any = await axios.get('http://localhost:8080/api/v1/api/v1/representative/electionriding?electionRidingId='+electionRidingId)
+    let responseData:any = await axios.get('http://localhost:8080/api/v1/representative/electionriding?electionRidingId='+electionRidingId)
       .then(response => {
         return response
       }).catch(error => console.log(error));

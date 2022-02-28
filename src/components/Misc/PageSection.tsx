@@ -5,7 +5,7 @@ const PageSection:React.FC = ({children}) => {
 
 
   return (
-    <div style={{width:"400px", marginRight:"40px"}}>
+    <div style={{width:"350px", marginRight:"40px"}}>
       {children}
     </div>
   );

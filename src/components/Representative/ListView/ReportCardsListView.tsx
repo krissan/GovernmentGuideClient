@@ -43,6 +43,8 @@ const ReportCardsListView:React.FC<ReportCardProps> = ({repBoundary}) => {
         }
 
         fetchReportCards();
+
+        //eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
     //Create list of a list of report cards grouped by category
@@ -69,7 +71,7 @@ const ReportCardsListView:React.FC<ReportCardProps> = ({repBoundary}) => {
         :
         <>
         {reportCards && reportCards.length > 0 ?
-            reportCards?.map((pl )=>{
+            reportCards?.map((pl)=>{
                 if(pl[0]) {
                     return (<div key={pl[0].id} style={{paddingBottom:10}}>
                         <div style={{display:"flex"}}>
@@ -81,6 +83,7 @@ const ReportCardsListView:React.FC<ReportCardProps> = ({repBoundary}) => {
                         })}
                     </div>);
                 }
+                return <div></div>;
             })
         :
             <div>Report Card not found</div>

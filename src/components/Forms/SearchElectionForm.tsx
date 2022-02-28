@@ -7,12 +7,11 @@ interface SearchFormProps {
     setSelected: (x:number|null) => void, 
     selected: number | null,
     govBodyId:number,
-    refresh: boolean
+    refresh?: boolean
 }
 
-const SearchElectionForm:React.FC<SearchFormProps> = ({ setSelected, selected, govBodyId, refresh}) => {
+const SearchElectionForm:React.FC<SearchFormProps> = ({ setSelected, selected, govBodyId, refresh=true}) => {
     const [electionList, setElectionList] = useState<Array<Election>>([]);
-    const [searchTerm, setSearchTerm] = useState<string>("");
     
     /*const handleSubmit = async(e:React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
@@ -21,7 +20,7 @@ const SearchElectionForm:React.FC<SearchFormProps> = ({ setSelected, selected, g
 
     useEffect(()=>{
         const onSearch = async () => {
-            if(refresh == true){
+            if(refresh === true){
                 let res:Array<Election> = await searchElection(govBodyId); 
                 setSelected(null);
         
@@ -33,10 +32,12 @@ const SearchElectionForm:React.FC<SearchFormProps> = ({ setSelected, selected, g
           }
 
         onSearch();
+
+        //eslint-disable-next-line react-hooks/exhaustive-deps
     },[govBodyId, refresh]);
 
     return (     
-    <>   
+    <>  
         {/* Select Results */}
         {
             electionList.map((e)=>{

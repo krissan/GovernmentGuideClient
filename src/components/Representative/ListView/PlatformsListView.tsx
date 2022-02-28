@@ -43,6 +43,7 @@ const PlatformsListView:React.FC<PlatformsProps> = ({repBoundary}) => {
         }
 
         fetchPlatforms();
+        //eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
     //Create list of a list of platforms grouped by category
@@ -80,6 +81,7 @@ const PlatformsListView:React.FC<PlatformsProps> = ({repBoundary}) => {
                         })}
                     </div>);
                     }
+                    return <div></div>;
                 })
             :
             <div>Platform not found</div>

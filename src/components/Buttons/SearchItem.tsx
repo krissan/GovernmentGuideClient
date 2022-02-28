@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { Button, ButtonProps, Typography } from "@material-ui/core";
 
 import useStyles from './styles';

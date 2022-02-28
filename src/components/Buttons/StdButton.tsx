@@ -5,7 +5,6 @@ import ScaleLoader from "react-spinners/ClipLoader";
 import useStyles from './styles';
 import { Message } from "../../customIntefaces/AppTypes";
 import { messageType } from "../../customIntefaces/Enumerators";
-import { Color } from "@mui/material";
 
 export interface StdButtonProps extends ButtonProps {
   onHoverColor?:string,
@@ -50,7 +49,7 @@ const StdButton:React.FC<StdButtonProps> = ({onHoverColor, classes, loading=fals
         }
       </Button>
       {(message && message.msg !== '') &&
-        <div style={{padding:"2px 5px", color:theme.palette.primary.contrastText, fontWeight:"500", backgroundColor:getColor()}}>{message.msg}</div>
+        <div style={{flex:1, padding:"2px 5px", color:theme.palette.primary.contrastText, fontWeight:"500", backgroundColor:getColor()}}>{message.msg}</div>
       }
     </div>
   );

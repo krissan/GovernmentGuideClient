@@ -8,13 +8,13 @@ import StepSubHeader from "../../Text/StepSubHeader";
 import StdButton from "../../Buttons/StdButton";
 import StdDropButton from "../../Buttons/StdDropButton";
 
-import { Representative } from "../../../AppContext";
-import { getRepresentativeData, searchGovBody, uploadRepresentatives } from "../../../api/representative";
+import { getRepresentativeData, uploadRepresentatives } from "../../../api/representative";
 import { processCsv } from "../../../functions/stdAppFunctions";
 import { Message } from "../../../customIntefaces/AppTypes";
 import StdText from "../../Text/StdText";
 import SearchGovBodyForm from "../../Forms/SearchGovBodyForm";
 import PageSection from "../../Misc/PageSection";
+import { RepresentativeData } from "../../../customIntefaces/APITypes";
 
 const RepresentativeDataPage = () => {
   const [selectedGB, setSelectedGB] = useState<number|null>(null);
@@ -35,7 +35,7 @@ const RepresentativeDataPage = () => {
 
       if(selectedGB)
       {
-        let reps:Array<Representative> = results as Array<Representative>;
+        let reps:Array<RepresentativeData> = results as Array<RepresentativeData>;
 
         message = await uploadRepresentatives(reps, selectedGB);
       

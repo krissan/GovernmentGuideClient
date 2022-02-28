@@ -1,5 +1,5 @@
 import React from "react";
-import { TextField, StandardTextFieldProps, InputLabel, TextFieldProps } from '@material-ui/core';
+import { StandardTextFieldProps, InputLabel } from '@material-ui/core';
 
 import useStyles from './styles';
 import StandardInput from "./StandardInput";

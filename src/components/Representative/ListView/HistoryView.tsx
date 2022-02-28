@@ -42,6 +42,8 @@ const HistoryView:React.FC<HistoryProps> = ({repBoundary}) => {
         }
 
         fetchBiography();
+
+        //eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
   return (

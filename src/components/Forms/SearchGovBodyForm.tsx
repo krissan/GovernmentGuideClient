@@ -15,7 +15,6 @@ const SearchGovBodyForm:React.FC<SearchFormProps> = ({ setSelected, selected}) =
     
     const handleSubmit = async(e:React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        let res:Array<GovBody> = await searchGovBody(searchTerm); 
         onSearch();
     }
 

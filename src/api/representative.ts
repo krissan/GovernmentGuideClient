@@ -1,9 +1,10 @@
 import axios from 'axios';
 import { Biography, Boundary, Endorsement, Platform, Representative, RepBoundary, ReportCard } from '../AppContext';
 import { ExportToCsv } from 'export-to-csv';
+
 import { Message, Nullable } from '../customIntefaces/AppTypes';
 import { infoEnum, messageType } from '../customIntefaces/Enumerators';
-import { GovBody, PartyData, RepBiography, RepEndorsement, RepPlatform, RepReportCard } from '../customIntefaces/APITypes';
+import { GovBody, PartyData, RepBiography, RepEndorsement, RepPlatform, RepReportCard, RepresentativeData } from '../customIntefaces/APITypes';
 
 const convertTitle = (s:string) => {
   console.log(s);
@@ -24,6 +25,8 @@ export async function searchRepresentatives(location:google.maps.LatLngLiteral) 
         return response
       }).catch(error => console.log(error));
 
+    console.log(responseData);
+
     //Format Representative and Boundaries add photo and default boundaryToggle
     if(responseData?.data !== null && responseData?.data.length > 0)
     {
@@ -37,10 +40,8 @@ export async function searchRepresentatives(location:google.maps.LatLngLiteral) 
         boundary.outline = data[i].outline;
 
         //check and set party if it exists
-        console.log('http://localhost:8080/api/v1/party/rep?repId='+rep.id);
         let partyData:any = await axios.get('http://localhost:8080/api/v1/party/rep?repId='+rep.id)
         .then(response => {
-          console.log(response.data);
           return response.data
         }).catch(error => console.log(error));
 
@@ -50,9 +51,9 @@ export async function searchRepresentatives(location:google.maps.LatLngLiteral) 
           rep.partyColor = partyData.partyColor;
           rep.partyImage = partyData.partyImage;
         }
-        
-        let repBoundary:RepBoundary={rep:rep, boundary:boundary};
-        repBoundary.rep.photo = repBoundary.rep.photo.replace("https://contrib.wp.intra.prod-","https://www.");
+
+        rep.photo = rep.photo.replace("https://contrib.wp.intra.prod-","https://www.");
+        let repBoundary:RepBoundary={rep:rep, boundary:boundary, eleRiding: data[i].repEleRiding};
         repBoundaries.push(repBoundary);
       }
     }
@@ -174,7 +175,7 @@ export async function uploadBiographies(repBios:Array<RepBiography>, govBodyId:n
 
     console.log(requestParam);
 
-    let x = await axios.request({
+    await axios.request({
         method: 'post',
         url: 'http://localhost:8080/api/v1/biography/govBody/'+type,
         data: requestParam,
@@ -245,7 +246,7 @@ export async function uploadPlatforms(repPlats:Array<RepPlatform>, govBodyId:num
   try{
     const requestParam = {govBodyId: govBodyId, orgId:null, platforms:repPlats.filter((x)=>{if(x.id.toString() === '' || x.id == null){return false} return true})};
     console.log(requestParam);
-    let x = await axios.request({
+    await axios.request({
         method: 'post',
         url: 'http://localhost:8080/api/v1/platform/govbody/'+type,
         data: requestParam,
@@ -315,7 +316,7 @@ export async function uploadReportCards(repReportCards:Array<RepReportCard>, gov
   try{
     const requestParam = {govBodyId: govBodyId, orgId: null, reportCards:repReportCards.filter((x)=>{if(x.id.toString() === '' || x.id == null){return false} return true})};
 console.log(requestParam);
-    let x = await axios.request({
+    await axios.request({
         method: 'post',
         url: 'http://localhost:8080/api/v1/reportcard/govbody/'+type,
         data: requestParam,
@@ -575,7 +576,7 @@ export async function uploadParties(parties:Array<PartyData>, govBodyId:number):
 export async function getRepresentativeData(govBodyId:number):Promise<Message> { 
   let message:Message = {type:messageType.success, msg: "" };
 
-  var reps:Array<Representative> = [];
+  var reps:Array<RepresentativeData> = [];
 
   try {
     let responseData:any = await axios.get('http://localhost:8080/api/v1/representative/govbody?govBodyId='+govBodyId)
@@ -619,11 +620,11 @@ export async function getRepresentativeData(govBodyId:number):Promise<Message> {
 }
 
 //process parties
-export async function uploadRepresentatives(reps:Array<Representative>, govBodyId:number):Promise<Message> { 
+export async function uploadRepresentatives(reps:Array<RepresentativeData>, govBodyId:number):Promise<Message> { 
   let message:Message= {type:messageType.success, msg: "" };
 
   try{
-    const requestParam = {govBodyId: govBodyId, representatives:reps.filter((x)=>{if(x.id == null){return false} return true})};
+    const requestParam = {govBodyId: govBodyId, representatives:reps.filter((x)=>{return x.firstName != null;})};
     console.log(requestParam);
 
     await axios.request({

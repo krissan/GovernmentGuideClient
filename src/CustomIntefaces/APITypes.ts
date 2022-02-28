@@ -17,12 +17,12 @@ export interface Party {
 }
 
 export interface PartyData {
-    parentId:number,
-    name:string,
-    shortName:string,
-    description:string,
-    partyColor:string,
-    partyImage:string
+    parentId:number|null,
+    name:string|null,
+    shortName:string|null,
+    description:string|null,
+    partyColor:string|null,
+    partyImage:string|null
 }
 
 export interface RepBiography {
@@ -160,4 +160,22 @@ export interface ElectionCandidateData {
     repName: string,
     partyId: number,
     votes:number
+}
+
+
+export interface RepresentativeData {
+    repId:number,
+    firstName:string,
+    lastName:string,
+    title:string,
+    party?:string,
+    partyColor?:string,
+    partyImage?:string,
+    gender:string,
+    email:string,
+    call:number,
+    constituencyOffice:string,
+    photo:string,
+    birthDate:Date | null,
+    deathDate:Date | null,
 }

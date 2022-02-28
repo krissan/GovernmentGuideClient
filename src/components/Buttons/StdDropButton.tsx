@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import { ButtonProps } from "@material-ui/core";
 
 import useStyles from './styles';
 import StdButton, { StdButtonProps } from "./StdButton";

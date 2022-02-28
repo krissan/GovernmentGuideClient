@@ -140,7 +140,7 @@ const BillDataPage = () => {
             </PageSection>
 
             {/* Make Changes */}
-            {(selectedEditOption?.name == "Bill" || (selectedEditOption?.name === "Bill Votes" && selectedB)) &&
+            {(selectedEditOption?.name === "Bill" || (selectedEditOption?.name === "Bill Votes" && selectedB)) &&
               <PageSection>
                 <StepHeader>3. Make Changes</StepHeader>
                 <div style={{flexDirection:"column", display:"flex"}}>

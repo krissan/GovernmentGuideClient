@@ -1,7 +1,5 @@
 import axios from 'axios';
-import { ExportToCsv } from 'export-to-csv';
-import { Message, Nullable } from '../customIntefaces/AppTypes';
-import { infoEnum, messageType } from '../customIntefaces/Enumerators';
+import { Nullable } from '../customIntefaces/AppTypes';
 import { BoundaryGovBodyName } from '../customIntefaces/APITypes';
 
 //Grab boundary name and govbody name

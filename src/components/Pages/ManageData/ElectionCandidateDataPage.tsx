@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { faDownload, faUpload } from "@fortawesome/free-solid-svg-icons"
 
 import PageHeader from "../../Text/PageHeader";
@@ -17,8 +17,7 @@ import { processCsv } from "../../../functions/stdAppFunctions";
 import { Message } from "../../../customIntefaces/AppTypes";
 import { getElectionCandidateData, getElectionRepresentativesData, uploadElectionCandidates } from "../../../api/election";
 import { uploadRepresentatives } from "../../../api/representative";
-import { Representative } from "../../../AppContext";
-import { ElectionCandidateData } from "../../../customIntefaces/APITypes";
+import { ElectionCandidateData, RepresentativeData } from "../../../customIntefaces/APITypes";
 import PageSection from "../../Misc/PageSection";
 
 interface EditOption {
@@ -27,13 +26,18 @@ interface EditOption {
 }
 
 const ElectionCandidateDataPage = () => {
+  const editOptions:Array<EditOption> = [
+    {name:"Election Candidates", instruction:"TBD"},
+    {name:"Representatives", instruction:"TBD"},
+  ];
+
   const [selectedGB, setSelectedGB] = useState<number|null>(null);
 
   const [selectedE, setSelectedE] = useState<number|null>(null);
 
   const [selectedER, setSelectedER] = useState<number|null>(null);
 
-  const [selectedEditOption, setSelectedEditOption] = useState<EditOption | null>(null);
+  const [selectedEditOption, setSelectedEditOption] = useState<EditOption | null>(editOptions[0]);
 
   const [getLoading, setGetLoading] = useState<boolean>(false);
   const [uploadLoading, setUploadLoading] = useState<boolean>(false);
@@ -54,7 +58,7 @@ const ElectionCandidateDataPage = () => {
       {
         if(selectedEditOption?.name === "Representatives" && selectedER)
         {
-          let reps:Array<Representative> = results as Array<Representative>;
+          let reps:Array<RepresentativeData> = results as Array<RepresentativeData>;
 
           message = await uploadRepresentatives(reps, selectedGB)
         }
@@ -82,7 +86,7 @@ const ElectionCandidateDataPage = () => {
 
       if(selectedGB)
       {
-        if(selectedEditOption?.name === "Election" && selectedER)
+        if(selectedEditOption?.name === "Representatives" && selectedER)
         {
           message = await getElectionRepresentativesData(selectedER);
         }
@@ -105,10 +109,9 @@ const ElectionCandidateDataPage = () => {
     setUploadLoading(false);
   }
 
-  const editOptions:Array<EditOption> = [
-    {name:"Election Candidates", instruction:"TBD"},
-    {name:"Representatives", instruction:"TBD"},
-  ];
+  useEffect(()=>{
+    console.log(selectedGB)
+  },[selectedGB]);
 
   return (
     <div style={{display:"flex"}}>
@@ -125,30 +128,26 @@ const ElectionCandidateDataPage = () => {
               <SearchGovBodyForm setSelected={(x:number | null)=>{setSelectedGB(x);clear();setSelectedE(null);setSelectedER(null);}} selected={selectedGB}/>
             </PageSection>
 
-            {/* Select Criteria and Data type to edit*/}
-            <PageSection>
-            { selectedGB &&
-             <>
-                <StepHeader>2. Select Criteria</StepHeader>
-                <div style={{flexDirection:"column", display:"flex"}}>
-                    {editOptions.map((o:EditOption)=>{
-                      return <SearchItem key={o.name} mainText={o.name}  selected={selectedEditOption ? o.name===selectedEditOption.name : false} onClick={()=>{setSelectedEditOption(o);clear();}}/>
-                    })}
-                </div>
+            {/* Select Criteria and Data type to edit and Election*/}
+            {selectedGB &&
+              <PageSection>
+                  <>
+                    <StepHeader>2. Select Criteria</StepHeader>
+                    <div style={{flexDirection:"column", display:"flex"}}>
+                        {editOptions.map((o:EditOption)=>{
+                          return <SearchItem key={o.name} mainText={o.name}  selected={selectedEditOption ? o.name===selectedEditOption.name : false} onClick={()=>{setSelectedEditOption(o);clear();}}/>
+                        })}
+                    </div>
 
-                {/*Search for Election*/}
-                {selectedGB &&
-                  <div style={{flexDirection:"column", display:"flex"}}>
-                    {/* Search Field */}
-                    <StepSubHeader>Search Election</StepSubHeader>
-                    <SearchElectionForm setSelected={(x:number | null)=>{setSelectedE(x);clear();setSelectedER(null);}} selected={selectedE} govBodyId={selectedGB} refresh={selectedEditOption?.name == "Election Candidates"}/>
-                  </div>
-                }
-
-              </>
+                    {/*Search for Election*/}
+                    <div style={{flexDirection:"column", display:"flex"}}>
+                      {/* Search Field */}
+                      <StepSubHeader>Search Election</StepSubHeader>
+                      <SearchElectionForm setSelected={(x:number | null)=>{setSelectedE(x);clear();setSelectedER(null);}} selected={selectedE} govBodyId={selectedGB}/>
+                    </div>
+                  </>
+              </PageSection>
             }
-            </PageSection>
-
 
             {/*Search for Election Rididng*/}
             {(selectedGB && selectedE) &&
