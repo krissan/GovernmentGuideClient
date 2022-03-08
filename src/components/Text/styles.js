@@ -5,11 +5,12 @@ export default makeStyles((theme) => ({
         color: theme.palette.primary.dark,
         fontWeight:"bold"
     },
-    additonalInfo: {
+    additionalInfo: {
         color: theme.palette.primary.dark,
     },
     subHeader: {
-        color:theme.palette.primary.dark
+        color:theme.palette.primary.dark,
+        fontWeight:"bold"
     },
     stepHeader: {
         color:theme.palette.secondary.main,

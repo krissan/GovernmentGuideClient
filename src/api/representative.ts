@@ -7,7 +7,6 @@ import { infoEnum, messageType } from '../customIntefaces/Enumerators';
 import { GovBody, PartyData, RepBiography, RepEndorsement, RepPlatform, RepReportCard, RepresentativeData } from '../customIntefaces/APITypes';
 
 const convertTitle = (s:string) => {
-  console.log(s);
   return s.replaceAll("_", " ")/*charAt(0).toUpperCase() + s.slice(1).toLowerCase()*/;
 }
 
@@ -24,8 +23,6 @@ export async function searchRepresentatives(location:google.maps.LatLngLiteral) 
         console.log(response);
         return response
       }).catch(error => console.log(error));
-
-    console.log(responseData);
 
     //Format Representative and Boundaries add photo and default boundaryToggle
     if(responseData?.data !== null && responseData?.data.length > 0)

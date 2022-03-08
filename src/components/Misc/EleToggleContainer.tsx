@@ -10,14 +10,15 @@ import HistoryView from "../Representative/ListView/HistoryView";
 import useStyles from './styles';
 import { MailTo } from "../../functions/stdAppFunctions";
 import { eleTabEnum, eleTabs, eleTabType} from "../../customIntefaces/TabType";
-import { ElectionCandidate } from "../../customIntefaces/APITypes";
+import { ElectionCandidate, ElectionCandidateData } from "../../customIntefaces/APITypes";
+import { StdProps } from "../../customIntefaces/StdProps";
 
-interface ETCProps {
-  eleCans:Array<ElectionCandidate>,
+interface ETCProps extends StdProps {
+  eleCans:Array<ElectionCandidateData>,
 }
 
 //Representative Advanced Info
-const EleToggleContainer:React.FC<ETCProps> = ({eleCans}) => {
+const EleToggleContainer:React.FC<ETCProps> = ({eleCans, style}) => {
     const classes = useStyles();
     const [tab, setTab] = useState<eleTabType>(eleTabs[0]);
     const [disputeLoading, setDisputeLoading] = useState<boolean>(false);
@@ -71,7 +72,7 @@ const EleToggleContainer:React.FC<ETCProps> = ({eleCans}) => {
     }
 
   return (
-    <div>
+    <div style={style}>
         <ToggleButtonGroup
             value={tab}
             exclusive
@@ -80,7 +81,7 @@ const EleToggleContainer:React.FC<ETCProps> = ({eleCans}) => {
             >
             {/*ToggleButton  value="time line">Time Line</ToggleButton>*/}
             {eleTabs.map((tab)=>{
-              return <ToggleButton key={tab.id} value={tab}>{tab.name}</ToggleButton>
+              return <ToggleButton style={{minWidth:"200px"}} key={tab.id} value={tab}>{tab.name}</ToggleButton>
             })}
         </ToggleButtonGroup>
         <div style={{paddingLeft:20, height:200, display:"flex", flexDirection:"column", justifyContent:"space-between"}}>

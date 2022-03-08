@@ -12,8 +12,14 @@ import CustomIconButton from '../Buttons/CustomIconButton';
 import ButtonIcon from '../Buttons/ButtonIcon';
 import { faTimes } from '@fortawesome/free-solid-svg-icons';
 
+interface NavItem {
+    menuTitle: string,
+    pageURL: string,
+    id:string
+}
+
 //Main Menu Items
-const menuItems = [
+const menuItems:Array<NavItem> = [
     {
         menuTitle: "Map",
         pageURL: "/",
@@ -37,7 +43,7 @@ const menuItems = [
 ];
 
 //Auth Items
-const authItems = [
+const authItems:Array<NavItem> = [
     {
         menuTitle: "Login",
         pageURL: "/login",
@@ -63,20 +69,26 @@ const NavBar = () => {
     //menu button
     const [anchorEl, setAnchorEl] = useState<Element|null>(null);
     const open = Boolean(anchorEl);
-    //page
+
+    //get selected page
     const getMenuIdByPage = () => {
         if(location.pathname)
         {
             let locBase = location.pathname.split("/")[1];
 
-            return allItems.filter((x)=>{
+            let items:Array<NavItem> = allItems.filter((x)=>{
                 return x.pageURL.replace("/","") === locBase;
-            })[0].id;
+            });
+
+            if(items.length > 0)
+            {
+                return items[0].id
+            }
         }
         
-        return allItems[0].id
+        return null;
     }
-    const [selectedPage, setSelectedPage] = useState<String>(getMenuIdByPage());
+    const [selectedPage, setSelectedPage] = useState<string | null>(getMenuIdByPage());
 
 
 

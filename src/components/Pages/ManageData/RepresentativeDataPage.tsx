@@ -18,7 +18,6 @@ import { RepresentativeData } from "../../../customIntefaces/APITypes";
 
 const RepresentativeDataPage = () => {
   const [selectedGB, setSelectedGB] = useState<number|null>(null);
-  
   const [getLoading, setGetLoading] = useState<boolean>(false);
   const [uploadLoading, setUploadLoading] = useState<boolean>(false);
   const [getMessage, setGetMessage] = useState<Message|null>();
@@ -41,12 +40,12 @@ const RepresentativeDataPage = () => {
       
         setUploadMessage(message);
       }
-      setUploadLoading(false);
     }
     catch(e)
     {
       console.log(e);
     }
+    setUploadLoading(false);
   }
 
   const getData = async() => {

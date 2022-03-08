@@ -36,7 +36,7 @@ const ContactUsPage = () => {
     <div style={{display:"flex"}}>
       <div style={{flex:1}}>
         {/*Title*/}
-        <PageHeader additionalInfo="*Accurate Information Required for use in Autocompleting Petitions etc">
+        <PageHeader additionalInfo="*Accurate information required for use in auto-completing petitions etc">
           Contact Us
         </PageHeader>
         {/*Form*/}

@@ -9,35 +9,39 @@ import { useAppContext } from "../../AppContext";
 import { useEffect, useState } from "react";
 import { ScaleLoader } from "react-spinners";
 import { useTheme } from "@material-ui/core";
-import { BoundaryGovBodyName, ElectionCandidate } from "../../customIntefaces/APITypes";
+import { BoundaryGovBodyName, ElectionCandidateData } from "../../customIntefaces/APITypes";
 import { findBoundaryAndGovBodyName } from "../../api/boundary";
 import { Nullable } from "../../customIntefaces/AppTypes";
+import { getECsByER } from "../../api/election";
 
 interface CompareOption {
   name:string,
 }
 
+interface ElectionCandidateItem extends ElectionCandidateData {
+  toggled?:boolean
+}
+
 const ElectionPage = () => {
-  const { selectedRB } = useAppContext();
+  const { selectedER } = useAppContext();
   const theme = useTheme();
   const [govBodyName, setGovBodyName] = useState<string | null>(null);
   const [boundaryName, setBoundaryName] = useState<string | null>(null);
   const [cmprAllTgl, setCmprAllTgl] = useState<boolean>(true);
-  const [eleCans, setEleCans] = useState<Array<ElectionCandidate>>([]);
-  const [selectedECs, setSelectedECs] = useState<Array<number>>([]);
+  const [eleCans, setEleCans] = useState<Array<ElectionCandidateItem>>([]);
   const [loading, setLoading] = useState<boolean>(false);
   
   useEffect(()=>{
     const setUp = async() => {
       setLoading(true);
-      let id = selectedRB?.eleRiding?.boundaryId;
+      let id = selectedER?.boundaryId;
 
       if(id)
       {
         let bgbName:Nullable<BoundaryGovBodyName> = await findBoundaryAndGovBodyName(id);
         if(bgbName?.govBodyName)
         {
-        setGovBodyName(bgbName?.govBodyName);
+          setGovBodyName(bgbName?.govBodyName);
         }
         if(bgbName?.boundaryName)
         {
@@ -45,53 +49,66 @@ const ElectionPage = () => {
         }
 
         //setEleCans()
+        let ecs:Array<ElectionCandidateItem> = await getECsByER(id);
+        console.log(ecs);
+        setEleCans(ecs);
       }
 
       setLoading(false);
     }
 
     setUp();
-  },[selectedRB?.eleRiding?.boundaryId])
-
+  },[selectedER?.boundaryId])
 
 
   return (
-    <div style={{display:"flex"}}>
+    <div style={{display:"flex", height:"100%"}}>
       {!loading ?
-        <>{(selectedRB && selectedRB.eleRiding) ? 
+        <>{selectedER ? 
           <div style={{flex:1, flexDirection:"column"}}>
             {/*Title*/}
-            <PageHeader additionalInfo={boundaryName}>
+            <PageHeader subHeader={boundaryName ? boundaryName : ""}>
               ELECTION - {govBodyName}
             </PageHeader>
             {/*Representative comparison toggles*/}
             {eleCans.length > 1  && 
-              <div style={{flexDirection:"row", overflowX:"scroll"}}>
-                <SubHeader>COMPARE:</SubHeader>
+              <div style={{display:"flex", flexDirection:"row", alignItems:"center"}}>
+                <SubHeader style={{paddingRight:"10px", color:theme.palette.secondary.dark}}>COMPARE:</SubHeader>
                 {/*Compare All Toggle*/}
-                <SearchItem 
+                <SearchItem
+                    mainText="COMPARE ALL"
                     selected={cmprAllTgl} 
                     onClick={()=>{setCmprAllTgl(!cmprAllTgl)}}/>
 
-                {!cmprAllTgl && 
-                  <>
+                {cmprAllTgl && 
+                  <div style={{flexDirection:"row", display:"flex"}}>
                     {/*divider*/}
-                    <div style={{backgroundColor:theme.palette.primary.dark, width:"3px"}}></div>
+                    <div style={{backgroundColor:theme.palette.primary.dark, width:"3px", margin:"0px 15px", display:"flex"}}></div>
                     
-                    {eleCans.map((e:ElectionCandidate)=>{
-                      return <SearchItem 
-                        key={e.id} 
-                        mainText={e.repId.toString()}
-                        selected={selectedECs.includes(e.id)} 
-                        onClick={()=>{selectedECs.includes(e.id) ? selectedECs.splice(selectedECs.indexOf(e.id),1) : selectedECs.push(e.id)}}/>
-                    })}
-                  </>
+                    <div style={{overflowX:"scroll", display:"flex", flexDirection:"row"}}>
+                      {eleCans.map((e:ElectionCandidateItem, i:number)=>{
+                        return <div style={{paddingRight:"10px"}}>
+                            <SearchItem 
+                              key={i.toString()+e.toggled ? "true" : "false"}
+                              mainText={e.repName.toString()}
+                              selected={e.toggled ? true : false} 
+                              onClick={()=>{
+                                let newEC:ElectionCandidateItem = e;
+                                newEC.toggled = e.toggled ? !e.toggled : true; 
+                                let newECs:Array<ElectionCandidateItem> = eleCans;
+                                newECs.splice(i,1,newEC);
+                                setEleCans(newECs);
+                                console.log(newECs);
+                                }}/>
+                          </div>
+                      })}
+                    </div>
+                  </div>
                 }
-
-                {/*Categories To Compare*/}
-                <EleToggleContainer eleCans={eleCans.filter((e)=>{return cmprAllTgl === true || selectedECs.includes(e.id)})}/>
               </div>          
             }
+            {/*Categories To Compare*/}
+            <EleToggleContainer style={{paddingTop:"40px"}} eleCans={eleCans.filter((e)=>{return cmprAllTgl === true || e.toggled ? true : false})}/>
           </div>
           :
           <div>
@@ -99,7 +116,7 @@ const ElectionPage = () => {
           </div>
         }</>
         :
-        <div style={{display:"flex", height:"100%", justifyContent:"center", alignItems:"center"}}>
+        <div style={{display:"flex", height:"100%", width:"100%", justifyContent:"center", alignItems:"center"}}>
           <ScaleLoader color={theme.palette.primary.dark} />
         </div>
       } 

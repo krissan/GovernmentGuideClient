@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { ThemeProvider, } from '@material-ui/styles';
-import {createTheme} from '@material-ui/core';
+import {Button, createTheme} from '@material-ui/core';
 
 import MapPage from './components/Pages/MapPage';
 import NavBar from './components/Misc/NavBar';
@@ -19,7 +19,7 @@ import ElectionPage from './components/Pages/ElectionPage';
 
 import { palette } from './customIntefaces/Palette';
 import { AlertType, Nullable } from './customIntefaces/AppTypes';
-import { AppContext, RepBoundary } from './AppContext';
+import { AppContext, ElectionRiding, RepBoundary } from './AppContext';
 import appValues from './resources/AppValues';
 import ValidVoteCastDataPage from './components/Pages/ManageData/ValidVoteCastDataPage';
 import PartyDataCustomPage from './components/Pages/ManageData/PartyDataCustomPage';
@@ -33,11 +33,11 @@ function App() {
   const [userAddr, setUserAddr] = useState<google.maps.LatLngLiteral>({lat:43.74002711761832, lng:-79.23987572757004});
   const [alert,setAlert] = useState<AlertType>({msg:"",open:false});
   const [selectedRB,setSelectedRB] = useState<Nullable<RepBoundary>>(null);
-
+  const [selectedER,setSelectedER] = useState<Nullable<ElectionRiding>>(null);
 
   return (
     <div style={{height:"100vh", width:"100vw",display:"flex", flexDirection:"column"}}>
-      <AppContext.Provider value={{repBoundaries,setRepBoundaries,userAddr,setUserAddr, alert, setAlert, selectedRB, setSelectedRB}}>
+      <AppContext.Provider value={{repBoundaries,setRepBoundaries,userAddr,setUserAddr, alert, setAlert, selectedRB, setSelectedRB, selectedER, setSelectedER}}>
           <ThemeProvider theme={theme}>
             <div className="App" style={{flex:1, margin:"0px " + appValues.pageMargin + "px"}}>
               <Router>
@@ -52,10 +52,8 @@ function App() {
                   <Route path="/manageData/billData" element={<BillDataPage/>}/>
                   <Route path="/manageData/electionData" element={<ElectionDataPage/>}/>
                   <Route path="/manageData/electionCandidateData" element={<ElectionCandidateDataPage/>}/>
-                  
                   <Route path="/manageData/voteCastData" element={<ValidVoteCastDataPage/>}/>
                   <Route path="/manageData/partyCustomData" element={<PartyDataCustomPage/>}/>
-
                   <Route path="/election" element={<ElectionPage/>} />
                   <Route path="/contactUs" element={<ContactUsPage/>}/>
                   <Route path="/" element={<MapPage/>} />

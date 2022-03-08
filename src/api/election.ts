@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { ExportToCsv } from 'export-to-csv';
 
-import { Election, ElectionCandidateData, ElectionData, ElectionRidingData, RepresentativeData } from '../customIntefaces/APITypes';
+import { Election, ElectionCandidate, ElectionCandidateData, ElectionData, ElectionRidingData, RepresentativeData } from '../customIntefaces/APITypes';
 import { Message,  } from '../customIntefaces/AppTypes';
 import {  messageType } from '../customIntefaces/Enumerators';
 
@@ -332,4 +332,36 @@ export async function getElectionRepresentativesData(electionRidingId:number):Pr
   }
 
   return message;
+}
+
+//get Election Candidates by Election Riding
+export async function getECsByER(electionRidingId:number):Promise<Array<ElectionCandidateData>> { 
+  let message:Message = {type:messageType.success, msg: "" };
+
+  var electionCandidates:Array<ElectionCandidateData> = [];
+
+  try {
+    let responseData:any = await axios.get('http://localhost:8080/api/v1/electioncandidate/govbody/data?eleRidingId='+electionRidingId)
+      .then(response => {
+        return response
+      }).catch(error => console.log(error));
+
+    if(responseData?.data !== null && responseData?.data.length > 0)
+    {
+      electionCandidates = responseData?.data;
+    }
+
+    if(!electionCandidates || electionCandidates.length == 0)
+    {
+      message = {type:messageType.warning, msg: "No candidates found for election riding"}
+      alert(message);
+    }
+  }
+  catch(e)
+  {
+    message = {type:messageType.error, msg: "No candidates found for election riding"}
+    alert(message);
+  }
+
+  return electionCandidates;
 }

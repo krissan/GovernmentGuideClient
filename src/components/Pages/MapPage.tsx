@@ -32,7 +32,7 @@ const MapPage = () => {
   const offsetY:number = ref.current?.offsetTop ? ref.current?.offsetTop : 200;
 
   //update lsit height
-  useEffect(()=>{console.log(repBoundaries);console.log(infoEnum.representative)},[repBoundaries]);
+  //useEffect(()=>{console.log(repBoundaries);console.log(infoEnum.representative)},[repBoundaries]);
 
   //Address AutoComplete Text Change, Input Selected Functions
   const onTextChange = (addr: google.maps.places.Autocomplete) => setAddress(addr);

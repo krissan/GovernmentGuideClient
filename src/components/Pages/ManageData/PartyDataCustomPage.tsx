@@ -80,12 +80,12 @@ const PartyDataCustomPage = () => {
       message = await uploadData(partyDataList, 3)
 
       setUploadMessage(message);
-      setUploadLoading(false);
     }
     catch(e)
     {
       console.log(e);
     }
+    setUploadLoading(false);
   }
 
   return (

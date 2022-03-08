@@ -95,7 +95,6 @@ const ValidVoteCastDataPage = () => {
     {
       console.log(e);
     }
-    
     setUploadLoading(false);
   }
 

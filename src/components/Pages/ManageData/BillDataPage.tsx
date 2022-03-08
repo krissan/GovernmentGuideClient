@@ -61,12 +61,12 @@ const BillDataPage = () => {
         }
         setUploadMessage(message);
       }
-      setUploadLoading(false);
     }
     catch(e)
     {
       console.log(e);
     }
+    setUploadLoading(false);
   }
 
   const getData = async() => {

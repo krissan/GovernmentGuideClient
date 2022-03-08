@@ -113,7 +113,6 @@ export async function getBillVoteData(billId:number):Promise<Message> {
   var billVotes:Array<RepBillVote> = [];
 
   try {
-
     let responseData:any = await axios.get('http://localhost:8080/api/v1/billvote/bill?billId='+billId)
       .then(response => {
         return response

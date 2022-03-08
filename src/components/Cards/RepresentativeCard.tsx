@@ -12,7 +12,7 @@ import MiniHeader from "../Text/MiniHeader";
 import useStyles from './styles';
 import StdSwitch from "../Buttons/StdSwitch";
 import ToggleContainer from "../Misc/ToggleContainer";
-import { Boundary, Representative, RepBoundary } from "../../AppContext";
+import { Boundary, Representative, RepBoundary, useAppContext } from "../../AppContext";
 import appValues from "../../resources/AppValues";
 import { MailTo } from "../../functions/stdAppFunctions";
 import { useNavigate } from "react-router-dom";
@@ -35,6 +35,10 @@ const RepresentativeCard:React.FC<RepCardProps> = ({repBoundary, boundaryToggled
 
     const rep:Representative = repBoundary.rep;
     const boundary:Boundary = repBoundary.boundary;
+    
+    //App Context
+    const { setSelectedER } = useAppContext();
+
 
     let navigate = useNavigate();
 
@@ -124,7 +128,7 @@ const RepresentativeCard:React.FC<RepCardProps> = ({repBoundary, boundaryToggled
                 {/*Col 1*/}
                 <div style={{width:appValues.subCardWidth, paddingRight:"30px"}}>
                     {repBoundary.eleRiding &&
-                        <StdButton classes={{root: classes.electionButton}} style={{width:"100%"}} onClick={()=>{navigate("/election", {state: {repRiding: repBoundary.eleRiding}})}}>Election</StdButton>
+                        <StdButton classes={{root: classes.electionButton}} style={{width:"100%"}} onClick={()=>{setSelectedER(repBoundary.eleRiding ? repBoundary.eleRiding : null);navigate("/election")}}>Election</StdButton>
                     }
                 </div>
                 {/*Col 2*/}

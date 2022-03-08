@@ -121,7 +121,9 @@ export interface AppContextInterface {
     alert: AlertType,
     setAlert: (a:AlertType) => void,
     selectedRB:Nullable<RepBoundary>,
-    setSelectedRB:(rb:RepBoundary) => void
+    setSelectedRB:(rb:RepBoundary) => void,
+    selectedER:Nullable<ElectionRiding>,
+    setSelectedER:(er:Nullable<ElectionRiding>) => void
 }
 
 export const AppContext = React.createContext<AppContextInterface>({
@@ -132,7 +134,9 @@ export const AppContext = React.createContext<AppContextInterface>({
         alert: {msg:"",open:false},
         setAlert: ()=>{},
         selectedRB:null,
-        setSelectedRB:()=>{}
+        setSelectedRB:()=>{},
+        selectedER:null,
+        setSelectedER:()=>{}
     });
 
 export const useAppContext = () => useContext(AppContext);

@@ -8,7 +8,7 @@ const AdditionalInfoText:React.FC<StdProps> = ({children, style}) => {
   const classes = useStyles();
 
   return (
-    <Typography className={classes.additonalInfo} style={{...style}} gutterBottom component="div">
+    <Typography className={classes.additionalInfo} style={{...style}} gutterBottom component="div">
       {children}
     </Typography>
   );
