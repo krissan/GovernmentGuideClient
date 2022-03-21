@@ -30,7 +30,7 @@ export const processCsv = async(files:Array<File>) => {
 }
 
 //Create And populate email on device
-export function MailTo(email:string, subject?:string, body?:string){
+export function mailTo(email:string, subject?:string, body?:string){
   let params = subject || body ? '?' : '';
   if (subject) params += `subject=${encodeURIComponent(subject)}`;
   if (body) params += `${subject ? '&' : ''}body=${encodeURIComponent(body)}`;
@@ -64,4 +64,10 @@ export const structCategoryList = (list:Array<ReportCard|Endorsement|Platform>) 
 
     return structList;
   }
+}
+
+//call number passed
+export const call = (number:number) =>{
+  navigator.clipboard.writeText(number.toString());
+  alert("Copied "+number+" to clip board");
 }

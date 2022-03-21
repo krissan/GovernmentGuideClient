@@ -6,17 +6,17 @@ import Symbol from "../../Misc/Symbol";
 import MiniHeader from "../../Text/MiniHeader";
 import ReportCardItem from "./ReportCardItem";
 
-import { RepBoundary, ReportCard, useAppContext,  } from "../../../AppContext";
+import { ReportCard, useAppContext,  } from "../../../AppContext";
 import { SymbolEnum } from "../../../customIntefaces/Enumerators";
 import { getRepReportCards } from "../../../api/representative";
 import { structCategoryList } from "../../../functions/stdAppFunctions";
+import { RepTabProps } from "../../../customIntefaces/AppTypes";
 
-interface ReportCardProps {
-    repBoundary:RepBoundary,
+interface ReportCardProps  extends RepTabProps {
 }
 
 //Representative Card
-const ReportCardsListView:React.FC<ReportCardProps> = ({repBoundary}) => {
+const ReportCardsListView:React.FC<ReportCardProps> = ({repData, reps, setReps}) => {
     const [reportCards, setReportCards] = useState<Array<Array<ReportCard>>>([]);
     const { repBoundaries, setRepBoundaries } = useAppContext();
     const theme = useTheme();
@@ -27,16 +27,13 @@ const ReportCardsListView:React.FC<ReportCardProps> = ({repBoundary}) => {
         const fetchReportCards = async() => {
             setTabLoading(true);
 
-            if(!repBoundary.reportCards || repBoundary?.reportCards?.length < 1){
-                const index = repBoundaries.indexOf(repBoundary);
-                let newRepBoundary = repBoundary;
-                const repCards:Array<ReportCard> =  await getRepReportCards(repBoundary.rep.id);
+            if(!repData.reportCards || repData?.reportCards?.length < 1){
+                let newRepBoundary = repData;
+                const repCards:Array<ReportCard> =  await getRepReportCards(repData.rep.id);
                 newRepBoundary.reportCards = repCards;
                 
-                const newRepBoundaries = Object.assign([...repBoundaries], {
-                    [index]: newRepBoundary
-                });
-                setRepBoundaries(newRepBoundaries);
+                const newRepBoundaries = reps.set(repData.rep.id, newRepBoundary);
+                setReps(newRepBoundaries);
             }
 
             setTabLoading(false);
@@ -49,8 +46,8 @@ const ReportCardsListView:React.FC<ReportCardProps> = ({repBoundary}) => {
 
     //Create list of a list of report cards grouped by category
     useEffect(() => {
-        if(repBoundary.reportCards){
-            var reportCards = repBoundary.reportCards;
+        if(repData.reportCards){
+            var reportCards = repData.reportCards;
             var structRepCardList:Array<Array<ReportCard>> = structCategoryList(reportCards) as Array<Array<ReportCard>>;
 
             setReportCards(structRepCardList);
@@ -59,7 +56,7 @@ const ReportCardsListView:React.FC<ReportCardProps> = ({repBoundary}) => {
         {
             setReportCards([]);
         }
-    }, [repBoundary.reportCards])
+    }, [repData.reportCards])
 
 
   return (

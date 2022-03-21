@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { ExportToCsv } from 'export-to-csv';
 
-import { Election, ElectionCandidate, ElectionCandidateData, ElectionData, ElectionRidingData, RepresentativeData } from '../customIntefaces/APITypes';
+import { Election, ElectionCandidateData, ElectionCandidateRepParty, ElectionData, ElectionRidingData, RepresentativeData } from '../customIntefaces/APITypes';
 import { Message,  } from '../customIntefaces/AppTypes';
 import {  messageType } from '../customIntefaces/Enumerators';
 
@@ -335,13 +335,14 @@ export async function getElectionRepresentativesData(electionRidingId:number):Pr
 }
 
 //get Election Candidates by Election Riding
-export async function getECsByER(electionRidingId:number):Promise<Array<ElectionCandidateData>> { 
+export async function getECsByER(electionRidingId:number):Promise<Map<number,ElectionCandidateRepParty>> { 
   let message:Message = {type:messageType.success, msg: "" };
 
-  var electionCandidates:Array<ElectionCandidateData> = [];
+  var electionCandidates:Array<ElectionCandidateRepParty> = [];
+  var map = new Map<number, ElectionCandidateRepParty>();
 
   try {
-    let responseData:any = await axios.get('http://localhost:8080/api/v1/electioncandidate/govbody/data?eleRidingId='+electionRidingId)
+    let responseData:any = await axios.get('http://localhost:8080/api/v1/electionriding/electioncandidate/rep?boundaryId='+electionRidingId)
       .then(response => {
         return response
       }).catch(error => console.log(error));
@@ -349,6 +350,7 @@ export async function getECsByER(electionRidingId:number):Promise<Array<Election
     if(responseData?.data !== null && responseData?.data.length > 0)
     {
       electionCandidates = responseData?.data;
+      console.log(electionCandidates);
     }
 
     if(!electionCandidates || electionCandidates.length == 0)
@@ -363,5 +365,9 @@ export async function getECsByER(electionRidingId:number):Promise<Array<Election
     alert(message);
   }
 
-  return electionCandidates;
+  electionCandidates.forEach(x=>{
+    map.set(x.rep.id, x);
+  })
+
+  return map;
 }

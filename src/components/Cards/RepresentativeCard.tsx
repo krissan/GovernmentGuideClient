@@ -8,14 +8,15 @@ import CardSubHeader from "../Text/CardSubHeader";
 import ButtonIcon from "../Buttons/ButtonIcon";
 import CustomIconButtonAlt from "../Buttons/CustomIconButtonAlt";
 import MiniHeader from "../Text/MiniHeader";
-
-import useStyles from './styles';
 import StdSwitch from "../Buttons/StdSwitch";
 import ToggleContainer from "../Misc/ToggleContainer";
+
+import useStyles from './styles';
 import { Boundary, Representative, RepBoundary, useAppContext } from "../../AppContext";
 import appValues from "../../resources/AppValues";
-import { MailTo } from "../../functions/stdAppFunctions";
+import { call, mailTo } from "../../functions/stdAppFunctions";
 import { useNavigate } from "react-router-dom";
+import { Nullable } from "../../customIntefaces/AppTypes";
 
 
 interface RepCardProps {
@@ -34,7 +35,7 @@ const RepresentativeCard:React.FC<RepCardProps> = ({repBoundary, boundaryToggled
     const partyColor = repBoundary.rep.partyColor ? "#"+repBoundary.rep.partyColor : "black";
 
     const rep:Representative = repBoundary.rep;
-    const boundary:Boundary = repBoundary.boundary;
+    const boundary:Nullable<Boundary> = repBoundary.boundary ? repBoundary.boundary : null;
     
     //App Context
     const { setSelectedER } = useAppContext();
@@ -42,37 +43,34 @@ const RepresentativeCard:React.FC<RepCardProps> = ({repBoundary, boundaryToggled
 
     let navigate = useNavigate();
 
-    //call number passed
-    const call = (number:number) =>{
-        navigator.clipboard.writeText(number.toString());
-        alert("Copied "+number+" to clip board");
-    }
-
     //Toggle Boundary if already selected
     const toggleBoundary = () => {
-        if(repBoundary.boundary.id===boundaryToggled?.boundary.id)
-        {
-            setBoundaryToggled(null);
-        }
-        else
-        {
-            setBoundaryToggled(repBoundary);
+        if(repBoundary.boundary) {
+            if(repBoundary.boundary.id===boundaryToggled?.boundary?.id)
+            {
+                setBoundaryToggled(null);
+            }
+            else
+            {
+                setBoundaryToggled(repBoundary);
+            }
         }
     }
 
 
     useEffect(()=>{
-        if(repBoundary.boundary.id===boundaryToggled?.boundary.id){
-            setBrightness(0.95);
-            setElevation(5);
+        if(repBoundary.boundary) {
+            if(repBoundary.boundary?.id===boundaryToggled?.boundary?.id){
+                setBrightness(0.95);
+                setElevation(5);
+            }
+            else
+            {
+                setBrightness(1);
+                setElevation(1);
+            }
         }
-        else
-        {
-            setBrightness(1);
-            setElevation(1);
-        }
-
-    }, [repBoundary.boundary.id, boundaryToggled?.boundary.id]);
+    }, [repBoundary.boundary?.id, boundaryToggled?.boundary?.id, repBoundary.boundary]);
 
   return (
     <Card style={{backgroundColor: theme.palette.primary.light, filter: "brightness("+brightness+")", marginBottom:"10px"}} elevation={elevation}>
@@ -83,7 +81,7 @@ const RepresentativeCard:React.FC<RepCardProps> = ({repBoundary, boundaryToggled
                 <img src={rep.photo} alt="Representative" width={appValues.subCardWidth} height={appValues.subCardWidth} style={{margin:"0px 10px 10px 0px", /*borderRadius:"50%", objectFit:"cover"*/ objectFit:"contain"}}/>
                 {/*Col 2*/}
                 <div style={{flex:1, justifyContent:"space-between", flexDirection:"column"}}>
-                <CardSubHeader>{boundary.repTitle+" "+rep.firstName+" "+rep.lastName}</CardSubHeader>
+                <CardSubHeader>{boundary?.repTitle+" "+rep.firstName+" "+rep.lastName}</CardSubHeader>
                 <div style={{paddingLeft:10}}>
                     {rep.party && <div style={{paddingBottom:3, display:"flex", alignItems:"center"}}>
                         <span style={{fontWeight:"bold", color:partyColor}}>{rep.party}</span> 
@@ -91,7 +89,7 @@ const RepresentativeCard:React.FC<RepCardProps> = ({repBoundary, boundaryToggled
                             <img src={rep.partyImage} alt={rep.partyImage} height="25px" style={{marginLeft:"15px", objectFit:"fill"}}/>
                         }
                     </div>}
-                    <div style={{paddingBottom:3}}>{boundary.boundaryName}</div>
+                    <div style={{paddingBottom:3}}>{boundary?.boundaryName}</div>
                     <div style={{paddingBottom:3}}>{rep.gender ? rep.gender : "Gender Not Found"}</div>
                     <div style={{paddingBottom:3}}>{rep.constituencyOffice}</div>
                 </div>
@@ -101,7 +99,8 @@ const RepresentativeCard:React.FC<RepCardProps> = ({repBoundary, boundaryToggled
             <div style={{display:"flex", paddingBottom:"10px"}}>
                 {/*Col 1*/}
                 <div style={{width:appValues.subCardWidth, paddingRight:"30px", display:"flex",alignItems:"center"}}>
-                    <StdSwitch label="BOUNDARY" checked={repBoundary.boundary.id===boundaryToggled?.boundary.id} onClick={()=>{toggleBoundary()}} />
+                    {//Display boundary toggle if it exists
+                    repBoundary.boundary && <StdSwitch label="BOUNDARY" checked={repBoundary.boundary?.id===boundaryToggled?.boundary?.id} onClick={()=>{toggleBoundary()}} />}
                 </div>
                 {/*Col 2*/}
                 <div style={{display:"flex", justifyContent:"space-between", flex:1, alignItems:"center", alignContent:"bottom"}}>
@@ -113,7 +112,7 @@ const RepresentativeCard:React.FC<RepCardProps> = ({repBoundary, boundaryToggled
                         */}
                     </div>
                     <div style={{display:"flex"}}>
-                        <CustomIconButtonAlt style={{paddingRight:10}} onClick={()=>{MailTo(rep.email)}}>
+                        <CustomIconButtonAlt style={{paddingRight:10}} onClick={()=>{mailTo(rep.email)}}>
                             <ButtonIcon icon={faEnvelope}/>
                         </CustomIconButtonAlt>
                         

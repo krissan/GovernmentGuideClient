@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import { LoadScript } from "@react-google-maps/api";
 import { useTheme } from "@material-ui/core";
 import { ScaleLoader } from "react-spinners";
@@ -11,7 +11,6 @@ import {  RepBoundary, useAppContext } from "../../AppContext";
 import MapAlt from "../Map/MapAlt";
 import appValues from "../../resources/AppValues";
 import useWindowDimensions from "../../customHooks/useWindowDimensions";
-import { infoEnum } from "../../customIntefaces/Enumerators";
 
 //Interfaces and settings for google-maps
 type Libraries = ("drawing" | "geometry" | "localContext" | "places" | "visualization")[];
@@ -23,7 +22,7 @@ const MapPage = () => {
   const [loadingData, setLoadingData] = useState<boolean>(false);
   const theme = useTheme();
   const [address, setAddress] = useState<google.maps.places.Autocomplete>();
-  const [boundaryToggled, setBoundaryToggled] = useState<RepBoundary|null>(repBoundaries[0]);
+  const [boundaryToggled, setBoundaryToggled] = useState<RepBoundary|null>(repBoundaries.size > 0 ? Array.from(repBoundaries.values())[0] : null);
   const ref = useRef<HTMLDivElement>(null);
 
   //Height and Width of window
@@ -31,7 +30,7 @@ const MapPage = () => {
   //Distance from right and bottom of screen
   const offsetY:number = ref.current?.offsetTop ? ref.current?.offsetTop : 200;
 
-  //update lsit height
+  //update list height
   //useEffect(()=>{console.log(repBoundaries);console.log(infoEnum.representative)},[repBoundaries]);
 
   //Address AutoComplete Text Change, Input Selected Functions
@@ -51,10 +50,18 @@ const MapPage = () => {
     }
 
     //get representative data
-    let searchedRepBoundaries:Array<RepBoundary> = await searchRepresentatives(newAddr);
-    
-    setRepBoundaries([]);
-    setRepBoundaries(searchedRepBoundaries);
+    if(address?.getPlace()?.geometry?.location)
+    {
+      let searchedRepBoundaries:Map<number, RepBoundary> = await searchRepresentatives(newAddr);
+      
+      setRepBoundaries(new Map<number, RepBoundary>());
+      setRepBoundaries(searchedRepBoundaries);
+    }
+    else
+    {
+      alert("Valid address not selected");
+    }
+
     setLoadingData(false);
   }
 
@@ -85,7 +92,7 @@ const MapPage = () => {
             <MapAlt boundaryToggled={boundaryToggled} setBoundaryToggled={setBoundaryToggled} repLoading={loadingData} />
           </div>
           {/*Row 2*/}        
-          {(loadingData || repBoundaries.length > 0) &&
+          {(loadingData || repBoundaries.size > 0) &&
             <div style={{width:appValues.sideListWidth, paddingLeft:20}}>
                 <div style={{display:"flex",justifyContent:"center"}}>
                   <SubHeader>REPRESENTATIVES</SubHeader>
@@ -97,9 +104,9 @@ const MapPage = () => {
                   </div>
                   : 
                   <div style={{scrollBehavior: "smooth", height:height - offsetY, overflowY:"scroll"}} ref={ref}>
-                    {repBoundaries.map((rb:RepBoundary)=>{
-                      return <RepresentativeCard repBoundary={rb} key={rb.rep.id} boundaryToggled={boundaryToggled} setBoundaryToggled={setBoundaryToggled}/>
-                    })}
+                    {  
+                      Array.from(repBoundaries.values(), (rb:RepBoundary) => <RepresentativeCard repBoundary={rb} key={rb.rep.id} boundaryToggled={boundaryToggled} setBoundaryToggled={setBoundaryToggled}/>)
+                    }
                   </div>
                 }
             </div>

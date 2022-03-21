@@ -29,7 +29,7 @@ export interface Boundary {
   
 export interface RepBoundary{
     rep:Representative,
-    boundary:Boundary,
+    boundary?:Nullable<Boundary>,
     platforms?:Array<Platform>,
     reportCards?:Array<ReportCard>,
     endorsements?:Array<Endorsement>,
@@ -113,8 +113,8 @@ export interface Representative {
 
 export interface AppContextInterface {
     //List of Searched Representative Boundaries
-    repBoundaries: Array<RepBoundary>,
-    setRepBoundaries: (c: Array<RepBoundary>) => void,
+    repBoundaries: Map<number, RepBoundary>,
+    setRepBoundaries: (c: Map<number, RepBoundary>) => void,
     //Users Address
     userAddr: google.maps.LatLngLiteral,
     setUserAddr: (c: google.maps.LatLngLiteral) => void,
@@ -127,7 +127,7 @@ export interface AppContextInterface {
 }
 
 export const AppContext = React.createContext<AppContextInterface>({
-        repBoundaries: [], // set a default value
+        repBoundaries: new Map<number, RepBoundary>(), // set a default value
         setRepBoundaries: () => {},
         userAddr: {lat:43.74002711761832, lng:-79.23987572757004},
         setUserAddr: () => {},

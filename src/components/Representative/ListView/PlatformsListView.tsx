@@ -5,20 +5,19 @@ import Symbol from "../../Misc/Symbol";
 import MiniHeader from "../../Text/MiniHeader";
 import PlatformItem from "./PlatformItem";
 
-import { Platform, RepBoundary, useAppContext,  } from "../../../AppContext";
+import { Platform  } from "../../../AppContext";
 import { getRepPlatforms } from "../../../api/representative";
 import { ScaleLoader } from "react-spinners";
 import { structCategoryList } from "../../../functions/stdAppFunctions";
 import { SymbolEnum } from "../../../customIntefaces/Enumerators";
+import { RepTabProps } from "../../../customIntefaces/AppTypes";
 
-interface PlatformsProps {
-    repBoundary:RepBoundary,
+interface PlatformsProps extends RepTabProps {
 }
 
 //Representative Platforms
-const PlatformsListView:React.FC<PlatformsProps> = ({repBoundary}) => {
+const PlatformsListView:React.FC<PlatformsProps> = ({repData, reps, setReps}) => {
     const [platforms, setPlatforms] = useState<Array<Array<Platform>>>([]);
-    const { repBoundaries, setRepBoundaries } = useAppContext();
     const theme = useTheme();
     const [tabLoading, setTabLoading] = useState<boolean>(false);
     
@@ -26,18 +25,13 @@ const PlatformsListView:React.FC<PlatformsProps> = ({repBoundary}) => {
     useEffect(() => {
         const fetchPlatforms = async() => {
             setTabLoading(true);
-            if(!repBoundary.platforms || repBoundary?.platforms?.length < 1){
-                const index = repBoundaries.indexOf(repBoundary);
-                let newRepBoundary = repBoundary;
-                const plats:Array<Platform> =  await getRepPlatforms(repBoundary.rep.id);
-
+            if(!repData.platforms || repData?.platforms?.length < 1){
+                let newRepBoundary = repData;
+                const plats:Array<Platform> =  await getRepPlatforms(repData.rep.id);
                 newRepBoundary.platforms = plats;
 
-                const newRepBoundaries = Object.assign([...repBoundaries], {
-                    [index]: newRepBoundary
-                });
-                setRepBoundaries(newRepBoundaries);
-
+                const newRepBoundaries = reps.set(repData.rep.id, newRepBoundary);
+                setReps(newRepBoundaries);
             }
             setTabLoading(false);
         }
@@ -48,8 +42,8 @@ const PlatformsListView:React.FC<PlatformsProps> = ({repBoundary}) => {
 
     //Create list of a list of platforms grouped by category
     useEffect(() => {
-        if(repBoundary.platforms){
-            var platforms = repBoundary.platforms;
+        if(repData.platforms){
+            var platforms = repData.platforms;
             var structRepCardList:Array<Array<Platform>> = structCategoryList(platforms) as Array<Array<Platform>>;
 
             setPlatforms(structRepCardList);
@@ -58,7 +52,7 @@ const PlatformsListView:React.FC<PlatformsProps> = ({repBoundary}) => {
         {
             setPlatforms([]);
         }
-    }, [repBoundary.platforms])
+    }, [repData.platforms])
 
   return (
     <>

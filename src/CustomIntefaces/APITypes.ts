@@ -1,3 +1,4 @@
+import { Representative } from "../AppContext";
 import { platformStatus } from "./Enumerators";
 
 export interface BoundaryGovBodyName {
@@ -10,6 +11,7 @@ export interface Party {
     parentId:number,
     govBodyId:number,
     name:string,
+    shortName:string,
     description:string,
     createDate:Date | null,
     partyColor:string,
@@ -160,6 +162,12 @@ export interface ElectionCandidateData {
     repName: string,
     partyId: number,
     votes:number
+}
+
+export interface ElectionCandidateRepParty {
+    eleCan: ElectionCandidate,
+    rep: Representative,
+    party: Party
 }
 
 

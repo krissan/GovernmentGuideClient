@@ -1,14 +1,14 @@
 import { useState } from "react";
 
 import { ToggleButton, ToggleButtonGroup } from "@mui/material";
-import { RepBoundary } from "../../AppContext";
+import { RepBoundary, useAppContext } from "../../AppContext";
 import DisputeButton from "../Buttons/DisputeButton";
 import PlatformsView from "../Representative/ListView/PlatformsListView";
 import ReportCardsView from "../Representative/ListView/ReportCardsListView";
 import EndorsementsView from "../Representative/ListView/EndorsementsListView";
 
 import useStyles from './styles';
-import { MailTo } from "../../functions/stdAppFunctions";
+import { mailTo } from "../../functions/stdAppFunctions";
 import { repTabEnum, repTabs, repTabType } from "../../customIntefaces/TabType";
 import HistoryView from "../Representative/ListView/HistoryView";
 
@@ -22,6 +22,7 @@ const ToggleContainer:React.FC<TCProps> = ({repBoundary}) => {
     const classes = useStyles();
     const [tab, setTab] = useState<repTabType>(repTabs[0]);
     const [disputeLoading, setDisputeLoading] = useState<boolean>(false);
+    const { repBoundaries, setRepBoundaries } = useAppContext();
 
     const handleChange = (
         event: React.MouseEvent<HTMLElement>,
@@ -38,20 +39,20 @@ const ToggleContainer:React.FC<TCProps> = ({repBoundary}) => {
       //platform
       if(tab.id === repTabEnum.History)
       {
-        return <HistoryView repBoundary={repBoundary}/>
+        return <HistoryView repData={repBoundary} reps={repBoundaries} setReps={setRepBoundaries}/>
       }
       //report card
       else if(tab.id === repTabEnum.Platform)
       {
-        return <PlatformsView repBoundary={repBoundary}/>
+        return <PlatformsView repData={repBoundary} reps={repBoundaries} setReps={setRepBoundaries}/>
       }
       else if(tab.id === repTabEnum.ReportCard)
       {
-        return <ReportCardsView repBoundary={repBoundary}/>
+        return <ReportCardsView repData={repBoundary} reps={repBoundaries} setReps={setRepBoundaries}/>
       }
       else
       {
-        return <EndorsementsView repBoundary={repBoundary}/>
+        return <EndorsementsView repData={repBoundary} reps={repBoundaries} setReps={setRepBoundaries}/>
       }
       //timeline
       //else if(tab === "time line"){
@@ -61,7 +62,7 @@ const ToggleContainer:React.FC<TCProps> = ({repBoundary}) => {
 
     const sendMessage = () => {
       setDisputeLoading(true);
-      MailTo("email@email.com", "Dispute " + repBoundary.boundary.id + ":" + repBoundary.boundary.boundaryName + " " + tab.name, "content");
+      mailTo("email@email.com", "Dispute representative boundary" + repBoundary.boundary?.id + ":" + repBoundary.boundary?.boundaryName + " " + tab.name, "content");
       setDisputeLoading(false);
     }
 
@@ -73,7 +74,6 @@ const ToggleContainer:React.FC<TCProps> = ({repBoundary}) => {
             onChange={handleChange}
             classes={{root: classes.StdToggleContainer}}
             >
-            {/*ToggleButton  value="time line">Time Line</ToggleButton>*/}
             {repTabs.map((tab)=>{
               return <ToggleButton key={tab.id} value={tab}>{tab.name}</ToggleButton>
             })}

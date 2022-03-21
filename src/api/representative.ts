@@ -13,7 +13,7 @@ const convertTitle = (s:string) => {
 //Grab List of Representatives by geopoint
 export async function searchRepresentatives(location:google.maps.LatLngLiteral) { 
   var repBoundaries:Array<RepBoundary> = [];
-
+  var map = new Map<number, RepBoundary>();
   try {
     console.log('http://localhost:8080/api/v1/representative/address?lat='+location.lat+'&lng='+location.lng);
 
@@ -52,33 +52,44 @@ export async function searchRepresentatives(location:google.maps.LatLngLiteral) 
         rep.photo = rep.photo.replace("https://contrib.wp.intra.prod-","https://www.");
         let repBoundary:RepBoundary={rep:rep, boundary:boundary, eleRiding: data[i].repEleRiding};
         repBoundaries.push(repBoundary);
+
+        repBoundaries = repBoundaries.sort((a, b) => {
+          if(a.boundary && b.boundary){
+            const pointA1 = {lat: a.boundary.elat1, lng: a.boundary.elng1};
+            const pointA2 = {lat: a.boundary.elat2, lng: a.boundary.elng2};
+            const pointB1 = {lat: b.boundary.elat1, lng: b.boundary.elng1};
+            const pointB2 = {lat: b.boundary.elat2, lng: b.boundary.elng2};
+            const areaA = Math.abs(pointA1.lat-pointA2.lat)*(pointA1.lng-pointA2.lng)
+            const areaB = Math.abs(pointB1.lat-pointB2.lat)*(pointB1.lng-pointB2.lng)
+      
+            if(areaA < areaB) {
+              return -1;
+            }
+      
+            if(areaA > areaB) {
+              return 1;
+            }
+          }
+      
+          return 0;
+        });
+
+        repBoundaries.forEach(x=>{
+          map.set(x.rep.id, x);
+        })
       }
     }
+    
   }
   catch(e)
   {
     console.log(e);
   }
 
+  
+
   //Sort Representatives by size of boundary and return
-  return repBoundaries.sort((a, b) => {
-    const pointA1 = {lat: a.boundary.elat1, lng: a.boundary.elng1};
-    const pointA2 = {lat: a.boundary.elat2, lng: a.boundary.elng2};
-    const pointB1 = {lat: b.boundary.elat1, lng: b.boundary.elng1};
-    const pointB2 = {lat: b.boundary.elat2, lng: b.boundary.elng2};
-    const areaA = Math.abs(pointA1.lat-pointA2.lat)*(pointA1.lng-pointA2.lng)
-    const areaB = Math.abs(pointB1.lat-pointB2.lat)*(pointB1.lng-pointB2.lng)
-
-    if(areaA < areaB) {
-      return -1;
-    }
-
-    if(areaA > areaB) {
-      return 1;
-    }
-
-    return 0;
-  });
+  return map;
 }
 
 //Grab List of Government Bodies by search query

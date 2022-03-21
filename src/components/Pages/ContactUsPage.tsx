@@ -10,7 +10,7 @@ import StdButton from "../Buttons/StdButton";
 import { reasonEnum, whoEnum } from "../../customIntefaces/Enumerators";
 import StandardSelect from "../Input/StandardSelect";
 import StandardInputBox from "../Input/StandardInputBox";
-import { MailTo } from "../../functions/stdAppFunctions";
+import { mailTo } from "../../functions/stdAppFunctions";
 
 
 const ContactUsPage = () => {
@@ -59,7 +59,7 @@ const ContactUsPage = () => {
             rows={10}
           />
 
-          <StdButton style={{backgroundColor:"#59ACAF",marginBottom:0}} onClick={()=>{MailTo("email@email.com","who: " +who+" reason: "+reason, body)}}> Send Message</StdButton>
+          <StdButton style={{backgroundColor:"#59ACAF",marginBottom:0}} onClick={()=>{mailTo("email@email.com","who: " +who+" reason: "+reason, body)}}> Send Message</StdButton>
         </Box>
         {/*Submit Button*/}
       </div>

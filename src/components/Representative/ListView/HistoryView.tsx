@@ -6,16 +6,14 @@ import { getRepBiography } from "../../../api/representative";
 import MiniSubHeader from "../../Text/MiniSubHeader";
 import StdText from "../../Text/StdText";
 
-import { Biography, RepBoundary, useAppContext,  } from "../../../AppContext";
-import { Nullable } from "../../../customIntefaces/AppTypes";
+import { Biography  } from "../../../AppContext";
+import { Nullable, RepTabProps } from "../../../customIntefaces/AppTypes";
 
-interface HistoryProps {
-    repBoundary:RepBoundary,
+interface HistoryProps  extends RepTabProps {
 }
 
 //Representative History
-const HistoryView:React.FC<HistoryProps> = ({repBoundary}) => {
-    const { repBoundaries, setRepBoundaries } = useAppContext();
+const HistoryView:React.FC<HistoryProps> = ({repData, reps, setReps}) => {
     const theme = useTheme();
     const [tabLoading, setTabLoading] = useState<boolean>(false);
     
@@ -24,18 +22,13 @@ const HistoryView:React.FC<HistoryProps> = ({repBoundary}) => {
         const fetchBiography = async() => {
             setTabLoading(true);
 
-            if(!repBoundary.biography){
-
-                const index = repBoundaries.indexOf(repBoundary);
-                let newRepBoundary = repBoundary;
-                const bio:Nullable<Biography> =  await getRepBiography(repBoundary.rep.id);
+            if(!repData.biography){
+                let newRepBoundary = repData;
+                const bio:Nullable<Biography> =  await getRepBiography(repData.rep.id);
                 newRepBoundary.biography =  bio;
 
-                const newRepBoundaries = Object.assign([...repBoundaries], {
-                    [index]: newRepBoundary
-                });
-                setRepBoundaries(newRepBoundaries);
-
+                const newRepBoundaries = reps.set(repData.rep.id, newRepBoundary);
+                setReps(newRepBoundaries);
             }
 
             setTabLoading(false);
@@ -54,10 +47,10 @@ const HistoryView:React.FC<HistoryProps> = ({repBoundary}) => {
         </div>
         :
         <>
-            {repBoundary.biography?.bio ?
+            {repData.biography?.bio ?
                 <div style={{flexDirection:"column"}}>
-                    <StdText>{repBoundary.biography?.bio}</StdText>
-                    <MiniSubHeader>Last Updated {repBoundary.biography?.updateDate}</MiniSubHeader>
+                    <StdText>{repData.biography?.bio}</StdText>
+                    <MiniSubHeader>Last Updated {repData.biography?.updateDate}</MiniSubHeader>
                 </div>
                 :
                 <div>Biography not found</div>

@@ -29,7 +29,7 @@ function App() {
     palette: palette
   });
 
-  const [repBoundaries, setRepBoundaries] = useState<Array<RepBoundary>>([]);
+  const [repBoundaries, setRepBoundaries] = useState<Map<number, RepBoundary>>(new Map<number, RepBoundary>());
   const [userAddr, setUserAddr] = useState<google.maps.LatLngLiteral>({lat:43.74002711761832, lng:-79.23987572757004});
   const [alert,setAlert] = useState<AlertType>({msg:"",open:false});
   const [selectedRB,setSelectedRB] = useState<Nullable<RepBoundary>>(null);

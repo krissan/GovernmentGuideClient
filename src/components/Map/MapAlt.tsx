@@ -35,14 +35,14 @@ const MapAlt:React.FC<MapProps> = ({boundaryToggled, setBoundaryToggled, repLoad
 
   //if window dimension changes of representative changes, update map
   useEffect(() => {
-    setMapDimension({width:(repBoundaries.length > 0 || repLoading === true)  ? width-offsetX-appValues.sideListWidth:width-offsetX-appValues.pageMargin, height:(height-offsetY)});
+    setMapDimension({width:(repBoundaries.size > 0 || repLoading === true)  ? width-offsetX-appValues.sideListWidth:width-offsetX-appValues.pageMargin, height:(height-offsetY)});
   }, [height,width, repBoundaries, offsetX, offsetY, repLoading]);
 
   //set shape when boundaryToggle changed
   useEffect(() => {
-    if(boundaryToggled && boundaryToggled.boundary.outline)
+    if(boundaryToggled && boundaryToggled.boundary?.outline)
     {
-      const newShape:google.maps.LatLngLiteral[] = boundaryToggled.boundary.outline?.map((o)=>{
+      const newShape:google.maps.LatLngLiteral[] = boundaryToggled.boundary?.outline?.map((o)=>{
         const coord:google.maps.LatLngLiteral = {lat: o.x, lng: o.y};
         return coord;
       })
@@ -53,6 +53,7 @@ const MapAlt:React.FC<MapProps> = ({boundaryToggled, setBoundaryToggled, repLoad
     {
       setShape([]);
     }  
+    
   }, [boundaryToggled]);
 
 
@@ -73,12 +74,15 @@ const MapAlt:React.FC<MapProps> = ({boundaryToggled, setBoundaryToggled, repLoad
           }
           {
             //All boundary markers 
-            repBoundaries.filter((r)=>{return r.boundary}).map((b:RepBoundary)=>{ 
-              return <CustomMarker 
-                        selected={b.boundary.id===boundaryToggled?.boundary.id}
-                        key={b.boundary.id} 
-                        position={{lat: b.boundary.centerLat, lng: b.boundary.centerLng}} 
-                        onClick={()=>{boundaryToggled?.boundary.id === b.boundary.id ? setBoundaryToggled(null) : setBoundaryToggled(b)}}/>
+            Array.from(repBoundaries.values(), (b:RepBoundary)=>{ 
+              if(b.boundary)
+              {
+                return <CustomMarker 
+                          selected={b.boundary.id===boundaryToggled?.boundary?.id}
+                          key={b.boundary.id} 
+                          position={{lat: b.boundary.centerLat, lng: b.boundary.centerLng}} 
+                          onClick={()=>{boundaryToggled?.boundary?.id === b.boundary?.id ? setBoundaryToggled(null) : setBoundaryToggled(b)}}/>
+              }
             })
           }
           {/*Position Marker*/}
