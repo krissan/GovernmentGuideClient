@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { Biography, Boundary, Endorsement, Platform, Representative, RepBoundary, ReportCard } from '../AppContext';
+import { Biography, Boundary, Endorsement, Platform, Representative, RepBoundary, ReportCard, Shape } from '../AppContext';
 import { ExportToCsv } from 'export-to-csv';
 
 import { Message, Nullable } from '../customIntefaces/AppTypes';
@@ -33,8 +33,8 @@ export async function searchRepresentatives(location:google.maps.LatLngLiteral) 
         rep.title = convertTitle(rep.title);
 
         const boundary:Boundary = data[i].boundary;
+        const shape:Shape = data[i].shape;
         boundary.repTitle = convertTitle(boundary.repTitle);
-        boundary.outline = data[i].outline;
 
         //check and set party if it exists
         let partyData:any = await axios.get('http://localhost:8080/api/v1/party/rep?repId='+rep.id)
@@ -50,15 +50,15 @@ export async function searchRepresentatives(location:google.maps.LatLngLiteral) 
         }
 
         rep.photo = rep.photo.replace("https://contrib.wp.intra.prod-","https://www.");
-        let repBoundary:RepBoundary={rep:rep, boundary:boundary, eleRiding: data[i].repEleRiding};
+        let repBoundary:RepBoundary={rep:rep, boundary:boundary, eleRiding: data[i].repEleRiding, outline: data[i].outline, shape:data[i].shape};
         repBoundaries.push(repBoundary);
 
         repBoundaries = repBoundaries.sort((a, b) => {
-          if(a.boundary && b.boundary){
-            const pointA1 = {lat: a.boundary.elat1, lng: a.boundary.elng1};
-            const pointA2 = {lat: a.boundary.elat2, lng: a.boundary.elng2};
-            const pointB1 = {lat: b.boundary.elat1, lng: b.boundary.elng1};
-            const pointB2 = {lat: b.boundary.elat2, lng: b.boundary.elng2};
+          if(a.shape && b.shape){
+            const pointA1 = {lat: a.shape.elat1, lng: a.shape.elng1};
+            const pointA2 = {lat: a.shape.elat2, lng: a.shape.elng2};
+            const pointB1 = {lat: b.shape.elat1, lng: b.shape.elng1};
+            const pointB2 = {lat: b.shape.elat2, lng: b.shape.elng2};
             const areaA = Math.abs(pointA1.lat-pointA2.lat)*(pointA1.lng-pointA2.lng)
             const areaB = Math.abs(pointB1.lat-pointB2.lat)*(pointB1.lng-pointB2.lng)
       

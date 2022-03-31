@@ -23,6 +23,7 @@ import { AppContext, ElectionRiding, RepBoundary } from './AppContext';
 import appValues from './resources/AppValues';
 import ValidVoteCastDataPage from './components/Pages/ManageData/ValidVoteCastDataPage';
 import PartyDataCustomPage from './components/Pages/ManageData/PartyDataCustomPage';
+import CustomElectionDataPage from './components/Pages/ManageData/CustomElectionDataPage';
 
 function App() {
   const theme = createTheme({
@@ -54,6 +55,7 @@ function App() {
                   <Route path="/manageData/electionCandidateData" element={<ElectionCandidateDataPage/>}/>
                   <Route path="/manageData/voteCastData" element={<ValidVoteCastDataPage/>}/>
                   <Route path="/manageData/partyCustomData" element={<PartyDataCustomPage/>}/>
+                  <Route path="/manageData/electionCustomData" element={<CustomElectionDataPage/>}/>
                   <Route path="/election" element={<ElectionPage/>} />
                   <Route path="/contactUs" element={<ContactUsPage/>}/>
                   <Route path="/" element={<MapPage/>} />

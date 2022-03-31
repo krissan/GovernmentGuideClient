@@ -40,9 +40,9 @@ const MapAlt:React.FC<MapProps> = ({boundaryToggled, setBoundaryToggled, repLoad
 
   //set shape when boundaryToggle changed
   useEffect(() => {
-    if(boundaryToggled && boundaryToggled.boundary?.outline)
+    if(boundaryToggled && boundaryToggled.outline)
     {
-      const newShape:google.maps.LatLngLiteral[] = boundaryToggled.boundary?.outline?.map((o)=>{
+      const newShape:google.maps.LatLngLiteral[] = boundaryToggled.outline?.map((o)=>{
         const coord:google.maps.LatLngLiteral = {lat: o.x, lng: o.y};
         return coord;
       })
@@ -55,7 +55,6 @@ const MapAlt:React.FC<MapProps> = ({boundaryToggled, setBoundaryToggled, repLoad
     }  
     
   }, [boundaryToggled]);
-
 
   return (
     <div ref={ref} style={{flex:1}}>
@@ -75,12 +74,12 @@ const MapAlt:React.FC<MapProps> = ({boundaryToggled, setBoundaryToggled, repLoad
           {
             //All boundary markers 
             Array.from(repBoundaries.values(), (b:RepBoundary)=>{ 
-              if(b.boundary)
+              if(b.boundary && b.shape)
               {
                 return <CustomMarker 
                           selected={b.boundary.id===boundaryToggled?.boundary?.id}
                           key={b.boundary.id} 
-                          position={{lat: b.boundary.centerLat, lng: b.boundary.centerLng}} 
+                          position={{lat: b.shape.centerLat, lng: b.shape.centerLng}} 
                           onClick={()=>{boundaryToggled?.boundary?.id === b.boundary?.id ? setBoundaryToggled(null) : setBoundaryToggled(b)}}/>
               }
             })

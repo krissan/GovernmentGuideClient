@@ -8,33 +8,44 @@ export interface GeoPoint {
     z: number
 }
 
-
 export interface Boundary {
     id: number,
     boundaryName:string,
     startDate:Date | null,
     endDate:Date | null,
+    createDate:Date | null,
     updateDate:Date | null,
-    govBodyId:number,
-    centerLat:number,
-    centerLng:number,
+    govBodyId:Date | null,
     province:string,
     repTitle:string,
-    elng1:number,
-    elng2:number,
+    electoralHistory:string
+}
+
+export interface Shape {
+    id: number,
+    boundaryId:number,
+    centerLat:number,
+    centerLng:number,
     elat1:number,
+    elng1:number,
     elat2:number,
-    outline?:GeoPoint[]
+    elng2:number,
+    startDate:Date | null,
+    endDate:Date | null,
+    createDate:Date | null,
+    updateDate:Date | null,
 }
   
 export interface RepBoundary{
     rep:Representative,
     boundary?:Nullable<Boundary>,
+    shape?:Nullable<Shape>,
     platforms?:Array<Platform>,
     reportCards?:Array<ReportCard>,
     endorsements?:Array<Endorsement>,
     biography?:Nullable<Biography>,
-    eleRiding?:Nullable<ElectionRiding>
+    eleRiding?:Nullable<ElectionRiding>,
+    outline?:Nullable<GeoPoint[]>
 }
 
 export interface ElectionRiding {

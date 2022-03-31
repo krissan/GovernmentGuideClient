@@ -41,6 +41,9 @@ const ManageDataPage = () => {
         <Button variant="text" className={classes.dashBoardButton} onClick={()=>{navigate("/manageData/partyCustomData")}}>
           Party Custom Data
         </Button>
+        <Button variant="text" className={classes.dashBoardButton} onClick={()=>{navigate("/manageData/electionCustomData")}}>
+          Election Custom Data
+        </Button>
       </div>
     </div>
   );
