@@ -29,6 +29,29 @@ export const processCsv = async(files:Array<File>) => {
   }
 }
 
+//Process JSON file
+export const processJSON = async(files:Array<File>) => { 
+  let results:Array<any> = [];
+
+  try {
+    console.log(files)
+    let file:File = files.filter((file:File) => {return file.type === "application/json"})[0];
+      
+    const text = await file.text();
+    const jsonData = JSON.parse(text);
+    console.log(jsonData);
+
+    console.log(results);
+
+    return jsonData;
+  }
+  catch(e)
+  {
+    alert("could not parse file: "+e)
+  }
+
+}
+
 //Create And populate email on device
 export function mailTo(email:string, subject?:string, body?:string){
   let params = subject || body ? '?' : '';

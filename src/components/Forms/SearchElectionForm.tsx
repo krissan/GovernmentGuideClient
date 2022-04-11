@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { searchElection } from "../../api/election";
 import { Election } from "../../customIntefaces/APITypes";
 import SearchItem from "../Buttons/SearchItem";
+import SubHeader from "../Text/SubHeader";
 
 interface SearchFormProps {
     setSelected: (x:number|null) => void, 
@@ -21,6 +22,7 @@ const SearchElectionForm:React.FC<SearchFormProps> = ({ setSelected, selected, g
     useEffect(()=>{
         const onSearch = async () => {
             if(refresh === true){
+
                 let res:Array<Election> = await searchElection(govBodyId); 
                 setSelected(null);
         
@@ -39,11 +41,13 @@ const SearchElectionForm:React.FC<SearchFormProps> = ({ setSelected, selected, g
     return (     
     <>  
         {/* Select Results */}
-        {
+        {electionList.length > 0 ?
             electionList.map((e)=>{
             return <SearchItem key={e.id} mainText={e.startDate?.toString()} subText1={e.endDate?.toString()} selected={e.id===selected}
                 onClick={()=>{setSelected(e.id);}}/>; 
             })
+            :
+            <SubHeader>No Elections Found</SubHeader>
         }
     </> 
     );

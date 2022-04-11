@@ -49,3 +49,9 @@ export enum platformStatus {
     DROPPED,
     NOT_STARTED
 }
+
+export enum GovBodyType{
+    MUNICIPAL,
+    PROVINCIAL,
+    FEDERAL
+}

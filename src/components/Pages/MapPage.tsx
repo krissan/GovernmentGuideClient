@@ -1,6 +1,6 @@
 import { useRef, useState } from "react";
 import { LoadScript } from "@react-google-maps/api";
-import { useTheme } from "@material-ui/core";
+import { useMediaQuery, useTheme } from "@material-ui/core";
 import { ScaleLoader } from "react-spinners";
 
 import AddressBar from "../Map/AddressBar";
@@ -24,6 +24,7 @@ const MapPage = () => {
   const [address, setAddress] = useState<google.maps.places.Autocomplete>();
   const [boundaryToggled, setBoundaryToggled] = useState<RepBoundary|null>(repBoundaries.size > 0 ? Array.from(repBoundaries.values())[0] : null);
   const ref = useRef<HTMLDivElement>(null);
+  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
 
   //Height and Width of window
   const { height } = useWindowDimensions();
@@ -78,40 +79,73 @@ const MapPage = () => {
         {/*Row 1*/}
         <div style={{display:"flex"}}>
           {/*Col 1*/}
-          <div style={{display:"flex", flex:1, alignItems: "center", flexDirection:"column"}}>
+          <div style={isMobile ? {margin:"0px " + appValues.pageMargin + "px"} : {}}>
             <AddressBar onPlaceChanged={onPlaceChanged} onTextChange={onTextChange} />
           </div>
           {/*Col 2 dummy space*/}
           <div style={{width:appValues.sideListWidth}}>
           </div>
         </div>
-        {/*Row 2*/}
-        <div style={{display:"flex"}}>        
-          {/*Col 1*/}
-          <div style={{flex:1}}>
-            <MapAlt boundaryToggled={boundaryToggled} setBoundaryToggled={setBoundaryToggled} repLoading={loadingData} />
-          </div>
-          {/*Row 2*/}        
-          {(loadingData || repBoundaries.size > 0) &&
-            <div style={{width:appValues.sideListWidth, paddingLeft:20}}>
-                <div style={{display:"flex",justifyContent:"center"}}>
-                  <SubHeader>REPRESENTATIVES</SubHeader>
-                </div>
-                {/* If data is loading display side */}
-                {loadingData ?
-                  <div style={{display:"flex", height:"100%", justifyContent:"center", alignItems:"center"}}>
-                    <ScaleLoader color={theme.palette.primary.dark} />
-                  </div>
-                  : 
-                  <div style={{scrollBehavior: "smooth", height:height - offsetY, overflowY:"scroll"}} ref={ref}>
-                    {  
-                      Array.from(repBoundaries.values(), (rb:RepBoundary) => <RepresentativeCard repBoundary={rb} key={rb.rep.id} boundaryToggled={boundaryToggled} setBoundaryToggled={setBoundaryToggled}/>)
+        {isMobile ?
+          <>
+            <div style={{display:"flex", flexDirection:"column"}}>      
+              {/*Row 2*/}
+              <div style={{flex:1}}>
+                <MapAlt boundaryToggled={boundaryToggled} setBoundaryToggled={setBoundaryToggled} repLoading={loadingData} />
+              </div>
+              {/*Row 3*/}        
+              {(loadingData || repBoundaries.size > 0) &&
+                <div>
+                    <div style={{display:"flex",justifyContent:"center", paddingTop:"15px", backgroundColor:theme.palette.primary.dark}}>
+                      <SubHeader style={{color:theme.palette.primary.contrastText}}>REPRESENTATIVES</SubHeader>
+                    </div>
+                    {/* If data is loading display side */}
+                    {loadingData ?
+                      <div style={{display:"flex", height:"100%", justifyContent:"center", alignItems:"center"}}>
+                        <ScaleLoader color={theme.palette.primary.dark} />
+                      </div>
+                      : 
+                      <div style={{scrollBehavior: "smooth", height:height - offsetY, overflowY:"scroll"}} ref={ref}>
+                        {  
+                          Array.from(repBoundaries.values(), (rb:RepBoundary) => <RepresentativeCard repBoundary={rb} key={rb.rep.id} boundaryToggled={boundaryToggled} setBoundaryToggled={setBoundaryToggled}/>)
+                        }
+                      </div>
                     }
-                  </div>
-                }
+                </div>
+              }
             </div>
-          }
-        </div>
+          </>
+          :
+          <>
+            {/*Row 2*/}
+            <div style={{display:"flex"}}>      
+              {/*Col 1*/}
+              <div style={{flex:1}}>
+                <MapAlt boundaryToggled={boundaryToggled} setBoundaryToggled={setBoundaryToggled} repLoading={loadingData} />
+              </div>
+              {/*Col 2*/}        
+              {(loadingData || repBoundaries.size > 0) &&
+                <div style={{width:appValues.sideListWidth, paddingLeft:20}}>
+                    <div style={{display:"flex",justifyContent:"center"}}>
+                      <SubHeader>REPRESENTATIVES</SubHeader>
+                    </div>
+                    {/* If data is loading display side */}
+                    {loadingData ?
+                      <div style={{display:"flex", height:"100%", justifyContent:"center", alignItems:"center"}}>
+                        <ScaleLoader color={theme.palette.primary.dark} />
+                      </div>
+                      : 
+                      <div style={{scrollBehavior: "smooth", height:height - offsetY, overflowY:"scroll"}} ref={ref}>
+                        {  
+                          Array.from(repBoundaries.values(), (rb:RepBoundary) => <RepresentativeCard repBoundary={rb} key={rb.rep.id} boundaryToggled={boundaryToggled} setBoundaryToggled={setBoundaryToggled}/>)
+                        }
+                      </div>
+                    }
+                </div>
+              }
+            </div>
+          </>
+        }
       </LoadScript>
     </div>
   );

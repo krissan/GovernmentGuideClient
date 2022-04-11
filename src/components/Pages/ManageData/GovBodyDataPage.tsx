@@ -38,9 +38,6 @@ const GovBodyDataPage = () => {
   const [getMessage, setGetMessage] = useState<Message|null>();
   const [uploadMessage, setUploadMessage] = useState<Message|null>();
 
-  const orgName:string = "Green Peace";
-
-
   const processFile = async(files:Array<File>) => { 
     try{
       setUploadLoading(true);
@@ -138,7 +135,7 @@ const GovBodyDataPage = () => {
     <div style={{display:"flex"}}>
       <div style={{flex:1, overflowX:"scroll"}}>
           {/*Title*/}
-          <PageHeader subHeader={orgName}>
+          <PageHeader /*subHeader={orgName}*/>
               Edit Government Body
           </PageHeader>
           <div style={{flexDirection:"row", display:"flex"}}>

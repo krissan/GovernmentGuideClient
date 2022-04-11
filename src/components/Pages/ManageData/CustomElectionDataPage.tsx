@@ -1,8 +1,7 @@
-import { ReactNode, useState } from "react";
+import { useState } from "react";
 import { faUpload } from "@fortawesome/free-solid-svg-icons"
 import DesktopDatePicker from '@mui/lab/DesktopDatePicker';
 import AdapterDateFns from '@mui/lab/AdapterDateFns';
-import { TextField } from "@material-ui/core";
 
 import PageHeader from "../../Text/PageHeader";
 import ButtonIcon from "../../Buttons/ButtonIcon";
@@ -14,13 +13,16 @@ import PageSection from "../../Misc/PageSection";
 import StandardInput from "../../Input/StandardInput";
 
 
-import { processCsv } from "../../../functions/stdAppFunctions";
-import { Message } from "../../../customIntefaces/AppTypes";
+import { processJSON } from "../../../functions/stdAppFunctions";
+import { BoundaryCustomImport, Message } from "../../../customIntefaces/AppTypes";
 import { RepresentativeData } from "../../../customIntefaces/APITypes";
 import { LocalizationProvider } from "@mui/lab";
+import SearchElectionForm from "../../Forms/SearchElectionForm";
+import { uploadCustomElectionData } from "../../../api/election";
 
 const CustomElectionDataPage = () => {
   const [selectedGB, setSelectedGB] = useState<number|null>(null);
+  const [selectedE, setSelectedE] = useState<number|null>(null);
   const [getLoading, setGetLoading] = useState<boolean>(false);
   const [uploadLoading, setUploadLoading] = useState<boolean>(false);
   const [getMessage, setGetMessage] = useState<Message|null>();
@@ -34,13 +36,24 @@ const CustomElectionDataPage = () => {
       setUploadMessage(null)
       let message:Message|null = null;
 
-      let results = await processCsv(files);
-
-      if(selectedGB && setStartDate != null)
+      if(selectedGB && selectedE && startDate != null)
       {
-        let reps:Array<RepresentativeData> = results as Array<RepresentativeData>;
+        let jsonData = await processJSON(files);
+        let results:Array<BoundaryCustomImport> = [];
+  
+        if(jsonData.features)
+        {
+          jsonData.features.forEach((element:any) => {
+            if(element.properties.ENGLISH_NA && element.geometry.coordinates) {
+              let name = element.properties.ENGLISH_NA.replaceAll("\uFFFD",'%');
+              let outline = element.geometry.coordinates[0];
+              let boundary:BoundaryCustomImport = {boundaryName:name, outline:outline.map((x:Array<Number>)=>{return {lat: x[0], lng:x[1]}})};
+              results.push(boundary);
+            }
+          });
+        }
 
-        //message = await uploadRepresentatives(reps, selectedGB);
+        message = await uploadCustomElectionData(results, selectedGB, selectedE, startDate, endDate);
       
         setUploadMessage(message);
       }
@@ -49,6 +62,7 @@ const CustomElectionDataPage = () => {
     {
       console.log(e);
     }
+    console.log("hello");
     setUploadLoading(false);
   }
 
@@ -71,13 +85,14 @@ const CustomElectionDataPage = () => {
             <PageSection>
               <StepHeader>1. Select Government Body</StepHeader>
               {/* Search Gov Body */}
-              <SearchGovBodyForm setSelected={(x:number | null)=>{setSelectedGB(x);clear();}} selected={selectedGB}/>
+              <SearchGovBodyForm setSelected={(x:number | null)=>{setSelectedGB(x);clear();setSelectedE(null)}} selected={selectedGB}/>
             </PageSection>
 
             {/* Make Changes */}
             {selectedGB &&
-              <>
+            
                 <PageSection>
+                  <StepHeader>2. Set dates for when boundary comes into effect and which election its for</StepHeader>
                   <LocalizationProvider dateAdapter={AdapterDateFns}>
                     <DesktopDatePicker
                       label="Start Date"
@@ -98,10 +113,19 @@ const CustomElectionDataPage = () => {
                       renderInput={(params:any) => <StandardInput {...params} style={{width:"100%"}} />}
                     />
                   </LocalizationProvider>
+                  
+                  {/*Search for Election*/}
+                  <div style={{flexDirection:"column", display:"flex"}}>
+                    {/* Search Field */}
+                    <StepSubHeader>Search Election</StepSubHeader>
+                    <SearchElectionForm setSelected={(x:number | null)=>{setSelectedE(x);clear();}} selected={selectedE} govBodyId={selectedGB}/>
+                  </div>
                 </PageSection>
-            
+              }
+
+              {selectedE && startDate &&
                 <PageSection>
-                  <StepHeader>2. Make Changes</StepHeader>
+                  <StepHeader>3. Make Changes</StepHeader>
                   <div style={{flexDirection:"column", display:"flex"}}>
                     {/*i*/}
                     <div style={{flexDirection:"row",display:"flex"}}>
@@ -112,8 +136,7 @@ const CustomElectionDataPage = () => {
                     </div>
                   </div>
                 </PageSection>
-              </>
-            }
+              }
           </div>
       </div>
     </div>

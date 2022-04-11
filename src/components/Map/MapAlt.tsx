@@ -10,6 +10,7 @@ import { RepBoundary, useAppContext } from "../../AppContext";
 import appValues from "../../resources/AppValues";
 import CustomMarker from "./CustomMarker";
 import { mapStyle } from "../../resources/mapStyle";
+import { useMediaQuery, useTheme } from "@material-ui/core";
 
 interface MapProps {
   boundaryToggled:RepBoundary|null, 
@@ -20,6 +21,8 @@ interface MapProps {
 const MapAlt:React.FC<MapProps> = ({boundaryToggled, setBoundaryToggled, repLoading}) => {
   //App Context
   const { repBoundaries, userAddr} = useAppContext();
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
 
   //height and width of map
   const [mapDimension, setMapDimension] = useState<Dimension>({width:300, height:300});
@@ -35,7 +38,10 @@ const MapAlt:React.FC<MapProps> = ({boundaryToggled, setBoundaryToggled, repLoad
 
   //if window dimension changes of representative changes, update map
   useEffect(() => {
-    setMapDimension({width:(repBoundaries.size > 0 || repLoading === true)  ? width-offsetX-appValues.sideListWidth:width-offsetX-appValues.pageMargin, height:(height-offsetY)});
+    if(!isMobile)
+    {
+      setMapDimension({width:(repBoundaries.size > 0 || repLoading === true)  ? width-offsetX-appValues.sideListWidth:width-offsetX-appValues.pageMargin, height:(height-offsetY)});
+    }
   }, [height,width, repBoundaries, offsetX, offsetY, repLoading]);
 
   //set shape when boundaryToggle changed
@@ -60,16 +66,16 @@ const MapAlt:React.FC<MapProps> = ({boundaryToggled, setBoundaryToggled, repLoad
     <div ref={ref} style={{flex:1}}>
         <GoogleMap
           center={userAddr}
-          mapContainerStyle={{width: mapDimension.width, height:mapDimension.height}}
+          mapContainerStyle={isMobile ? (repBoundaries.size > 0 ?  {width:"100vw", height:"40vw"} : {width:"100vw", height:mapDimension.height}) : {width: mapDimension.width, height:mapDimension.height}}
           mapContainerClassName="App-map"
           options={{styles:mapStyle}}
           zoom={12}
         >
           {boundaryToggled &&
-          <RepBoundaryPoly
-            polyId={boundaryToggled.rep.id}
-            path={shape}
-          />
+            <RepBoundaryPoly
+              polyId={boundaryToggled.rep.id}
+              path={shape}
+            />
           }
           {
             //All boundary markers 

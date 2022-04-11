@@ -35,8 +35,6 @@ const BillDataPage = () => {
   const [getMessage, setGetMessage] = useState<Message|null>();
   const [uploadMessage, setUploadMessage] = useState<Message|null>();
 
-  const orgName:string = "Green Peace";
-
   const processFile = async(files:Array<File>) => { 
     try{
       setUploadLoading(true);
@@ -106,7 +104,7 @@ const BillDataPage = () => {
     <div style={{display:"flex"}}>
       <div style={{flex:1}}>
           {/*Title*/}
-          <PageHeader subHeader={orgName}>
+          <PageHeader>
               Edit Government Body
           </PageHeader>
           <div style={{flexDirection:"row", display:"flex"}}>

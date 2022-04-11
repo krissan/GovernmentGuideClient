@@ -21,8 +21,6 @@ export default makeStyles((theme) => ({
     },
   },
   navBarInner: {
-    backgroundColor:"transparent", 
-    borderBottom:"1px solid " + theme.palette.primary.main,
     height:"64px",
     marginBottom:"20px"
   },

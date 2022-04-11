@@ -2,7 +2,7 @@ import axios from 'axios';
 import { ExportToCsv } from 'export-to-csv';
 
 import { Election, ElectionCandidateData, ElectionCandidateRepParty, ElectionData, ElectionRidingData, RepresentativeData } from '../customIntefaces/APITypes';
-import { Message,  } from '../customIntefaces/AppTypes';
+import { BoundaryCustomImport, Message,  } from '../customIntefaces/AppTypes';
 import {  messageType } from '../customIntefaces/Enumerators';
 
 //Grab List of Government Bodies by search query
@@ -370,4 +370,36 @@ export async function getECsByER(electionRidingId:number):Promise<Map<number,Ele
   })
 
   return map;
+}
+
+//get Election Candidates by Election Riding
+export async function uploadCustomElectionData(boundaries:Array<BoundaryCustomImport>, govBodyId:number, electionId:number, startDate:Date, endDate:Date|null):Promise<Message> { 
+  let message:Message= {type:messageType.success, msg: "" };
+  let requestParam;
+
+  let startDateStr = startDate.toISOString().split('T')[0];
+  let endDateStr = endDate ? endDate.toISOString().split('T')[0] : null;
+
+  try{
+    boundaries.forEach(async(boundary:BoundaryCustomImport)=>{
+      requestParam = {govBodyId: govBodyId, electionId: electionId, boundary:boundary, startDate:startDateStr, endDate:endDateStr};
+
+      console.log(JSON.stringify(requestParam));
+  
+      await axios.request({
+          method: 'post',
+          url: 'http://localhost:8080/api/v1/electionriding/populate',
+          data: JSON.stringify(requestParam),
+          headers: {
+            'Content-Type':'application/json'
+          },
+      });
+    })
+  }
+  catch(e)
+  {
+    message = {type:messageType.error, msg: "Error Uploading Elections"}
+  }
+
+  return message;
 }

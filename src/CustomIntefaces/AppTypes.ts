@@ -1,4 +1,4 @@
-import { ElectionRiding, RepBoundary } from "../AppContext";
+import { ElectionRiding, GeoPoint, RepBoundary } from "../AppContext";
 import { ElectionCandidateRepPartyItem } from "../components/Pages/ElectionPage";
 import { messageType } from "./Enumerators";
 
@@ -22,4 +22,10 @@ export interface RepTabProps {
     repData:RepBoundary|ElectionCandidateRepPartyItem,
     reps:Map<number, RepBoundary|ElectionCandidateRepPartyItem>,
     setReps:(c: Map<number, any>) => void
+}
+
+export interface BoundaryCustomImport {
+    boundaryName: string,
+    outline:Array<google.maps.LatLngLiteral>
+
 }

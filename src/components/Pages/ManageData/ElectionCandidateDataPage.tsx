@@ -12,13 +12,13 @@ import StdText from "../../Text/StdText";
 import SearchGovBodyForm from "../../Forms/SearchGovBodyForm";
 import SearchElectionForm from "../../Forms/SearchElectionForm";
 import SearchElectionRidingForm from "../../Forms/SearchElectionRidingForm";
+import PageSection from "../../Misc/PageSection";
 
 import { processCsv } from "../../../functions/stdAppFunctions";
 import { Message } from "../../../customIntefaces/AppTypes";
 import { getElectionCandidateData, getElectionRepresentativesData, uploadElectionCandidates } from "../../../api/election";
 import { uploadRepresentatives } from "../../../api/representative";
 import { ElectionCandidateData, RepresentativeData } from "../../../customIntefaces/APITypes";
-import PageSection from "../../Misc/PageSection";
 
 interface EditOption {
   name:string,
@@ -43,8 +43,6 @@ const ElectionCandidateDataPage = () => {
   const [uploadLoading, setUploadLoading] = useState<boolean>(false);
   const [getMessage, setGetMessage] = useState<Message|null>();
   const [uploadMessage, setUploadMessage] = useState<Message|null>();
-
-  const orgName:string = "Green Peace";
 
   const processFile = async(files:Array<File>) => { 
     try{
@@ -117,7 +115,7 @@ const ElectionCandidateDataPage = () => {
     <div style={{display:"flex"}}>
       <div style={{flex:1}}>
           {/*Title*/}
-          <PageHeader subHeader={orgName}>
+          <PageHeader>
               Edit Government Body
           </PageHeader>
           <div style={{flexDirection:"row", display:"flex"}}>

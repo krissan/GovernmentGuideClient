@@ -16,7 +16,7 @@ interface AddressBarProps {
 const AddressBar:React.FC<AddressBarProps> = ({onPlaceChanged, onTextChange}) => {
 
   return (
-    <div style={{padding:"10px 0px 20px 0px", display:"flex", width:"100%", justifyContent: "center"}}>
+    <div style={{padding:"10px 0px 20px 0px", display:"flex", width:"100%"}}>
       <Autocomplete onLoad={onTextChange} onPlaceChanged={onPlaceChanged}>
         <SearchField defaultValue={"27 Knowlton Drive, Scarborough, ON, Canada"} />
       </Autocomplete>

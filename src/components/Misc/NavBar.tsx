@@ -3,13 +3,14 @@ import { AppBar, IconButton, Toolbar, Grid, useTheme, Menu, MenuItem } from '@ma
 import MenuIcon from "@material-ui/icons/Menu";
 import { ReactComponent as LogoSvg } from '../../resources/img/logo.svg';
 
+import CustomIconButton from '../Buttons/CustomIconButton';
+import ButtonIcon from '../Buttons/ButtonIcon';
+
 import useStyles from './styles';
 import useMediaQuery from "@material-ui/core/useMediaQuery";
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useAppContext } from '../../AppContext';
 import appValues from '../../resources/AppValues';
-import CustomIconButton from '../Buttons/CustomIconButton';
-import ButtonIcon from '../Buttons/ButtonIcon';
 import { faTimes } from '@fortawesome/free-solid-svg-icons';
 
 interface NavItem {
@@ -106,7 +107,7 @@ const NavBar = () => {
     return (
         <div>
             <AppBar className={classes.navBarOuter} position="static" elevation={0}>
-                <Toolbar disableGutters={true} className={classes.navBarInner}>
+                <Toolbar disableGutters={true} className={classes.navBarInner} style={isMobile ? {backgroundColor:theme.palette.primary.main} : {backgroundColor:"transparent", borderBottom:"1px solid " + theme.palette.primary.main}} >
                     {isMobile ? 
                     /*Mobile Mode*/
                     (<>
