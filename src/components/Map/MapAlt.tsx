@@ -27,7 +27,7 @@ const MapAlt:React.FC<MapProps> = ({boundaryToggled, setBoundaryToggled, repLoad
   //height and width of map
   const [mapDimension, setMapDimension] = useState<Dimension>({width:300, height:300});
   const ref = useRef<HTMLDivElement>(null);
-  const [shape, setShape] = useState<google.maps.LatLngLiteral[]>([]);
+  const [shapes, setShapes] = useState<Array<google.maps.LatLngLiteral[]>>([]);
 
   //Height and Width of window
   const { height, width } = useWindowDimensions();
@@ -48,18 +48,19 @@ const MapAlt:React.FC<MapProps> = ({boundaryToggled, setBoundaryToggled, repLoad
   useEffect(() => {
     if(boundaryToggled && boundaryToggled.outline)
     {
-      const newShape:google.maps.LatLngLiteral[] = boundaryToggled.outline?.map((o)=>{
-        const coord:google.maps.LatLngLiteral = {lat: o.x, lng: o.y};
-        return coord;
-      })
+      const parsedShapes:Array<google.maps.LatLngLiteral[]> = boundaryToggled.outline?.map((o)=>{
+        return o.map((s)=>{ 
+          const coord:google.maps.LatLngLiteral = {lat: s.x, lng: s.y};
+          return coord;
+        });
+      });
 
-      setShape(newShape)
+      setShapes(parsedShapes)
     }
     else
     {
-      setShape([]);
+      setShapes([]);
     }  
-    
   }, [boundaryToggled]);
 
   return (
@@ -73,19 +74,20 @@ const MapAlt:React.FC<MapProps> = ({boundaryToggled, setBoundaryToggled, repLoad
         >
           {boundaryToggled &&
             <RepBoundaryPoly
-              polyId={boundaryToggled.rep.id}
-              path={shape}
-            />
+                polyId={boundaryToggled.rep.id}
+                paths={shapes}
+              />
           }
+
           {
             //All boundary markers 
             Array.from(repBoundaries.values(), (b:RepBoundary)=>{ 
-              if(b.boundary && b.shape)
+              if(b.boundary && b.shapes)
               {
                 return <CustomMarker 
                           selected={b.boundary.id===boundaryToggled?.boundary?.id}
                           key={b.boundary.id} 
-                          position={{lat: b.shape.centerLat, lng: b.shape.centerLng}} 
+                          position={{lat: b.shapes[0].centerLat, lng: b.shapes[0].centerLng}} 
                           onClick={()=>{boundaryToggled?.boundary?.id === b.boundary?.id ? setBoundaryToggled(null) : setBoundaryToggled(b)}}/>
               }
             })

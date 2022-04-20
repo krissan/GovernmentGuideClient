@@ -381,7 +381,7 @@ export async function uploadCustomElectionData(boundaries:Array<BoundaryCustomIm
   let endDateStr = endDate ? endDate.toISOString().split('T')[0] : null;
 
   try{
-    boundaries.forEach(async(boundary:BoundaryCustomImport)=>{
+    for(const boundary of boundaries) {
       requestParam = {govBodyId: govBodyId, electionId: electionId, boundary:boundary, startDate:startDateStr, endDate:endDateStr};
 
       console.log(JSON.stringify(requestParam));
@@ -394,7 +394,7 @@ export async function uploadCustomElectionData(boundaries:Array<BoundaryCustomIm
             'Content-Type':'application/json'
           },
       });
-    })
+    }
   }
   catch(e)
   {

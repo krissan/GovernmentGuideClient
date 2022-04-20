@@ -50,15 +50,15 @@ export async function searchRepresentatives(location:google.maps.LatLngLiteral) 
         }
 
         rep.photo = rep.photo.replace("https://contrib.wp.intra.prod-","https://www.");
-        let repBoundary:RepBoundary={rep:rep, boundary:boundary, eleRiding: data[i].repEleRiding, outline: data[i].outline, shape:data[i].shape};
+        let repBoundary:RepBoundary={rep:rep, boundary:boundary, eleRiding: data[i].repEleRiding, outline: data[i].outline, shapes:data[i].shape};
         repBoundaries.push(repBoundary);
 
         repBoundaries = repBoundaries.sort((a, b) => {
-          if(a.shape && b.shape){
-            const pointA1 = {lat: a.shape.elat1, lng: a.shape.elng1};
-            const pointA2 = {lat: a.shape.elat2, lng: a.shape.elng2};
-            const pointB1 = {lat: b.shape.elat1, lng: b.shape.elng1};
-            const pointB2 = {lat: b.shape.elat2, lng: b.shape.elng2};
+          if(a.shapes && b.shapes){
+            const pointA1 = {lat: a.shapes[0].elat1, lng: a.shapes[0].elng1};
+            const pointA2 = {lat: a.shapes[0].elat2, lng: a.shapes[0].elng2};
+            const pointB1 = {lat: b.shapes[0].elat1, lng: b.shapes[0].elng1};
+            const pointB2 = {lat: b.shapes[0].elat2, lng: b.shapes[0].elng2};
             const areaA = Math.abs(pointA1.lat-pointA2.lat)*(pointA1.lng-pointA2.lng)
             const areaB = Math.abs(pointB1.lat-pointB2.lat)*(pointB1.lng-pointB2.lng)
       

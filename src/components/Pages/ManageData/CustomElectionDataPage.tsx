@@ -46,8 +46,15 @@ const CustomElectionDataPage = () => {
           jsonData.features.forEach((element:any) => {
             if(element.properties.ENGLISH_NA && element.geometry.coordinates) {
               let name = element.properties.ENGLISH_NA.replaceAll("\uFFFD",'%');
-              let outline = element.geometry.coordinates[0];
-              let boundary:BoundaryCustomImport = {boundaryName:name, outline:outline.map((x:Array<Number>)=>{return {lat: x[0], lng:x[1]}})};
+              let outline = element.geometry.coordinates;
+              let processedOutline = outline.map((x:Array<Array<Number>>)=>{
+                return x.map((x:Array<Number>)=>{
+                  return {lat: x[0], lng:x[1]};
+                 });
+               })
+
+              let boundary:BoundaryCustomImport = {boundaryName: name, outline: processedOutline};
+
               results.push(boundary);
             }
           });

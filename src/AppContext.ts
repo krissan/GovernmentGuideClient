@@ -34,18 +34,19 @@ export interface Shape {
     endDate:Date | null,
     createDate:Date | null,
     updateDate:Date | null,
+    includes:boolean
 }
   
 export interface RepBoundary{
     rep:Representative,
     boundary?:Nullable<Boundary>,
-    shape?:Nullable<Shape>,
+    shapes?:Nullable<Array<Shape>>,
     platforms?:Array<Platform>,
     reportCards?:Array<ReportCard>,
     endorsements?:Array<Endorsement>,
     biography?:Nullable<Biography>,
     eleRiding?:Nullable<ElectionRiding>,
-    outline?:Nullable<GeoPoint[]>
+    outline?:Nullable<Array<GeoPoint[]>>
 }
 
 export interface ElectionRiding {

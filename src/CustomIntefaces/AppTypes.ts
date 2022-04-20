@@ -26,6 +26,6 @@ export interface RepTabProps {
 
 export interface BoundaryCustomImport {
     boundaryName: string,
-    outline:Array<google.maps.LatLngLiteral>
+    outline:Array<Array<google.maps.LatLngLiteral>>
 
 }
