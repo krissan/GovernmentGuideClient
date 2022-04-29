@@ -42,7 +42,7 @@ const MapAlt:React.FC<MapProps> = ({boundaryToggled, setBoundaryToggled, repLoad
     {
       setMapDimension({width:(repBoundaries.size > 0 || repLoading === true)  ? width-offsetX-appValues.sideListWidth:width-offsetX-appValues.pageMargin, height:(height-offsetY)});
     }
-  }, [height,width, repBoundaries, offsetX, offsetY, repLoading]);
+  }, [height,width, repBoundaries, offsetX, offsetY, repLoading, isMobile]);
 
   //set shape when boundaryToggle changed
   useEffect(() => {
@@ -81,6 +81,7 @@ const MapAlt:React.FC<MapProps> = ({boundaryToggled, setBoundaryToggled, repLoad
 
           {
             //All boundary markers 
+            // eslint-disable-next-line array-callback-return
             Array.from(repBoundaries.values(), (b:RepBoundary)=>{ 
               if(b.boundary && b.shapes)
               {

@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { Biography, Boundary, Endorsement, Platform, Representative, RepBoundary, ReportCard, Shape } from '../AppContext';
+import { Biography, Boundary, Endorsement, Platform, Representative, RepBoundary, ReportCard } from '../AppContext';
 import { ExportToCsv } from 'export-to-csv';
 
 import { Message, Nullable } from '../customIntefaces/AppTypes';
@@ -33,7 +33,6 @@ export async function searchRepresentatives(location:google.maps.LatLngLiteral) 
         rep.title = convertTitle(rep.title);
 
         const boundary:Boundary = data[i].boundary;
-        const shape:Shape = data[i].shape;
         boundary.repTitle = convertTitle(boundary.repTitle);
 
         //check and set party if it exists
@@ -50,7 +49,7 @@ export async function searchRepresentatives(location:google.maps.LatLngLiteral) 
         }
 
         rep.photo = rep.photo.replace("https://contrib.wp.intra.prod-","https://www.");
-        let repBoundary:RepBoundary={rep:rep, boundary:boundary, eleRiding: data[i].repEleRiding, outline: data[i].outline, shapes:data[i].shape};
+        let repBoundary:RepBoundary={rep:rep, boundary:boundary, eleRiding: data[i].repEleRiding, outline: data[i].outline, shapes:data[i].shapes};
         repBoundaries.push(repBoundary);
 
         repBoundaries = repBoundaries.sort((a, b) => {

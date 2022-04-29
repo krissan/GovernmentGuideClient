@@ -123,18 +123,16 @@ export interface Election {
     updateDate:Date | null,
     startDate:Date | null,
     endDate:Date | null,
+    shapeStartDate:Date | null,
+    shapeEndDate:Date | null
 }
 
 export interface ElectionData {
     id:number,
     startDate:Date | null,
     endDate:Date | null,
-}
-
-export interface ElectionData {
-    id:number,
-    startDate:Date | null,
-    endDate:Date | null,
+    shapeStartDate:Date | null,
+    shapeEndDate:Date | null
 }
 
 export interface ElectionRidingData {

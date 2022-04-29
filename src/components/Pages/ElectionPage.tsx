@@ -5,7 +5,7 @@ import SearchItem from "../Buttons/SearchItem";
 
 import EleToggleContainer from "../Misc/EleToggleContainer";
 
-import { Biography, Endorsement, Platform, ReportCard, Representative, useAppContext } from "../../AppContext";
+import { Biography, Endorsement, Platform, ReportCard, useAppContext } from "../../AppContext";
 import { useEffect, useState } from "react";
 import { ScaleLoader } from "react-spinners";
 import { useTheme } from "@material-ui/core";

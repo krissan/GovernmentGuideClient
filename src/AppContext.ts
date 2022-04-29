@@ -30,11 +30,10 @@ export interface Shape {
     elng1:number,
     elat2:number,
     elng2:number,
-    startDate:Date | null,
-    endDate:Date | null,
     createDate:Date | null,
     updateDate:Date | null,
-    includes:boolean
+    includes:boolean,
+    electionId:number
 }
   
 export interface RepBoundary{
@@ -57,7 +56,7 @@ export interface ElectionRiding {
     votingPopulation: number,
     status:string,
     createDate: Date | null,
-    updateDate: Date |null
+    updateDate: Date |null,
 }
 
 export interface Biography {

@@ -353,7 +353,7 @@ export async function getECsByER(electionRidingId:number):Promise<Map<number,Ele
       console.log(electionCandidates);
     }
 
-    if(!electionCandidates || electionCandidates.length == 0)
+    if(!electionCandidates || electionCandidates.length === 0)
     {
       message = {type:messageType.warning, msg: "No candidates found for election riding"}
       alert(message);
@@ -373,27 +373,33 @@ export async function getECsByER(electionRidingId:number):Promise<Map<number,Ele
 }
 
 //get Election Candidates by Election Riding
-export async function uploadCustomElectionData(boundaries:Array<BoundaryCustomImport>, govBodyId:number, electionId:number, startDate:Date, endDate:Date|null):Promise<Message> { 
+export async function uploadCustomElectionData(boundaries:Array<BoundaryCustomImport>, govBodyId:number, electionId:number):Promise<Message> { 
   let message:Message= {type:messageType.success, msg: "" };
   let requestParam;
 
-  let startDateStr = startDate.toISOString().split('T')[0];
-  let endDateStr = endDate ? endDate.toISOString().split('T')[0] : null;
-
   try{
-    for(const boundary of boundaries) {
-      requestParam = {govBodyId: govBodyId, electionId: electionId, boundary:boundary, startDate:startDateStr, endDate:endDateStr};
+    let result:boolean =  await axios.delete('http://localhost:8080/api/v1/shape/election?electionId='+electionId);
 
-      console.log(JSON.stringify(requestParam));
-  
-      await axios.request({
-          method: 'post',
-          url: 'http://localhost:8080/api/v1/electionriding/populate',
-          data: JSON.stringify(requestParam),
-          headers: {
-            'Content-Type':'application/json'
-          },
-      });
+    if(result)
+    {
+      for(const boundary of boundaries) {
+        requestParam = {govBodyId: govBodyId, electionId: electionId, boundary:boundary};
+
+        console.log(JSON.stringify(requestParam));
+    
+        await axios.request({
+            method: 'post',
+            url: 'http://localhost:8080/api/v1/electionriding/populate',
+            data: JSON.stringify(requestParam),
+            headers: {
+              'Content-Type':'application/json'
+            },
+        });
+      }
+    }
+    else
+    {
+      throw 'could not clear elections existing shape data';
     }
   }
   catch(e)

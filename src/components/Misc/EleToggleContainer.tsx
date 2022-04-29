@@ -8,7 +8,6 @@ import EndorsementsView from "../Representative/ListView/EndorsementsListView";
 import HistoryView from "../Representative/ListView/HistoryView";
 
 import useStyles from './styles';
-import { mailTo, call } from "../../functions/stdAppFunctions";
 import { eleTabEnum, eleTabs, eleTabType} from "../../customIntefaces/TabType";
 import { StdProps } from "../../customIntefaces/StdProps";
 import { ElectionCandidateRepPartyItem } from "../Pages/ElectionPage";

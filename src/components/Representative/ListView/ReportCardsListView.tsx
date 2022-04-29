@@ -6,7 +6,7 @@ import Symbol from "../../Misc/Symbol";
 import MiniHeader from "../../Text/MiniHeader";
 import ReportCardItem from "./ReportCardItem";
 
-import { ReportCard, useAppContext,  } from "../../../AppContext";
+import { ReportCard  } from "../../../AppContext";
 import { SymbolEnum } from "../../../customIntefaces/Enumerators";
 import { getRepReportCards } from "../../../api/representative";
 import { structCategoryList } from "../../../functions/stdAppFunctions";
@@ -18,7 +18,6 @@ interface ReportCardProps  extends RepTabProps {
 //Representative Card
 const ReportCardsListView:React.FC<ReportCardProps> = ({repData, reps, setReps}) => {
     const [reportCards, setReportCards] = useState<Array<Array<ReportCard>>>([]);
-    const { repBoundaries, setRepBoundaries } = useAppContext();
     const theme = useTheme();
     const [tabLoading, setTabLoading] = useState<boolean>(false);
     
