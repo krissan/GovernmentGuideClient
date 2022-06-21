@@ -1,4 +1,5 @@
 import React, { useContext } from "react";
+import { PartyData } from "./customIntefaces/APITypes";
 import { AlertType, Nullable } from "./customIntefaces/AppTypes";
 import { platformStatus } from "./customIntefaces/Enumerators";
 
@@ -15,7 +16,7 @@ export interface Boundary {
     endDate:Date | null,
     createDate:Date | null,
     updateDate:Date | null,
-    govBodyId:Date | null,
+    govBodyId:number,
     province:string,
     repTitle:string,
     electoralHistory:string
@@ -134,20 +135,28 @@ export interface AppContextInterface {
     selectedRB:Nullable<RepBoundary>,
     setSelectedRB:(rb:RepBoundary) => void,
     selectedER:Nullable<ElectionRiding>,
-    setSelectedER:(er:Nullable<ElectionRiding>) => void
+    setSelectedER:(er:Nullable<ElectionRiding>) => void,
+    gbPartyData:Map<number, PartyData>, 
+    setGbPartyData:(pd:Map<number, PartyData>) => void,
+    selectedGbID:Nullable<number>,
+    setSelectedGbID:(gb:number)=>void
 }
 
 export const AppContext = React.createContext<AppContextInterface>({
-        repBoundaries: new Map<number, RepBoundary>(), // set a default value
-        setRepBoundaries: () => {},
-        userAddr: {lat:43.74002711761832, lng:-79.23987572757004},
-        setUserAddr: () => {},
-        alert: {msg:"",open:false},
-        setAlert: ()=>{},
-        selectedRB:null,
-        setSelectedRB:()=>{},
-        selectedER:null,
-        setSelectedER:()=>{}
-    });
+    repBoundaries: new Map<number, RepBoundary>(), // set a default value
+    setRepBoundaries: () => {},
+    userAddr: {lat:43.74002711761832, lng:-79.23987572757004},
+    setUserAddr: () => {},
+    alert: {msg:"",open:false},
+    setAlert: ()=>{},
+    selectedRB:null,
+    setSelectedRB:()=>{},
+    selectedER:null,
+    setSelectedER:()=>{},
+    gbPartyData:new Map<number, PartyData>(),
+    setGbPartyData:()=>{},
+    selectedGbID:null,
+    setSelectedGbID:()=>{}
+});
 
 export const useAppContext = () => useContext(AppContext);

@@ -17,7 +17,6 @@ export const processCsv = async(files:Array<File>) => {
       }
     })
   });
-  console.log(results);
 
   if(results.length > 0)
   {
@@ -34,14 +33,9 @@ export const processJSON = async(files:Array<File>) => {
   let results:Array<any> = [];
 
   try {
-    console.log(files)
     let file:File = files.filter((file:File) => {return file.type === "application/json"})[0];
-      
     const text = await file.text();
     const jsonData = JSON.parse(text);
-    console.log(jsonData);
-
-    console.log(results);
 
     return jsonData;
   }

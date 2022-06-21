@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { ExportToCsv } from 'export-to-csv';
 
-import { Election, ElectionCandidateData, ElectionCandidateRepParty, ElectionData, ElectionRidingData, RepresentativeData } from '../customIntefaces/APITypes';
+import { Election, ElectionCandidate, ElectionCandidateData, ElectionCandidateRep, ElectionData, ElectionRidingData, ElectionRidingVoteData, RepresentativeData } from '../customIntefaces/APITypes';
 import { BoundaryCustomImport, Message,  } from '../customIntefaces/AppTypes';
 import {  messageType } from '../customIntefaces/Enumerators';
 
@@ -335,11 +335,11 @@ export async function getElectionRepresentativesData(electionRidingId:number):Pr
 }
 
 //get Election Candidates by Election Riding
-export async function getECsByER(electionRidingId:number):Promise<Map<number,ElectionCandidateRepParty>> { 
+export async function getECsByER(electionRidingId:number):Promise<Map<number,ElectionCandidateRep>> { 
   let message:Message = {type:messageType.success, msg: "" };
 
-  var electionCandidates:Array<ElectionCandidateRepParty> = [];
-  var map = new Map<number, ElectionCandidateRepParty>();
+  var electionCandidates:Array<ElectionCandidateRep> = [];
+  var map = new Map<number, ElectionCandidateRep>();
 
   try {
     let responseData:any = await axios.get('http://localhost:8080/api/v1/electionriding/electioncandidate/rep?boundaryId='+electionRidingId)
@@ -365,8 +365,14 @@ export async function getECsByER(electionRidingId:number):Promise<Map<number,Ele
     alert(message);
   }
 
-  electionCandidates.forEach(x=>{
-    map.set(x.rep.id, x);
+  electionCandidates.filter(
+    ec => {
+      if(ec.rep){
+        return true;
+      } 
+      return false;
+  }).forEach(x=>{
+      map.set(x.rep.id, x);
   })
 
   return map;
@@ -408,4 +414,79 @@ export async function uploadCustomElectionData(boundaries:Array<BoundaryCustomIm
   }
 
   return message;
+}
+
+interface ImportCandidates {
+  EventNameEnglish:string,
+  EventNameFrench:string,	
+  IsGeneralElection: number,	
+  ElectoralDistrictNumber: number,
+  ElectoralDistrictNameEnglish:string,	
+  ElectoralDistrictNameFrench: string,
+  ReturningOfficerName: string,
+  ReturningOfficeCity: string,
+  PollingDate: string,
+  ResignedMPPName: string,
+  NameOfCandidates: string,
+  PoliticalInterestCode: string,
+  TotalValidBallotsCast:	number,
+  PercentOfTotalValidBallotsCast: number,	
+  Plurality: number,
+  IsMemberOfPreviousLegislature: number
+}
+
+export async function uploadCustomEleCanData(rows:Array<ImportCandidates>, govBodyId:number):Promise<Message> { 
+  let message:Message= {type:messageType.success, msg: "" };
+  
+  try{
+    const requestParam = {govBodyId: govBodyId, electionCustomDatas:rows.filter((x)=>{return !(x.ElectoralDistrictNameEnglish == null)})};
+
+    console.log(requestParam);
+
+    var x:Array<ImportCandidates> = await axios.request({
+        method: 'post',
+        url: 'http://localhost:8080/api/v1/election/populate',
+        data: requestParam,
+        headers: {
+          'Content-Type':'application/json'
+        },
+    });
+
+    console.log("rejected rows")
+    console.log(x);
+  }
+  catch(e)
+  {
+    message = {type:messageType.error, msg: "Error Uploading Election Data"}
+  }
+
+  return message;
+}
+
+export async function getECVDbyER(eleRidingId:number):Promise<Array<ElectionRidingVoteData>> { 
+  let message:Message= {type:messageType.success, msg: "" };
+  let ervd:Array<ElectionRidingVoteData> = [];
+
+  try{
+    let responseData:any = await axios.get('http://localhost:8080/api/v1/electionriding/electioncandidate?eleRidingId='+eleRidingId).then(response => {
+      console.log(response);
+      return response
+    }).catch(error => console.log(error));
+
+
+    if(responseData?.data !== null && responseData?.data.length > 0)
+    {
+      ervd = responseData?.data;
+    }
+    else
+    {
+      throw 'No results found';
+    }
+  }
+  catch(e)
+  {
+    message = {type:messageType.error, msg: "Error Uploading Election Data"}
+  }
+
+  return ervd;
 }

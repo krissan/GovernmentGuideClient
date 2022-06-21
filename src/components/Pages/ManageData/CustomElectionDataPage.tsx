@@ -33,7 +33,6 @@ const CustomElectionDataPage = () => {
       {
         let jsonData = await processJSON(files);
         let results:Array<BoundaryCustomImport> = [];
-  
         if(jsonData.features)
         {
           jsonData.features.forEach((element:any) => {

@@ -15,6 +15,7 @@ import StdText from "../../Text/StdText";
 import SearchGovBodyForm from "../../Forms/SearchGovBodyForm";
 import PageSection from "../../Misc/PageSection";
 import { RepresentativeData } from "../../../customIntefaces/APITypes";
+import SearchItem from "../../Buttons/SearchItem";
 
 const RepresentativeDataPage = () => {
   const [selectedGB, setSelectedGB] = useState<number|null>(null);
@@ -22,7 +23,7 @@ const RepresentativeDataPage = () => {
   const [uploadLoading, setUploadLoading] = useState<boolean>(false);
   const [getMessage, setGetMessage] = useState<Message|null>();
   const [uploadMessage, setUploadMessage] = useState<Message|null>();
-
+  const [allRepsToggle, setAllRepsToggle] = useState<boolean>(false);
 
   const processFile = async(files:Array<File>) => { 
     try{
@@ -53,7 +54,11 @@ const RepresentativeDataPage = () => {
       setGetMessage(null);
       let message:Message|null = null;
 
-      if(selectedGB)
+      if(allRepsToggle)
+      {
+        message = await getRepresentativeData(-1);
+      }
+      else if(selectedGB)
       {
         message = await getRepresentativeData(selectedGB);
         setGetMessage(message);
@@ -80,12 +85,48 @@ const RepresentativeDataPage = () => {
             {/* Select Gov Body */}
             <PageSection>
               <StepHeader>1. Select Government Body</StepHeader>
+              
+              <SearchItem mainText="Get All Representatives" selected={allRepsToggle} onClick={()=>{setAllRepsToggle(!allRepsToggle);}}/>
+
               {/* Search Gov Body */}
-              <SearchGovBodyForm setSelected={(x:number | null)=>{setSelectedGB(x);clear();}} selected={selectedGB}/>
+              {!allRepsToggle &&
+              <SearchGovBodyForm setSelected={(x:number | null)=>{setSelectedGB(x);clear();}} selected={selectedGB}/>}
             </PageSection>
 
             {/* Make Changes */}
-            {selectedGB &&
+            {!allRepsToggle ?
+              <>{selectedGB &&
+                <PageSection>
+                  <StepHeader>2. Make Changes</StepHeader>
+                  <div style={{flexDirection:"column", display:"flex"}}>
+                    {/*i*/}
+                    <div style={{flexDirection:"row",display:"flex", paddingBottom:"10px"}}>
+                      <div style={{width:25, display:"flex", justifyContent:"flex-end", marginRight:"5px"}}>
+                        <StepSubHeader>i.</StepSubHeader>
+                      </div> 
+                      <StdButton message={getMessage} loading={getLoading} style={{padding:"10px 20px", width:400}}><span style={{paddingRight:10}} onClick={getData}>Download Existing Data</span><ButtonIcon icon={faDownload}/></StdButton> 
+                    </div>
+                    {/*ii*/}
+                    <div style={{flexDirection:"row",display:"flex", paddingBottom:"10px"}}>
+                      <div style={{width:25, display:"flex", justifyContent:"flex-end", marginRight:"5px"}}>
+                        <StepSubHeader>ii.</StepSubHeader>
+                      </div>
+                      <div>
+                        <StepSubHeader>Make Your Changes to csv file</StepSubHeader>
+                        <StdText><span style={{fontWeight:"bold"}}>NOTE: </span>Do not touch id column. Create and Update date are not editable, only appear for reference. Date format must be in yyyy-MM-dd.</StdText>
+                      </div>
+                    </div>
+                    {/*iii*/}
+                    <div style={{flexDirection:"row",display:"flex"}}>
+                      <div style={{width:25, display:"flex", justifyContent:"flex-end", marginRight:"5px"}}>
+                        <StepSubHeader>iii.</StepSubHeader>
+                      </div>
+                      <StdDropButton message={uploadMessage} loading={uploadLoading} style={{padding:"30px 20px", width:400}} dropFn={processFile}><span style={{paddingRight:10}}>Upload Existing Data</span><ButtonIcon icon={faUpload}/></StdDropButton> 
+                    </div>
+                  </div>
+                </PageSection>
+              }</>
+              :
               <PageSection>
                 <StepHeader>2. Make Changes</StepHeader>
                 <div style={{flexDirection:"column", display:"flex"}}>
@@ -96,20 +137,10 @@ const RepresentativeDataPage = () => {
                     </div> 
                     <StdButton message={getMessage} loading={getLoading} style={{padding:"10px 20px", width:400}}><span style={{paddingRight:10}} onClick={getData}>Download Existing Data</span><ButtonIcon icon={faDownload}/></StdButton> 
                   </div>
-                  {/*ii*/}
-                  <div style={{flexDirection:"row",display:"flex", paddingBottom:"10px"}}>
-                    <div style={{width:25, display:"flex", justifyContent:"flex-end", marginRight:"5px"}}>
-                      <StepSubHeader>ii.</StepSubHeader>
-                    </div>
-                    <div>
-                      <StepSubHeader>Make Your Changes to csv file</StepSubHeader>
-                      <StdText><span style={{fontWeight:"bold"}}>NOTE: </span>Do not touch id column. Create and Update date are not editable, only appear for reference. Date format must be in yyyy-MM-dd.</StdText>
-                    </div>
-                  </div>
                   {/*iii*/}
                   <div style={{flexDirection:"row",display:"flex"}}>
                     <div style={{width:25, display:"flex", justifyContent:"flex-end", marginRight:"5px"}}>
-                      <StepSubHeader>iii.</StepSubHeader>
+                      <StepSubHeader>ii.</StepSubHeader>
                     </div>
                     <StdDropButton message={uploadMessage} loading={uploadLoading} style={{padding:"30px 20px", width:400}} dropFn={processFile}><span style={{paddingRight:10}}>Upload Existing Data</span><ButtonIcon icon={faUpload}/></StdDropButton> 
                   </div>

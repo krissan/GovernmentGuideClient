@@ -3,15 +3,13 @@ import { faUpload } from "@fortawesome/free-solid-svg-icons"
 
 import PageHeader from "../../Text/PageHeader";
 import ButtonIcon from "../../Buttons/ButtonIcon";
-
+import PageSection from "../../Misc/PageSection";
 import StdDropButton from "../../Buttons/StdDropButton";
 
 import { processCsv } from "../../../functions/stdAppFunctions";
 import { Message } from "../../../customIntefaces/AppTypes";
-import PageSection from "../../Misc/PageSection";
-import { messageType } from "../../../customIntefaces/Enumerators";
-import axios from "axios";
 import { convertyyyyMMMddToyyyymmdd } from "../../../functions/convertFunctions";
+import { uploadCustomEleCanData } from "../../../api/election";
 
 interface ImportCandidates {
   EventNameEnglish:string,
@@ -43,39 +41,10 @@ const ValidVoteCastDataPage = () => {
     setUploadLoading(false);
   }
 
-  async function uploadData(rows:Array<ImportCandidates>, govBodyId:number):Promise<Message> { 
-    let message:Message= {type:messageType.success, msg: "" };
-    clear();
-    
-    try{
-      const requestParam = {govBodyId: govBodyId, electionCustomDatas:rows.filter((x)=>{return !(x.ElectoralDistrictNameEnglish == null)})};
-  
-      console.log(requestParam);
-  
-      var x:Array<ImportCandidates> = await axios.request({
-          method: 'post',
-          url: 'http://localhost:8080/api/v1/election/populate',
-          data: requestParam,
-          headers: {
-            'Content-Type':'application/json'
-          },
-      });
-
-      console.log("rejected rows")
-      console.log(x);
-    }
-    catch(e)
-    {
-      message = {type:messageType.error, msg: "Error Uploading Election Data"}
-    }
-  
-    return message;
-  }
-
   const processFile = async(files:Array<File>) => { 
     try{
+      clear();
       setUploadLoading(true);
-      setUploadMessage(null)
       let message:Message|null = null;
 
       let results = await processCsv(files);
@@ -87,7 +56,7 @@ const ValidVoteCastDataPage = () => {
         x.PollingDate = convertyyyyMMMddToyyyymmdd(x.PollingDate); 
         return x;})
 
-      message = await uploadData(rows, 3)
+      message = await uploadCustomEleCanData(rows, 3)
 
       setUploadMessage(message);
     }

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { AppBar, IconButton, Toolbar, Grid, useTheme, Menu, MenuItem } from '@material-ui/core';
 import MenuIcon from "@material-ui/icons/Menu";
 import { ReactComponent as LogoSvg } from '../../resources/img/logo.svg';
@@ -12,6 +12,8 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import { useAppContext } from '../../AppContext';
 import appValues from '../../resources/AppValues';
 import { faTimes } from '@fortawesome/free-solid-svg-icons';
+import { getPartyDataBase } from '../../api/representative';
+import { PartyData } from '../../customIntefaces/APITypes';
 
 interface NavItem {
     menuTitle: string,
@@ -66,6 +68,7 @@ const NavBar = () => {
     const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
     const { alert } = useAppContext();
+    const { selectedGbID, setGbPartyData } = useAppContext();
 
     //menu button
     const [anchorEl, setAnchorEl] = useState<Element|null>(null);
@@ -89,9 +92,8 @@ const NavBar = () => {
         
         return null;
     }
+
     const [selectedPage, setSelectedPage] = useState<string | null>(getMenuIdByPage());
-
-
 
     const handleMenu = (event: React.MouseEvent<HTMLElement>) => {
         setAnchorEl(event?.target as Element);
@@ -103,6 +105,29 @@ const NavBar = () => {
         setAnchorEl(null);
     };
 
+
+    useEffect(()=>{
+        //Grab party data and populate dictionary
+        const fetchData = async() => {
+            if(selectedGbID){
+                let parties:Array<PartyData> = await getPartyDataBase(selectedGbID);
+
+                //loop through parties and add to map
+                let newPartyMap:Map<number, PartyData> = new Map<number, PartyData>();
+
+                parties.forEach((party)=>{
+                    if(party.id){
+                        newPartyMap.set(party.id, party);
+                    }
+                })
+
+                setGbPartyData(newPartyMap);
+                console.log(newPartyMap);
+            }
+        }
+
+     fetchData();
+    }, [selectedGbID]);
 
     return (
         <div>

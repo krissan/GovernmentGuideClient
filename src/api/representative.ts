@@ -108,7 +108,7 @@ export async function searchGovBody(searchTerm:string) {
 
       for (let i = 0; i < data.length; i++) {
         console.log(data[i]);
-          let address:string = await axios.get('http://localhost:8080/api/v1/boundary/address?boundaryId='+data[i].boundaryId)
+          let address:string = await axios.get('http://localhost:8080/api/v1/boundary/address?govBodyId='+data[i].id)
           .then(response => {
             return response.data
            }).catch(error => console.log(error));
@@ -551,6 +551,30 @@ export async function getPartyData(govBodyId:number):Promise<Message> {
   }
 
   return message;
+}
+
+//Get Party Data of representatives of Government Body
+export async function getPartyDataBase(govBodyId:number):Promise<Array<PartyData>> { 
+  var parties:Array<PartyData> = [];
+
+  try {
+    let responseData:any = await axios.get('http://localhost:8080/api/v1/party/govbody?govBodyId='+govBodyId)
+      .then(response => {
+        return response
+      }).catch(error => console.log(error));
+
+    if(responseData?.data !== null && responseData?.data.length > 0)
+    {
+      parties = responseData?.data;
+    }
+
+  }
+  catch(e)
+  {
+    return [];
+  }
+
+  return parties;
 }
 
 //process parties

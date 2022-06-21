@@ -38,7 +38,7 @@ const RepresentativeCard:React.FC<RepCardProps> = ({repBoundary, boundaryToggled
     const boundary:Nullable<Boundary> = repBoundary.boundary ? repBoundary.boundary : null;
     
     //App Context
-    const { setSelectedER } = useAppContext();
+    const { setSelectedER, setSelectedGbID } = useAppContext();
 
 
     let navigate = useNavigate();
@@ -127,7 +127,7 @@ const RepresentativeCard:React.FC<RepCardProps> = ({repBoundary, boundaryToggled
                 {/*Col 1*/}
                 <div style={{width:appValues.subCardWidth, paddingRight:"30px"}}>
                     {repBoundary.eleRiding &&
-                        <StdButton classes={{root: classes.electionButton}} style={{width:"100%"}} onClick={()=>{setSelectedER(repBoundary.eleRiding ? repBoundary.eleRiding : null);navigate("/election")}}>Election</StdButton>
+                        <StdButton classes={{root: classes.electionButton}} style={{width:"100%"}} onClick={()=>{if(repBoundary.boundary){setSelectedGbID(repBoundary.boundary.govBodyId)}; setSelectedER(repBoundary.eleRiding ? repBoundary.eleRiding : null);navigate("/election")}}>Election</StdButton>
                     }
                 </div>
                 {/*Col 2*/}

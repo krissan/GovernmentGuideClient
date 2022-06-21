@@ -19,6 +19,7 @@ export interface Party {
 }
 
 export interface PartyData {
+    id:number|null,
     parentId:number|null,
     name:string|null,
     shortName:string|null,
@@ -65,7 +66,6 @@ export interface GovBody {
     endDate:Date | null,
     updateDate:Date | null,
     type:string,
-    boundaryId:number,
     address?:string
 }
 
@@ -162,10 +162,9 @@ export interface ElectionCandidateData {
     votes:number
 }
 
-export interface ElectionCandidateRepParty {
+export interface ElectionCandidateRep {
     eleCan: ElectionCandidate,
     rep: Representative,
-    party: Party
 }
 
 
@@ -182,6 +181,11 @@ export interface RepresentativeData {
     call:number,
     constituencyOffice:string,
     photo:string,
-    birthDate:Date | null,
+    birthDate:Date | null,  
     deathDate:Date | null,
 }
+
+export interface ElectionRidingVoteData {
+    electionDate:Date,
+    ec:Array<ElectionCandidateData>
+  }

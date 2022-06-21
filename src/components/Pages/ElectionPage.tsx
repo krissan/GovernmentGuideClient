@@ -1,21 +1,22 @@
-
-import PageHeader from "../Text/PageHeader";
-import SubHeader from "../Text/SubHeader";
-import SearchItem from "../Buttons/SearchItem";
-
-import EleToggleContainer from "../Misc/EleToggleContainer";
-
-import { Biography, Endorsement, Platform, ReportCard, useAppContext } from "../../AppContext";
 import { useEffect, useState } from "react";
 import { ScaleLoader } from "react-spinners";
 import { useTheme } from "@material-ui/core";
 
-import { BoundaryGovBodyName, ElectionCandidateRepParty } from "../../customIntefaces/APITypes";
+
+import PageHeader from "../Text/PageHeader";
+import SubHeader from "../Text/SubHeader";
+import SearchItem from "../Buttons/SearchItem";
+import EleToggleContainer from "../Misc/Election/EleToggleContainer";
+
+import { Biography, Endorsement, Platform, ReportCard, useAppContext } from "../../AppContext";
+import { BoundaryGovBodyName, ElectionCandidateRep, PartyData } from "../../customIntefaces/APITypes";
 import { findBoundaryAndGovBodyName } from "../../api/boundary";
 import { Nullable } from "../../customIntefaces/AppTypes";
 import { getECsByER } from "../../api/election";
+import { getPartyDataBase } from "../../api/representative";
+import EleRidingVoteData from "../Misc/Election/EleRidingVoteData";
 
-export interface ElectionCandidateRepPartyItem extends ElectionCandidateRepParty {
+export interface ElectionCandidateRepItem extends ElectionCandidateRep {
   toggled:boolean,
   platforms?:Array<Platform>,
   reportCards?:Array<ReportCard>,
@@ -24,23 +25,45 @@ export interface ElectionCandidateRepPartyItem extends ElectionCandidateRepParty
 }
 
 const ElectionPage = () => {
-  const { selectedER } = useAppContext();
   const theme = useTheme();
+
+  const { selectedER } = useAppContext();
   const [govBodyName, setGovBodyName] = useState<string | null>(null);
   const [boundaryName, setBoundaryName] = useState<string | null>(null);
   const [cmprAllTgl, setCmprAllTgl] = useState<boolean>(true);
-  const [eleCans, setEleCans] = useState<Map<number, ElectionCandidateRepPartyItem>>(new Map<number, ElectionCandidateRepPartyItem>());
+  const [eleCans, setEleCans] = useState<Map<number, ElectionCandidateRepItem>>(new Map<number, ElectionCandidateRepItem>());
   const [loading, setLoading] = useState<boolean>(false);
+  const { selectedGbID, setGbPartyData } = useAppContext();
+
   //used to force rerender when mutating eleCans inside map
   const [reRender, setReRender] = useState<boolean>(false);
 
   useEffect(()=>{
     const setUp = async() => {
       setLoading(true);
+
+      if(selectedGbID){
+        let parties:Array<PartyData> = await getPartyDataBase(selectedGbID);
+
+        //loop through parties and add to map
+        let newPartyMap:Map<number, PartyData> = new Map<number, PartyData>();
+
+        parties.forEach((party)=>{
+            if(party.id){
+                newPartyMap.set(party.id, party);
+            }
+        })
+
+        setGbPartyData(newPartyMap);
+        console.log(newPartyMap);
+    }
+
+    //get election candidates
       let id = selectedER?.boundaryId;
       if(id)
       {
         let bgbName:Nullable<BoundaryGovBodyName> = await findBoundaryAndGovBodyName(id);
+
         if(bgbName?.govBodyName)
         {
           setGovBodyName(bgbName?.govBodyName);
@@ -51,15 +74,16 @@ const ElectionPage = () => {
         }
 
         //Get list of election candidate data and convert it to election candidate item
-        let eleCanReps:Map<number, ElectionCandidateRepParty> = await getECsByER(id);
+        let eleCanReps:Map<number, ElectionCandidateRep> = await getECsByER(id);
         console.log(eleCanReps);
-        let eleCanRepItems:Map<number, ElectionCandidateRepPartyItem> = new Map<number, ElectionCandidateRepPartyItem>();
+        let eleCanRepItems:Map<number, ElectionCandidateRepItem> = new Map<number, ElectionCandidateRepItem>();
 
         for (let entry of Array.from(eleCanReps.entries())) {
           eleCanRepItems.set(entry[0], {toggled:true, ...entry[1]});
         }
 
         setEleCans(eleCanRepItems);
+        console.log(eleCans);
       }
 
       setLoading(false);
@@ -100,9 +124,9 @@ const ElectionPage = () => {
                               mainText={value.rep.firstName+" "+value.rep.lastName}
                               selected={value.toggled ? true : false}
                               onClick={()=>{
-                                let newEC:ElectionCandidateRepPartyItem = value;
+                                let newEC:ElectionCandidateRepItem = value;
                                 newEC.toggled = value.toggled ? !value.toggled : true; 
-                                let newECs:Map<number, ElectionCandidateRepPartyItem> = eleCans;
+                                let newECs:Map<number, ElectionCandidateRepItem> = eleCans;
                                 newECs.set(value.rep.id, newEC);
                                 setEleCans(newECs);
                                 setReRender(!reRender);
@@ -117,6 +141,8 @@ const ElectionPage = () => {
             }
             {/*Categories To Compare*/}
             <EleToggleContainer style={{paddingTop:"40px"}} eleCans={eleCans/*.filter((e)=>{return cmprAllTgl === true || e.toggled ? true : false})*/} setEleCans={setEleCans}/>
+
+            <EleRidingVoteData eleRidingId={selectedER.id} />
           </div>
           :
           <div>

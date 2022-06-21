@@ -87,7 +87,7 @@ const MapAlt:React.FC<MapProps> = ({boundaryToggled, setBoundaryToggled, repLoad
               {
                 return <CustomMarker 
                           selected={b.boundary.id===boundaryToggled?.boundary?.id}
-                          key={b.boundary.id} 
+                          key={b.boundary.id.toString()+(b.boundary.id===boundaryToggled?.boundary?.id)} 
                           position={{lat: b.shapes[0].centerLat, lng: b.shapes[0].centerLng}} 
                           onClick={()=>{boundaryToggled?.boundary?.id === b.boundary?.id ? setBoundaryToggled(null) : setBoundaryToggled(b)}}/>
               }

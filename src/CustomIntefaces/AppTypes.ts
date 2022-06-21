@@ -1,5 +1,5 @@
 import { ElectionRiding, GeoPoint, RepBoundary } from "../AppContext";
-import { ElectionCandidateRepPartyItem } from "../components/Pages/ElectionPage";
+import { ElectionCandidateRepItem } from "../components/Pages/ElectionPage";
 import { messageType } from "./Enumerators";
 
 export interface Message {
@@ -19,8 +19,8 @@ export interface LocationState {
   }
 
 export interface RepTabProps {
-    repData:RepBoundary|ElectionCandidateRepPartyItem,
-    reps:Map<number, RepBoundary|ElectionCandidateRepPartyItem>,
+    repData:RepBoundary|ElectionCandidateRepItem,
+    reps:Map<number, RepBoundary|ElectionCandidateRepItem>,
     setReps:(c: Map<number, any>) => void
 }
 

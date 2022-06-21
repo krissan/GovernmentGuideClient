@@ -19,10 +19,12 @@ import ElectionPage from './components/Pages/ElectionPage';
 import ValidVoteCastDataPage from './components/Pages/ManageData/ValidVoteCastDataPage';
 import PartyDataCustomPage from './components/Pages/ManageData/PartyDataCustomPage';
 import CustomElectionDataPage from './components/Pages/ManageData/CustomElectionDataPage';
+
 import { palette } from './customIntefaces/Palette';
 import { AlertType, Nullable } from './customIntefaces/AppTypes';
 import { AppContext, ElectionRiding, RepBoundary } from './AppContext';
 import appValues from './resources/AppValues';
+import { GovBody, PartyData } from './customIntefaces/APITypes';
 
 function App() {
   const theme = createTheme({
@@ -36,10 +38,12 @@ function App() {
   const [alert,setAlert] = useState<AlertType>({msg:"",open:false});
   const [selectedRB,setSelectedRB] = useState<Nullable<RepBoundary>>(null);
   const [selectedER,setSelectedER] = useState<Nullable<ElectionRiding>>(null);
+  const [gbPartyData,setGbPartyData] = useState<Map<number,PartyData>>(new Map<number,PartyData>());
+  const [selectedGbID,setSelectedGbID] = useState<Nullable<number>>(null);
 
   return (
     <div style={{height:"100vh", width:"100%",display:"flex", flexDirection:"column"}}>
-      <AppContext.Provider value={{repBoundaries,setRepBoundaries,userAddr,setUserAddr, alert, setAlert, selectedRB, setSelectedRB, selectedER, setSelectedER}}>
+      <AppContext.Provider value={{repBoundaries,setRepBoundaries,userAddr,setUserAddr, alert, setAlert, selectedRB, setSelectedRB, selectedER, setSelectedER, gbPartyData, setGbPartyData, selectedGbID, setSelectedGbID}}>
           <ThemeProvider theme={theme}>
             <div className="App" style={isMobile ? {flex:1, margin:"0px 0px"} : {flex:1, margin:"0px " + appValues.pageMargin + "px"}}>
               <Router>
