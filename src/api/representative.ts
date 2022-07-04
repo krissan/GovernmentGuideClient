@@ -1,10 +1,11 @@
 import axios from 'axios';
-import { Biography, Boundary, Endorsement, Platform, Representative, RepBoundary, ReportCard } from '../AppContext';
+import { Biography, Boundary, Endorsement, Platform, Representative, RepBoundary, ReportCard, RepCardsOrgs, EndosOrgs, PlatsOrgs } from '../AppContext';
 import { ExportToCsv } from 'export-to-csv';
 
 import { Message, Nullable } from '../customIntefaces/AppTypes';
 import { infoEnum, messageType } from '../customIntefaces/Enumerators';
-import { GovBody, PartyData, RepBiography, RepEndorsement, RepPlatform, RepReportCard, RepresentativeData } from '../customIntefaces/APITypes';
+import { GovBody, Organization, PartyData, RepBiography, RepEndorsement, RepPlatform, RepReportCard, RepresentativeData } from '../customIntefaces/APITypes';
+import { populateOrg } from '../functions/stdAppFunctions';
 
 const convertTitle = (s:string) => {
   return s.replaceAll("_", " ")/*charAt(0).toUpperCase() + s.slice(1).toLowerCase()*/;
@@ -247,11 +248,11 @@ export async function getPlatformData(govBodyId:number, type:infoEnum):Promise<M
 }
 
 //process platforms
-export async function uploadPlatforms(repPlats:Array<RepPlatform>, govBodyId:number, type:infoEnum):Promise<Message> { 
+export async function uploadPlatforms(repPlats:Array<RepPlatform>, govBodyId:number, type:infoEnum, orgId:number):Promise<Message> { 
   let message:Message = {type:messageType.success, msg: "" };
 
   try{
-    const requestParam = {govBodyId: govBodyId, orgId:null, platforms:repPlats.filter((x)=>{if(x.id.toString() === '' || x.id == null){return false} return true})};
+    const requestParam = {govBodyId: govBodyId, orgId:orgId, platforms:repPlats.filter((x)=>{if(x.id.toString() === '' || x.id == null){return false} return true})};
     console.log(requestParam);
     await axios.request({
         method: 'post',
@@ -317,11 +318,11 @@ export async function getReportCardData(govBodyId:number, type:infoEnum):Promise
 }
 
 //process report cards
-export async function uploadReportCards(repReportCards:Array<RepReportCard>, govBodyId:number, type:infoEnum):Promise<Message> { 
+export async function uploadReportCards(repReportCards:Array<RepReportCard>, govBodyId:number, type:infoEnum, orgId:number):Promise<Message> { 
   let message:Message = {type:messageType.success, msg: "" };
 
   try{
-    const requestParam = {govBodyId: govBodyId, orgId: null, reportCards:repReportCards.filter((x)=>{if(x.id.toString() === '' || x.id == null){return false} return true})};
+    const requestParam = {govBodyId: govBodyId, orgId: orgId, reportCards:repReportCards.filter((x)=>{if(x.id.toString() === '' || x.id == null){return false} return true})};
 console.log(requestParam);
     await axios.request({
         method: 'post',
@@ -387,11 +388,11 @@ export async function getEndorsementData(govBodyId:number, type:infoEnum):Promis
 }
 
 //process endorsements
-export async function uploadEndorsements(repEndorsements:Array<RepEndorsement>, govBodyId:number, type:infoEnum):Promise<Message> { 
+export async function uploadEndorsements(repEndorsements:Array<RepEndorsement>, govBodyId:number, type:infoEnum, orgId:number):Promise<Message> { 
   let message:Message= {type:messageType.success, msg: "" };
   
   try{
-    const requestParam = {govBodyId: govBodyId, orgId:null, endorsements:repEndorsements.filter((x)=>{if(x.id.toString() === '' || x.id == null){return false} return true})};
+    const requestParam = {govBodyId: govBodyId, orgId:orgId, endorsements:repEndorsements.filter((x)=>{if(x.id.toString() === '' || x.id == null){return false} return true})};
 
     console.log(requestParam);
 
@@ -419,7 +420,6 @@ export async function getRepBiography(repId:number):Promise<Nullable<Biography>>
   try {
     let responseData:any = await axios.get('http://localhost:8080/api/v1/biography?repId='+repId)
       .then(response => {
-        console.log(response);
         return response
       }).catch(error => console.log(error));
 
@@ -437,7 +437,7 @@ export async function getRepBiography(repId:number):Promise<Nullable<Biography>>
 }
 
 //Get Platform Data of representative
-export async function getRepPlatforms(repId:number):Promise<Array<Platform>> { 
+export async function getRepPlatforms(repId:number, orgMap:Map<number,Organization>, setOrgMap:(x:Map<number,Organization>)=>void):Promise<Array<Platform>> { 
   var plats:Array<Platform> = [];
 
   try {
@@ -446,10 +446,11 @@ export async function getRepPlatforms(repId:number):Promise<Array<Platform>> {
         return response
       }).catch(error => console.log(error));
 
-    if(responseData?.data !== null && responseData?.data.length > 0)
+    if(responseData?.data !== null && responseData?.data.repDatas.length > 0)
     {
-      plats = responseData?.data;
-      console.log(plats);
+      let platOrgs:PlatsOrgs = responseData?.data;
+      plats = platOrgs.repDatas;
+      populateOrg(platOrgs.orgs, orgMap, setOrgMap);
     }
   }
   catch(e)
@@ -461,19 +462,20 @@ export async function getRepPlatforms(repId:number):Promise<Array<Platform>> {
 }
 
 //Get Report Card Data of representative
-export async function getRepReportCards(repId:number):Promise<Array<ReportCard>> { 
+export async function getRepReportCards(repId:number, orgMap:Map<number,Organization>, setOrgMap:(x:Map<number,Organization>)=>void):Promise<Array<ReportCard>> { 
   var repCards:Array<ReportCard> = [];
 
   try {
     let responseData:any = await axios.get('http://localhost:8080/api/v1/reportcard?repId='+repId)
       .then(response => {
-        console.log(response);
         return response
       }).catch(error => console.log(error));
 
-    if(responseData?.data !== null && responseData?.data.length > 0)
+    if(responseData?.data !== null && responseData?.data.repDatas.length > 0)
     {
-      repCards = responseData?.data;
+      let repCardOrgs:RepCardsOrgs = responseData?.data;
+      repCards = repCardOrgs.repDatas;
+      populateOrg(repCardOrgs.orgs, orgMap, setOrgMap);
     }
   }
   catch(e)
@@ -485,19 +487,20 @@ export async function getRepReportCards(repId:number):Promise<Array<ReportCard>>
 }
 
 //Get Biography Data of representative
-export async function getRepEndorsements(repId:number):Promise<Array<Endorsement>> { 
+export async function getRepEndorsements(repId:number, orgMap:Map<number,Organization>, setOrgMap:(x:Map<number,Organization>)=>void):Promise<Array<Endorsement>> { 
   var endos:Array<Endorsement> = [];
 
   try {
     let responseData:any = await axios.get('http://localhost:8080/api/v1/endorsement?repId='+repId)
       .then(response => {
-        console.log(response);
         return response
       }).catch(error => console.log(error));
 
-    if(responseData?.data !== null && responseData?.data.length > 0)
+    if(responseData?.data !== null && responseData?.data.repDatas.length > 0)
     {
-      endos = responseData?.data;
+      let endoOrgs:EndosOrgs = responseData?.data;
+      endos = endoOrgs.repDatas;
+      populateOrg(endoOrgs.orgs, orgMap, setOrgMap);
     }
   }
   catch(e)

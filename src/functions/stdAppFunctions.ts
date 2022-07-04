@@ -1,5 +1,6 @@
 import { parse } from "papaparse";
 import { Endorsement, Platform, ReportCard } from "../AppContext";
+import { Organization } from "../customIntefaces/APITypes";
 
 //Process CSV file
 export const processCsv = async(files:Array<File>) => { 
@@ -87,4 +88,13 @@ export const structCategoryList = (list:Array<ReportCard|Endorsement|Platform>) 
 export const call = (number:number) =>{
   navigator.clipboard.writeText(number.toString());
   alert("Copied "+number+" to clip board");
+}
+//Populate org map
+export const populateOrg = (orgList:Array<Organization>, orgMap:Map<number,Organization>, setOrgMap:(x:Map<number,Organization>)=>void) => {
+  for(const org of orgList)
+  {
+    orgMap.set(org.id, org);
+  }
+
+  setOrgMap(orgMap);
 }

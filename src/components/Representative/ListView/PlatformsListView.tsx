@@ -5,7 +5,7 @@ import Symbol from "../../Misc/Symbol";
 import MiniHeader from "../../Text/MiniHeader";
 import PlatformItem from "./PlatformItem";
 
-import { Platform  } from "../../../AppContext";
+import { Platform, useAppContext  } from "../../../AppContext";
 import { getRepPlatforms } from "../../../api/representative";
 import { ScaleLoader } from "react-spinners";
 import { structCategoryList } from "../../../functions/stdAppFunctions";
@@ -20,14 +20,16 @@ const PlatformsListView:React.FC<PlatformsProps> = ({repData, reps, setReps}) =>
     const [platforms, setPlatforms] = useState<Array<Array<Platform>>>([]);
     const theme = useTheme();
     const [tabLoading, setTabLoading] = useState<boolean>(false);
-    
+    const { orgMap, setOrgMap } = useAppContext();
+
      //grab representative platforms and make it available globally if not already
     useEffect(() => {
         const fetchPlatforms = async() => {
             setTabLoading(true);
             if(!repData.platforms || repData?.platforms?.length < 1){
                 let newRepBoundary = repData;
-                const plats:Array<Platform> =  await getRepPlatforms(repData.rep.id);
+                const plats:Array<Platform> =  await getRepPlatforms(repData.rep.id, orgMap, setOrgMap);
+                console.log(plats);
                 newRepBoundary.platforms = plats;
 
                 const newRepBoundaries = reps.set(repData.rep.id, newRepBoundary);

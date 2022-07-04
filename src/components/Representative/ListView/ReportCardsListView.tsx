@@ -6,7 +6,7 @@ import Symbol from "../../Misc/Symbol";
 import MiniHeader from "../../Text/MiniHeader";
 import ReportCardItem from "./ReportCardItem";
 
-import { ReportCard  } from "../../../AppContext";
+import { ReportCard, useAppContext  } from "../../../AppContext";
 import { SymbolEnum } from "../../../customIntefaces/Enumerators";
 import { getRepReportCards } from "../../../api/representative";
 import { structCategoryList } from "../../../functions/stdAppFunctions";
@@ -20,7 +20,8 @@ const ReportCardsListView:React.FC<ReportCardProps> = ({repData, reps, setReps})
     const [reportCards, setReportCards] = useState<Array<Array<ReportCard>>>([]);
     const theme = useTheme();
     const [tabLoading, setTabLoading] = useState<boolean>(false);
-    
+    const { orgMap, setOrgMap } = useAppContext();
+
      //grab representative endorsements and make it available globally if not already
     useEffect(() => {
         const fetchReportCards = async() => {
@@ -28,8 +29,9 @@ const ReportCardsListView:React.FC<ReportCardProps> = ({repData, reps, setReps})
 
             if(!repData.reportCards || repData?.reportCards?.length < 1){
                 let newRepBoundary = repData;
-                const repCards:Array<ReportCard> =  await getRepReportCards(repData.rep.id);
+                const repCards:Array<ReportCard> =  await getRepReportCards(repData.rep.id, orgMap, setOrgMap);
                 newRepBoundary.reportCards = repCards;
+                console.log(repCards);
                 
                 const newRepBoundaries = reps.set(repData.rep.id, newRepBoundary);
                 setReps(newRepBoundaries);

@@ -55,3 +55,9 @@ export enum GovBodyType{
     PROVINCIAL,
     FEDERAL
 }
+
+export enum OrgType{
+    UNIONS,
+    PERSON_OF_INTEREST,
+    NON_PROFIT
+}

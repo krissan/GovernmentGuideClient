@@ -1,5 +1,5 @@
 import React, { useContext } from "react";
-import { PartyData } from "./customIntefaces/APITypes";
+import { Organization, PartyData } from "./customIntefaces/APITypes";
 import { AlertType, Nullable } from "./customIntefaces/AppTypes";
 import { platformStatus } from "./customIntefaces/Enumerators";
 
@@ -104,6 +104,21 @@ export interface ReportCard {
     category:string
 }
 
+export interface RepCardsOrgs {
+    repDatas:Array<ReportCard>,
+    orgs:Array<Organization>
+}
+
+export interface EndosOrgs {
+    repDatas:Array<Endorsement>,
+    orgs:Array<Organization>
+}
+
+export interface PlatsOrgs {
+    repDatas:Array<Platform>,
+    orgs:Array<Organization>
+}
+
 export interface Representative {
     id:number,
     firstName:string,
@@ -139,7 +154,9 @@ export interface AppContextInterface {
     gbPartyData:Map<number, PartyData>, 
     setGbPartyData:(pd:Map<number, PartyData>) => void,
     selectedGbID:Nullable<number>,
-    setSelectedGbID:(gb:number)=>void
+    setSelectedGbID:(gb:number)=>void,
+    orgMap:Map<number,Organization>,
+    setOrgMap:(om:Map<number,Organization>)=>void
 }
 
 export const AppContext = React.createContext<AppContextInterface>({
@@ -156,7 +173,9 @@ export const AppContext = React.createContext<AppContextInterface>({
     gbPartyData:new Map<number, PartyData>(),
     setGbPartyData:()=>{},
     selectedGbID:null,
-    setSelectedGbID:()=>{}
+    setSelectedGbID:()=>{},
+    orgMap:new Map<number, Organization>(),
+    setOrgMap: ()=>{}
 });
 
 export const useAppContext = () => useContext(AppContext);

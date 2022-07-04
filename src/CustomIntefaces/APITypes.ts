@@ -1,5 +1,5 @@
 import { Representative } from "../AppContext";
-import { platformStatus } from "./Enumerators";
+import { OrgType, platformStatus } from "./Enumerators";
 
 export interface BoundaryGovBodyName {
     boundaryName:string,
@@ -13,9 +13,10 @@ export interface Party {
     name:string,
     shortName:string,
     description:string,
-    createDate:Date | null,
     partyColor:string,
-    partyImage:string
+    partyImage:string,
+    createDate:Date | null,
+    updateDate:Date | null,
 }
 
 export interface PartyData {
@@ -93,11 +94,24 @@ export interface BillVote {
 
 export interface Organization {
     id:number,
-    orgId:number,
     name:string,
-    subtitle:string,
-    content:string,
-    status:string
+    description:string,
+    orgIcon:string,
+    accomplishments:string,
+    transparency:string,
+    orgType:OrgType,
+    createDate:Date | null,
+    updateDate:Date | null
+}
+
+export interface OrganizationData {
+    id:number,
+    name:string,
+    description:string,
+    orgIcon:string,
+    accomplishments:string,
+    transparency:string,
+    orgType:OrgType
 }
 
 export interface RepBillVote {

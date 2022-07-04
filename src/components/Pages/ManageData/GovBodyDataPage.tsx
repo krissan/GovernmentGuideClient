@@ -58,18 +58,18 @@ const GovBodyDataPage = () => {
         {
           let plats:Array<RepPlatform> = results as Array<RepPlatform>;
 
-          message = await uploadPlatforms(plats, selectedGB, selectedType);
+          message = await uploadPlatforms(plats, selectedGB, selectedType, 2);
         }
         else if (selectedEditOption?.name === "Report Card")
         {
           let repCards:Array<RepReportCard> = results as Array<RepReportCard>;
-          message = await uploadReportCards(repCards, selectedGB, selectedType);
+          message = await uploadReportCards(repCards, selectedGB, selectedType, 2);
         }
         else if (selectedEditOption?.name === "Endorsement")
         {
           let endorsements:Array<RepEndorsement> = results as Array<RepEndorsement>;
 
-          message = await uploadEndorsements(endorsements, selectedGB, selectedType);
+          message = await uploadEndorsements(endorsements, selectedGB, selectedType, 2);
         }
         setUploadMessage(message);
       }

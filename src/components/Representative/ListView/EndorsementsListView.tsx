@@ -6,7 +6,7 @@ import Symbol from "../../Misc/Symbol";
 import MiniHeader from "../../Text/MiniHeader";
 import EndorsementItem from "./EndorsementItem";
 
-import { Endorsement } from "../../../AppContext";
+import { Endorsement, useAppContext } from "../../../AppContext";
 import { getRepEndorsements } from "../../../api/representative";
 import { structCategoryList } from "../../../functions/stdAppFunctions";
 import { SymbolEnum } from "../../../customIntefaces/Enumerators";
@@ -20,7 +20,8 @@ const EndorsementsListView:React.FC<EndorsementsProps> = ({repData, reps, setRep
     const [endorsements, setEndorsements] = useState<Array<Array<Endorsement>>>([]);
     const theme = useTheme();
     const [tabLoading, setTabLoading] = useState<boolean>(false);
-    
+    const { orgMap, setOrgMap } = useAppContext();
+
      //grab representative endorsements and make it available globally if not already
     useEffect(() => {
         const fetchEndorsements = async() => {
@@ -28,7 +29,8 @@ const EndorsementsListView:React.FC<EndorsementsProps> = ({repData, reps, setRep
 
             if(!repData.endorsements || repData?.endorsements?.length < 1){
                 let newRepBoundary = repData;
-                const endos:Array<Endorsement> =  await getRepEndorsements(repData.rep.id);
+                const endos:Array<Endorsement> =  await getRepEndorsements(repData.rep.id,  orgMap, setOrgMap);
+                console.log(endos);
                 newRepBoundary.endorsements = endos;
 
                 const newRepBoundaries = reps.set(repData.rep.id, newRepBoundary);
